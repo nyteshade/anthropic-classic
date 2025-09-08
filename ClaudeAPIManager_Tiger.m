@@ -6,8 +6,10 @@
 //
 
 #import "ClaudeAPIManager.h"
-#import "NetworkManager_Tiger.h"
+#import "HTTPSClient.h"
 #import "AppDelegate.h"
+#include "yyjson.h"
+#include <string.h>
 
 @implementation ClaudeAPIManager
 
@@ -86,30 +88,47 @@
     NSString *jsonString = [self dictionaryToJSON:requestBody];
     NSData *bodyData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
-    // Create request
-    NSURL *url = [NSURL URLWithString:@"https://api.anthropic.com/v1/messages"];
-    
+    // Use HTTPSClient for the request
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:
                              apiKey, @"x-api-key",
                              @"2023-06-01", @"anthropic-version",
                              @"application/json", @"content-type",
                              nil];
     
-    NSMutableURLRequest *request = [[NetworkManager sharedManager] createRequestWithURL:url
-                                                                                  method:@"POST"
-                                                                                 headers:headers
-                                                                                    body:bodyData];
+    NSLog(@"Sending request to Claude API");
+    NSLog(@"Request headers: %@", headers);
+    NSLog(@"Request body: %@", jsonString);
+    
+    // Create HTTPS client
+    HTTPSClient *client = [[[HTTPSClient alloc] initWithHost:@"api.anthropic.com" port:443] autorelease];
     
     // Send request
-    NSError *error = nil;
-    NSURLResponse *response = nil;
-    NSData *data = [[NetworkManager sharedManager] sendSynchronousRequest:request
-                                                         returningResponse:&response
-                                                                     error:&error];
+    NSData *data = [client sendPOSTRequest:@"/v1/messages"
+                                   headers:headers
+                                      body:bodyData];
     
-    if (!error && data) {
+    if (data) {
+        NSLog(@"Received data of length: %lu", (unsigned long)[data length]);
+        
         NSString *jsonResponse = [[[NSString alloc] initWithData:data 
                                                          encoding:NSUTF8StringEncoding] autorelease];
+        
+        if (!jsonResponse) {
+            NSLog(@"Failed to convert data to string");
+            NSError *parseError = [NSError errorWithDomain:@"ClaudeAPI"
+                                                       code:500
+                                                   userInfo:[NSDictionary dictionaryWithObject:@"Failed to decode response as UTF-8"
+                                                                                        forKey:NSLocalizedDescriptionKey]];
+            [self performSelectorOnMainThread:@selector(notifyDelegateWithError:)
+                                   withObject:parseError
+                                waitUntilDone:NO];
+            [message release];
+            [apiKey release];
+            [pool release];
+            return;
+        }
+        
+        NSLog(@"JSON Response length: %lu", (unsigned long)[jsonResponse length]);
         NSString *responseText = [self extractResponseText:jsonResponse];
         
         if (responseText) {
@@ -134,8 +153,12 @@
                                 waitUntilDone:NO];
         }
     } else {
+        NSError *networkError = [NSError errorWithDomain:@"ClaudeAPI"
+                                                     code:500
+                                                 userInfo:[NSDictionary dictionaryWithObject:@"Failed to connect to API"
+                                                                                      forKey:NSLocalizedDescriptionKey]];
         [self performSelectorOnMainThread:@selector(notifyDelegateWithError:)
-                               withObject:error
+                               withObject:networkError
                             waitUntilDone:NO];
     }
     
@@ -212,72 +235,89 @@
     return json;
 }
 
-// Simple JSON response parser
+
+// JSON response parser using yyjson
 - (NSString *)extractResponseText:(NSString *)jsonResponse {
-    // Log for debugging
-    NSLog(@"API Response: %@", jsonResponse);
+    // Log for debugging (truncate if too long)
+    if ([jsonResponse length] > 1000) {
+        NSLog(@"API Response (first 500 chars): %@", [jsonResponse substringToIndex:500]);
+        NSLog(@"API Response (last 500 chars): %@", [jsonResponse substringFromIndex:[jsonResponse length] - 500]);
+    } else {
+        NSLog(@"API Response: %@", jsonResponse);
+    }
     
-    // Look for "content":[{"type":"text","text":"..."}]
-    // The response format includes a "type" field
-    NSRange textStartRange = [jsonResponse rangeOfString:@"\"text\":\""];
-    if (textStartRange.location != NSNotFound) {
-        NSUInteger startIndex = textStartRange.location + [@"\"text\":\"" length];
-        
-        // Find the closing quote, handling escaped quotes
-        NSUInteger searchIndex = startIndex;
-        BOOL foundEnd = NO;
-        NSUInteger endIndex = startIndex;
-        
-        while (searchIndex < [jsonResponse length] && !foundEnd) {
-            unichar c = [jsonResponse characterAtIndex:searchIndex];
-            if (c == '"') {
-                // Check if it's escaped
-                if (searchIndex > 0 && [jsonResponse characterAtIndex:searchIndex - 1] != '\\') {
-                    foundEnd = YES;
-                    endIndex = searchIndex;
-                } else if (searchIndex > 1 && 
-                          [jsonResponse characterAtIndex:searchIndex - 1] == '\\' &&
-                          [jsonResponse characterAtIndex:searchIndex - 2] == '\\') {
-                    // Double backslash means the quote is not escaped
-                    foundEnd = YES;
-                    endIndex = searchIndex;
-                }
-            }
-            searchIndex++;
-        }
-        
-        if (foundEnd) {
-            NSString *text = [jsonResponse substringWithRange:NSMakeRange(startIndex, endIndex - startIndex)];
-            
-            // Unescape JSON escapes in the correct order
-            text = [text stringByReplacingOccurrencesOfString:@"\\\\" withString:@"\001"];  // Temp replace
-            text = [text stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
-            text = [text stringByReplacingOccurrencesOfString:@"\\n" withString:@"\n"];
-            text = [text stringByReplacingOccurrencesOfString:@"\\r" withString:@"\r"];
-            text = [text stringByReplacingOccurrencesOfString:@"\\t" withString:@"\t"];
-            text = [text stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-            text = [text stringByReplacingOccurrencesOfString:@"\001" withString:@"\\"];  // Restore backslash
-            
-            return text;
+    // Convert NSString to C string for yyjson
+    const char *json_str = [jsonResponse UTF8String];
+    size_t json_len = strlen(json_str);
+    
+    NSLog(@"Attempting to parse JSON of length: %zu", json_len);
+    NSLog(@"First 200 chars of JSON: %.200s", json_str);
+    
+    // Parse JSON with yyjson
+    yyjson_read_err err;
+    memset(&err, 0, sizeof(err));
+    yyjson_doc *doc = yyjson_read_opts((char *)json_str, json_len, 0, NULL, &err);
+    if (!doc) {
+        NSLog(@"Failed to parse JSON with yyjson - Error code: %u, message: %s, position: %zu", 
+              err.code, err.msg, err.pos);
+        NSLog(@"Error occurred near: %.50s", json_str + (err.pos > 50 ? err.pos - 50 : 0));
+        return nil;
+    }
+    
+    // Get root object
+    yyjson_val *root = yyjson_doc_get_root(doc);
+    if (!root) {
+        yyjson_doc_free(doc);
+        NSLog(@"No root object in JSON");
+        return nil;
+    }
+    
+    // Check for error response
+    yyjson_val *error_obj = yyjson_obj_get(root, "error");
+    if (error_obj) {
+        yyjson_val *error_msg = yyjson_obj_get(error_obj, "message");
+        if (error_msg && yyjson_is_str(error_msg)) {
+            const char *error_str = yyjson_get_str(error_msg);
+            NSLog(@"API Error: %s", error_str);
+            NSString *errorString = [NSString stringWithFormat:@"API Error: %s", error_str];
+            yyjson_doc_free(doc);
+            return errorString;  // Return error message to display to user
         }
     }
     
-    // Check for error message
-    NSRange errorRange = [jsonResponse rangeOfString:@"\"message\":\""];
-    if (errorRange.location != NSNotFound) {
-        NSUInteger startIndex = errorRange.location + [@"\"message\":\"" length];
-        NSRange endRange = [jsonResponse rangeOfString:@"\"" 
-                                                options:0 
-                                                  range:NSMakeRange(startIndex, [jsonResponse length] - startIndex)];
-        if (endRange.location != NSNotFound) {
-            NSString *errorMsg = [jsonResponse substringWithRange:NSMakeRange(startIndex, endRange.location - startIndex)];
-            NSLog(@"API Error: %@", errorMsg);
-            return nil;
-        }
+    // Get content array
+    yyjson_val *content = yyjson_obj_get(root, "content");
+    if (!content || !yyjson_is_arr(content)) {
+        NSLog(@"No content array found in response");
+        yyjson_doc_free(doc);
+        return nil;
     }
     
-    NSLog(@"Failed to parse response");
-    return nil;
+    // Get first content item
+    yyjson_val *first_content = yyjson_arr_get(content, 0);
+    if (!first_content) {
+        NSLog(@"Content array is empty");
+        yyjson_doc_free(doc);
+        return nil;
+    }
+    
+    // Get text field from content item
+    yyjson_val *text_val = yyjson_obj_get(first_content, "text");
+    if (!text_val || !yyjson_is_str(text_val)) {
+        NSLog(@"No text field in content item");
+        yyjson_doc_free(doc);
+        return nil;
+    }
+    
+    // Get the text string
+    const char *text_str = yyjson_get_str(text_val);
+    NSString *result = [NSString stringWithUTF8String:text_str];
+    
+    // Clean up
+    yyjson_doc_free(doc);
+    
+    NSLog(@"Successfully parsed response with yyjson");
+    return result;
 }
 
 @end

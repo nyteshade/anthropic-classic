@@ -151,4 +151,12 @@
     }
 }
 
++ (NSColor *)userTextColorForDarkMode:(BOOL)isDark {
+    return [self systemBlueForDarkMode:isDark];
+}
+
++ (NSColor *)claudeTextColorForDarkMode:(BOOL)isDark {
+    return [self systemPurpleForDarkMode:isDark];
+}
+
 @end

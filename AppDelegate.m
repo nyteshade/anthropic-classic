@@ -13,6 +13,8 @@
     [apiKey release];
     [selectedModel release];
     [availableModels release];
+    [monospaceFontName release];
+    [proportionalFontName release];
     [super dealloc];
 }
 
@@ -29,6 +31,24 @@
     selectedModel = [[defaults stringForKey:@"ClaudeSelectedModel"] retain];
     isDarkMode = [defaults boolForKey:@"ClaudeChatDarkMode"];
     fontSizeAdjustment = [defaults integerForKey:@"ClaudeChatFontSizeAdjustment"];
+    
+    // Load font preferences
+    monospaceFontName = [[defaults stringForKey:@"ClaudeChatMonospaceFontName"] retain];
+    proportionalFontName = [[defaults stringForKey:@"ClaudeChatProportionalFontName"] retain];
+    monospaceFontSize = [defaults floatForKey:@"ClaudeChatMonospaceFontSize"];
+    proportionalFontSize = [defaults floatForKey:@"ClaudeChatProportionalFontSize"];
+    
+    // Set default fonts if not configured
+    if (!monospaceFontName || [monospaceFontName length] == 0) {
+        monospaceFontName = [@"Monaco" retain];
+        monospaceFontSize = 11.0;
+    }
+    if (!proportionalFontName || [proportionalFontName length] == 0) {
+        proportionalFontName = [@"Lucida Grande" retain];
+        proportionalFontSize = 13.0;
+    }
+    if (monospaceFontSize == 0) monospaceFontSize = 11.0;
+    if (proportionalFontSize == 0) proportionalFontSize = 13.0;
     
     // Default to Claude Haiku 3 if no model selected
     if (!selectedModel || [selectedModel length] == 0) {
@@ -90,6 +110,9 @@
 }
 
 - (void)setupMenus {
+    // Clear any existing menu first to prevent duplication
+    [NSApp setMainMenu:nil];
+    
     NSMenu *mainMenu = [[[NSMenu alloc] init] autorelease];
     NSMenuItem *menuItem;
     NSMenu *submenu;
@@ -107,6 +130,10 @@
     [submenu addItemWithTitle:@"Preferences..." 
                        action:@selector(showPreferences:) 
                 keyEquivalent:@","];
+    
+    [submenu addItemWithTitle:@"Font Preferences..." 
+                       action:@selector(showFontPreferences:) 
+                keyEquivalent:@""];
     
     [submenu addItem:[NSMenuItem separatorItem]];
     
@@ -526,6 +553,190 @@
     if (chatWindowController) {
         [chatWindowController updateFontSize];
     }
+}
+
+- (NSString *)monospaceFontName {
+    return monospaceFontName;
+}
+
+- (NSString *)proportionalFontName {
+    return proportionalFontName;
+}
+
+- (float)monospaceFontSize {
+    return monospaceFontSize + fontSizeAdjustment;
+}
+
+- (float)proportionalFontSize {
+    return proportionalFontSize + fontSizeAdjustment;
+}
+
+- (void)showFontPreferences:(id)sender {
+    NSWindow *prefWindow = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
+                                                         styleMask:NSTitledWindowMask | NSClosableWindowMask
+                                                           backing:NSBackingStoreBuffered
+                                                             defer:YES] autorelease];
+    [prefWindow setTitle:@"Font Preferences"];
+    [prefWindow center];
+    
+    NSView *contentView = [prefWindow contentView];
+    
+    // Monospace font settings
+    NSTextField *monoLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(20, 250, 150, 20)] autorelease];
+    [monoLabel setStringValue:@"Monospace Font:"];
+    [monoLabel setBezeled:NO];
+    [monoLabel setDrawsBackground:NO];
+    [monoLabel setEditable:NO];
+    [monoLabel setSelectable:NO];
+    [contentView addSubview:monoLabel];
+    
+    NSTextField *monoField = [[[NSTextField alloc] initWithFrame:NSMakeRect(180, 250, 150, 22)] autorelease];
+    [monoField setStringValue:monospaceFontName];
+    [monoField setTag:100];
+    [contentView addSubview:monoField];
+    
+    NSTextField *monoSizeField = [[[NSTextField alloc] initWithFrame:NSMakeRect(340, 250, 40, 22)] autorelease];
+    [monoSizeField setFloatValue:monospaceFontSize];
+    [monoSizeField setTag:101];
+    [contentView addSubview:monoSizeField];
+    
+    // Proportional font settings
+    NSTextField *propLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(20, 210, 150, 20)] autorelease];
+    [propLabel setStringValue:@"Proportional Font:"];
+    [propLabel setBezeled:NO];
+    [propLabel setDrawsBackground:NO];
+    [propLabel setEditable:NO];
+    [propLabel setSelectable:NO];
+    [contentView addSubview:propLabel];
+    
+    NSTextField *propField = [[[NSTextField alloc] initWithFrame:NSMakeRect(180, 210, 150, 22)] autorelease];
+    [propField setStringValue:proportionalFontName];
+    [propField setTag:102];
+    [contentView addSubview:propField];
+    
+    NSTextField *propSizeField = [[[NSTextField alloc] initWithFrame:NSMakeRect(340, 210, 40, 22)] autorelease];
+    [propSizeField setFloatValue:proportionalFontSize];
+    [propSizeField setTag:103];
+    [contentView addSubview:propSizeField];
+    
+    // Sample text
+    NSTextField *sampleLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(20, 170, 360, 20)] autorelease];
+    [sampleLabel setStringValue:@"Sample Text:"];
+    [sampleLabel setBezeled:NO];
+    [sampleLabel setDrawsBackground:NO];
+    [sampleLabel setEditable:NO];
+    [sampleLabel setSelectable:NO];
+    [contentView addSubview:sampleLabel];
+    
+    NSScrollView *sampleScrollView = [[[NSScrollView alloc] initWithFrame:NSMakeRect(20, 50, 360, 110)] autorelease];
+    [sampleScrollView setBorderType:NSBezelBorder];
+    [sampleScrollView setHasVerticalScroller:YES];
+    [sampleScrollView setHasHorizontalScroller:NO];
+    
+    NSTextView *sampleText = [[[NSTextView alloc] initWithFrame:[[sampleScrollView contentView] frame]] autorelease];
+    [sampleText setString:@"Regular text in proportional font.\n**Bold text** and *italic text*.\n`Code in monospace font`\n```\nCode block\nin monospace\n```"];
+    [sampleText setEditable:NO];
+    [[sampleText textContainer] setWidthTracksTextView:YES];
+    [sampleScrollView setDocumentView:sampleText];
+    [contentView addSubview:sampleScrollView];
+    
+    // Buttons
+    NSButton *cancelButton = [[[NSButton alloc] initWithFrame:NSMakeRect(220, 10, 80, 25)] autorelease];
+    [cancelButton setTitle:@"Cancel"];
+    [cancelButton setBezelStyle:NSRoundedBezelStyle];
+    [cancelButton setTarget:self];
+    [cancelButton setAction:@selector(cancelFontPreferences:)];
+    [cancelButton setTag:1001];
+    [contentView addSubview:cancelButton];
+    
+    NSButton *applyButton = [[[NSButton alloc] initWithFrame:NSMakeRect(310, 10, 80, 25)] autorelease];
+    [applyButton setTitle:@"Apply"];
+    [applyButton setBezelStyle:NSRoundedBezelStyle];
+    [applyButton setTarget:self];
+    [applyButton setAction:@selector(applyFontPreferences:)];
+    [applyButton setTag:1000];
+    [applyButton setKeyEquivalent:@"\r"];
+    [contentView addSubview:applyButton];
+    
+    // Store reference to sample text view for updates
+    [prefWindow setReleasedWhenClosed:YES];
+    [prefWindow makeKeyAndOrderFront:nil];
+    
+    // Update sample text with current fonts
+    [self updateFontPreferenceSample:sampleText];
+}
+
+- (void)updateFontPreferenceSample:(NSTextView *)sampleText {
+    NSMutableAttributedString *sample = [[NSMutableAttributedString alloc] init];
+    
+    NSFont *propFont = [NSFont fontWithName:proportionalFontName size:proportionalFontSize];
+    if (!propFont) propFont = [NSFont systemFontOfSize:proportionalFontSize];
+    
+    NSFont *monoFont = [NSFont fontWithName:monospaceFontName size:monospaceFontSize];
+    if (!monoFont) monoFont = [NSFont userFixedPitchFontOfSize:monospaceFontSize];
+    
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Regular text in proportional font.\n" 
+                                                                     attributes:[NSDictionary dictionaryWithObject:propFont forKey:NSFontAttributeName]] autorelease]];
+    
+    NSFont *boldFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask];
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Bold text" 
+                                                                     attributes:[NSDictionary dictionaryWithObject:boldFont forKey:NSFontAttributeName]] autorelease]];
+    
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@" and " 
+                                                                     attributes:[NSDictionary dictionaryWithObject:propFont forKey:NSFontAttributeName]] autorelease]];
+    
+    NSFont *italicFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSItalicFontMask];
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@"italic text" 
+                                                                     attributes:[NSDictionary dictionaryWithObject:italicFont forKey:NSFontAttributeName]] autorelease]];
+    
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@".\n" 
+                                                                     attributes:[NSDictionary dictionaryWithObject:propFont forKey:NSFontAttributeName]] autorelease]];
+    
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Code in monospace font\n" 
+                                                                     attributes:[NSDictionary dictionaryWithObject:monoFont forKey:NSFontAttributeName]] autorelease]];
+    
+    [sample appendAttributedString:[[[NSAttributedString alloc] initWithString:@"Code block\nin monospace\n" 
+                                                                     attributes:[NSDictionary dictionaryWithObject:monoFont forKey:NSFontAttributeName]] autorelease]];
+    
+    [[sampleText textStorage] setAttributedString:sample];
+    [sample release];
+}
+
+- (void)cancelFontPreferences:(id)sender {
+    [[sender window] close];
+}
+
+- (void)applyFontPreferences:(id)sender {
+    NSWindow *window = [sender window];
+    
+    NSTextField *monoField = (NSTextField *)[[window contentView] viewWithTag:100];
+    NSTextField *monoSizeField = (NSTextField *)[[window contentView] viewWithTag:101];
+    NSTextField *propField = (NSTextField *)[[window contentView] viewWithTag:102];
+    NSTextField *propSizeField = (NSTextField *)[[window contentView] viewWithTag:103];
+    
+    // Update font settings
+    [monospaceFontName release];
+    monospaceFontName = [[monoField stringValue] retain];
+    monospaceFontSize = [monoSizeField floatValue];
+    
+    [proportionalFontName release];
+    proportionalFontName = [[propField stringValue] retain];
+    proportionalFontSize = [propSizeField floatValue];
+    
+    // Save to preferences
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:monospaceFontName forKey:@"ClaudeChatMonospaceFontName"];
+    [defaults setFloat:monospaceFontSize forKey:@"ClaudeChatMonospaceFontSize"];
+    [defaults setObject:proportionalFontName forKey:@"ClaudeChatProportionalFontName"];
+    [defaults setFloat:proportionalFontSize forKey:@"ClaudeChatProportionalFontSize"];
+    [defaults synchronize];
+    
+    // Notify chat window to refresh
+    if (chatWindowController) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FontPreferencesChanged" object:nil];
+    }
+    
+    [window close];
 }
 
 @end

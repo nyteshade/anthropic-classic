@@ -20,6 +20,8 @@
     
     ClaudeAPIManager *apiManager;
     NSMutableAttributedString *chatHistory;
+    NSMutableArray *codeBlockButtons;
+    NSMutableArray *codeBlockRanges;
 }
 
 - (id)init;
@@ -30,5 +32,6 @@
 - (void)updateTheme;
 - (void)updateFontSize;
 - (NSAttributedString *)parseMarkdown:(NSString *)text isUser:(BOOL)isUser;
+- (NSDictionary *)parseMarkdownWithCodeBlocks:(NSString *)text isUser:(BOOL)isUser;
 
 @end

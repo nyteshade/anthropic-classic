@@ -8,19 +8,26 @@ BUNDLE_ID = com.example.claudechat
 SOURCES = main.m \
           AppDelegate.m \
           ChatWindowController.m \
-          ClaudeAPIManager.m \
-          NetworkManager.m
+          ClaudeAPIManager_Tiger.m \
+          NetworkManager_Tiger.m \
+          HTTPSClient.m \
+          ThemeColors.m \
+          ConversationManager.m \
+          CodeBlockView.m
+
+C_SOURCES = yyjson.c
 
 HEADERS = AppDelegate.h \
           ChatWindowController.h \
           ClaudeAPIManager.h \
-          NetworkManager.h
+          HTTPSClient.h \
+          CodeBlockView.h
 
 # Compiler settings
 CC = clang
 OBJC = $(CC)
 CFLAGS = -Wall -O2
-OBJCFLAGS = $(CFLAGS) -fobjc-arc -fmodules
+OBJCFLAGS = $(CFLAGS) -ObjC
 
 # Framework flags
 FRAMEWORKS = -framework Cocoa -framework Foundation
@@ -38,10 +45,10 @@ MACOS_DIR = $(CONTENTS_DIR)/MacOS
 RESOURCES_DIR = $(CONTENTS_DIR)/Resources
 
 # Object files
-OBJECTS = $(SOURCES:.m=.o)
+OBJECTS = $(SOURCES:.m=.o) $(C_SOURCES:.c=.o)
 
 # Default target
-all: $(APP_BUNDLE)
+all: app
 
 # Create app bundle structure
 $(APP_BUNDLE):
@@ -52,9 +59,13 @@ $(APP_BUNDLE):
 $(MACOS_DIR)/$(APP_NAME): $(OBJECTS) | $(APP_BUNDLE)
 	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) $(FRAMEWORKS) -o $@ $(OBJECTS)
 
-# Compile source files
+# Compile Objective-C source files
 %.o: %.m $(HEADERS)
 	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) -c $< -o $@
+
+# Compile C source files
+%.o: %.c
+	$(CC) $(CFLAGS) $(SDKFLAGS) -c $< -o $@
 
 # Create Info.plist
 $(CONTENTS_DIR)/Info.plist: | $(APP_BUNDLE)
@@ -93,9 +104,9 @@ clean:
 	rm -rf $(BUILD_DIR)
 	rm -f *.o
 
-# Build for Tiger (requires appropriate SDK)
+# Build for Tiger/PowerPC (use Makefile.tiger instead)
 tiger:
-	$(MAKE) MACOSX_DEPLOYMENT_TARGET=10.4
+	@echo "Use 'make -f Makefile.tiger' for Tiger/PowerPC builds"
 
 # Build with debugging symbols
 debug: CFLAGS += -g -DDEBUG

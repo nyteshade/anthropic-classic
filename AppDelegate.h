@@ -17,6 +17,10 @@
     NSMutableArray *availableModels;
     BOOL isDarkMode;
     int fontSizeAdjustment;
+    NSString *monospaceFontName;
+    NSString *proportionalFontName;
+    float monospaceFontSize;
+    float proportionalFontSize;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
@@ -32,5 +36,10 @@
 - (void)increaseFontSize:(id)sender;
 - (void)decreaseFontSize:(id)sender;
 - (void)resetFontSize:(id)sender;
+- (NSString *)monospaceFontName;
+- (NSString *)proportionalFontName;
+- (float)monospaceFontSize;
+- (float)proportionalFontSize;
+- (void)showFontPreferences:(id)sender;
 
 @end

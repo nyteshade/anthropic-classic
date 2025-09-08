@@ -93,7 +93,7 @@ static ConversationManager *sharedInstance = nil;
         NSFileManager *fm = [NSFileManager defaultManager];
         BOOL isDir;
         if (![fm fileExistsAtPath:storageDirectory isDirectory:&isDir]) {
-            [fm createDirectoryAtPath:storageDirectory attributes:nil];
+            [fm createDirectoryAtPath:storageDirectory attributes:[NSDictionary dictionary]];
         }
         
         // Load existing conversations
@@ -129,7 +129,7 @@ static ConversationManager *sharedInstance = nil;
 }
 
 - (Conversation *)createNewConversation {
-    NSString *title = [NSString stringWithFormat:@"Chat %d", [conversations count] + 1];
+    NSString *title = [NSString stringWithFormat:@"Chat %lu", (unsigned long)([conversations count] + 1)];
     Conversation *newConv = [[[Conversation alloc] initWithTitle:title] autorelease];
     [conversations addObject:newConv];
     [self selectConversation:newConv];
@@ -188,14 +188,24 @@ static ConversationManager *sharedInstance = nil;
     NSString *path = [storageDirectory stringByAppendingPathComponent:filename];
     
     [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-    [conversations removeObject:conversation];
     
+    // Handle current conversation first before removing from array
     if (currentConversation == conversation) {
         [currentConversation release];
+        currentConversation = nil;
+    }
+    
+    [conversations removeObject:conversation];
+    
+    // Now select or create new conversation
+    if (currentConversation == nil) {
         if ([conversations count] > 0) {
             currentConversation = [[conversations objectAtIndex:0] retain];
         } else {
-            currentConversation = [[self createNewConversation] retain];
+            // Create and add new conversation when all are deleted
+            Conversation *newConv = [self createNewConversation];
+            [conversations addObject:newConv];
+            currentConversation = [newConv retain];
         }
     }
 }

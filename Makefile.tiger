@@ -10,13 +10,19 @@ SOURCES = main.m \
           ChatWindowController.m \
           ClaudeAPIManager_Tiger.m \
           NetworkManager_Tiger.m \
+          HTTPSClient_OpenSSL.m \
+          HTTPSClient.m \
           ThemeColors.m \
-          ConversationManager.m
+          ConversationManager.m \
+          CodeBlockView.m
+
+C_SOURCES = yyjson.c
 
 HEADERS = AppDelegate.h \
           ChatWindowController.h \
           ClaudeAPIManager.h \
-          NetworkManager.h
+          NetworkManager.h \
+          CodeBlockView.h
 
 # Compiler settings for Tiger compatibility
 CC = gcc
@@ -31,10 +37,9 @@ FRAMEWORKS = -framework Cocoa -framework Foundation
 MACOSX_DEPLOYMENT_TARGET = 10.4
 SDKFLAGS = -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
 
-# For OpenSSL support (if installed via MacPorts or Homebrew)
-# Uncomment and adjust paths as needed:
-# OPENSSL_CFLAGS = -I/opt/local/include
-# OPENSSL_LIBS = -L/opt/local/lib -lssl -lcrypto
+# OpenSSL support via MacPorts (required for Tiger/Leopard)
+OPENSSL_CFLAGS = -I/opt/local/include
+OPENSSL_LIBS = -L/opt/local/lib -lssl -lcrypto
 
 # Build directories
 BUILD_DIR = build
@@ -44,7 +49,7 @@ MACOS_DIR = $(CONTENTS_DIR)/MacOS
 RESOURCES_DIR = $(CONTENTS_DIR)/Resources
 
 # Object files
-OBJECTS = $(SOURCES:.m=.o)
+OBJECTS = $(SOURCES:.m=.o) $(C_SOURCES:.c=.o)
 
 # Default target
 all: app
@@ -58,9 +63,13 @@ $(APP_BUNDLE):
 $(MACOS_DIR)/$(APP_NAME): $(OBJECTS) | $(APP_BUNDLE)
 	$(OBJC) $(SDKFLAGS) $(FRAMEWORKS) $(OPENSSL_LIBS) -o $@ $(OBJECTS)
 
-# Compile source files
+# Compile Objective-C source files
 %.o: %.m $(HEADERS)
 	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) $(OPENSSL_CFLAGS) -c $< -o $@
+
+# Compile C source files
+%.o: %.c
+	$(CC) $(CFLAGS) $(SDKFLAGS) -c $< -o $@
 
 # Create Info.plist
 $(CONTENTS_DIR)/Info.plist: | $(APP_BUNDLE)

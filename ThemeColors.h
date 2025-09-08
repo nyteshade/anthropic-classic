@@ -32,4 +32,8 @@
 + (NSColor *)codeColorForDarkMode:(BOOL)isDark;
 + (NSColor *)codeBackgroundColorForDarkMode:(BOOL)isDark;
 
+// Chat-specific colors
++ (NSColor *)userTextColorForDarkMode:(BOOL)isDark;
++ (NSColor *)claudeTextColorForDarkMode:(BOOL)isDark;
+
 @end

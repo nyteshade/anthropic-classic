@@ -18,11 +18,23 @@
         apiManager = [[ClaudeAPIManager alloc] init];
         [apiManager setDelegate:self];
         chatHistory = [[NSMutableAttributedString alloc] init];
+        codeBlockButtons = [[NSMutableArray alloc] init];
+        codeBlockRanges = [[NSMutableArray alloc] init];
+        
+        // Listen for font preference changes
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(fontPreferencesChanged:)
+                                                     name:@"FontPreferencesChanged"
+                                                   object:nil];
     }
     return self;
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self removeAllCodeBlockButtons];
+    [codeBlockButtons release];
+    [codeBlockRanges release];
     [apiManager release];
     [chatHistory release];
     [super dealloc];
@@ -311,7 +323,7 @@
     // Semantic font sizes with adjustment
     float systemFontSize = [NSFont systemFontSize];  // 13.0 on most systems
     float labelFontSize = systemFontSize + 1.0 + fontAdjust;  // Label font (14.0 base)
-    float messageFontSize = systemFontSize + fontAdjust;      // Message font (13.0 base)
+    // float messageFontSize = systemFontSize + fontAdjust;      // Message font (13.0 base) - unused
     
     // Theme-aware colors using Apple semantic colors
     NSColor *senderColor;
@@ -333,7 +345,13 @@
     [senderStr release];
     
     // Parse markdown and add formatted message
-    NSAttributedString *messageStr = [self parseMarkdown:message isUser:isUser];
+    NSDictionary *parseResult = [self parseMarkdownWithCodeBlocks:message isUser:isUser];
+    NSAttributedString *messageStr = [parseResult objectForKey:@"attributedString"];
+    NSArray *codeBlocks = [parseResult objectForKey:@"codeBlocks"];
+    
+    // Calculate offset for code block ranges
+    NSUInteger baseOffset = [[chatTextView string] length] + [sender length];
+    
     [messageAttr appendAttributedString:messageStr];
     
     // Add proper spacing between messages
@@ -353,6 +371,19 @@
     [[chatTextView textStorage] appendAttributedString:messageAttr];
     [messageAttr release];
     
+    // Add copy buttons for code blocks
+    if (codeBlocks && [codeBlocks count] > 0) {
+        NSEnumerator *enumerator = [codeBlocks objectEnumerator];
+        NSDictionary *codeBlock;
+        while ((codeBlock = [enumerator nextObject])) {
+            NSString *code = [codeBlock objectForKey:@"code"];
+            NSRange range = [[codeBlock objectForKey:@"range"] rangeValue];
+            // Adjust range to account for position in full text
+            range.location += baseOffset;
+            [self addCodeBlockButton:code atRange:range];
+        }
+    }
+    
     // Scroll to bottom
     [chatTextView scrollRangeToVisible:NSMakeRange([[chatTextView string] length], 0)];
 }
@@ -360,6 +391,9 @@
 - (void)clearConversation {
     // Clear the chat text view
     [[chatTextView textStorage] deleteCharactersInRange:NSMakeRange(0, [[chatTextView string] length])];
+    
+    // Clear code block buttons
+    [self removeAllCodeBlockButtons];
     
     // Clear the API manager's conversation history
     [apiManager release];
@@ -455,45 +489,130 @@
     [chatTextView setNeedsDisplay:YES];
 }
 
+- (NSDictionary *)parseMarkdownWithCodeBlocks:(NSString *)text isUser:(BOOL)isUser {
+    NSMutableArray *codeBlocks = [NSMutableArray array];
+    NSAttributedString *attributedString = [self parseMarkdownInternal:text isUser:isUser codeBlocks:codeBlocks];
+    
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            attributedString, @"attributedString",
+            codeBlocks, @"codeBlocks",
+            nil];
+}
+
 - (NSAttributedString *)parseMarkdown:(NSString *)text isUser:(BOOL)isUser {
+    return [self parseMarkdownInternal:text isUser:isUser codeBlocks:nil];
+}
+
+- (NSAttributedString *)parseMarkdownInternal:(NSString *)text isUser:(BOOL)isUser codeBlocks:(NSMutableArray *)codeBlocksArray {
     NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
     
     AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
     BOOL isDark = [appDelegate isDarkMode];
-    int fontAdjust = [appDelegate fontSizeAdjustment];
     
-    float baseFontSize = [NSFont systemFontSize] + fontAdjust;  // Semantic base size
+    // Use font preferences
+    NSString *propFontName = [appDelegate proportionalFontName];
+    NSString *monoFontName = [appDelegate monospaceFontName];
+    float propFontSize = [appDelegate proportionalFontSize];
+    float monoFontSize = [appDelegate monospaceFontSize];
+    
+    NSFont *propFont = [NSFont fontWithName:propFontName size:propFontSize];
+    if (!propFont) propFont = [NSFont systemFontOfSize:propFontSize];
+    
+    NSFont *monoFont = [NSFont fontWithName:monoFontName size:monoFontSize];
+    if (!monoFont) monoFont = [NSFont userFixedPitchFontOfSize:monoFontSize];
+    
     NSColor *textColor = [ThemeColors labelColorForDarkMode:isDark];
     NSColor *codeColor = [ThemeColors codeColorForDarkMode:isDark];
     
     // Basic markdown parsing
     NSArray *lines = [text componentsSeparatedByString:@"\n"];
     int i;
+    BOOL inCodeBlock = NO;
+    NSMutableString *codeBlockContent = nil;
+    
     for (i = 0; i < [lines count]; i++) {
         NSString *line = [lines objectAtIndex:i];
         NSMutableAttributedString *lineAttr = [[NSMutableAttributedString alloc] init];
         
+        // Check for code block markers (```)
+        if ([line hasPrefix:@"```"]) {
+            if (!inCodeBlock) {
+                // Start of code block
+                inCodeBlock = YES;
+                codeBlockContent = [[NSMutableString alloc] init];
+                continue; // Skip this line
+            } else {
+                // End of code block
+                inCodeBlock = NO;
+                if (codeBlockContent && [codeBlockContent length] > 0) {
+                    // Remove trailing newline if present
+                    NSString *finalCodeContent = [[codeBlockContent copy] autorelease];
+                    if ([finalCodeContent hasSuffix:@"\n"]) {
+                        finalCodeContent = [finalCodeContent substringToIndex:[finalCodeContent length] - 1];
+                    }
+                    
+                    // Track the location where we're adding this code block
+                    NSRange codeRange = NSMakeRange([result length], [finalCodeContent length]);
+                    
+                    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                           monoFont, NSFontAttributeName,
+                                           codeColor, NSForegroundColorAttributeName,
+                                           nil];
+                    [result appendAttributedString:[[[NSAttributedString alloc] initWithString:finalCodeContent attributes:attrs] autorelease]];
+                    
+                    // Store code block info for button creation
+                    if (codeBlocksArray) {
+                        NSDictionary *codeBlockInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                       finalCodeContent, @"code",
+                                                       [NSValue valueWithRange:codeRange], @"range",
+                                                       nil];
+                        [codeBlocksArray addObject:codeBlockInfo];
+                    }
+                }
+                [codeBlockContent release];
+                codeBlockContent = nil;
+                
+                if (i < [lines count] - 1) {
+                    [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+                }
+                continue;
+            }
+        }
+        
+        if (inCodeBlock) {
+            // Add line to code block
+            [codeBlockContent appendString:line];
+            [codeBlockContent appendString:@"\n"];
+            continue;
+        }
+        
         // Check for headers (# ## ###)
         if ([line hasPrefix:@"### "]) {
             NSString *header = [line substringFromIndex:4];
+            NSFont *headerFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask];
+            headerFont = [[NSFontManager sharedFontManager] convertFont:headerFont toSize:propFontSize + 1];
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont boldSystemFontOfSize:baseFontSize + 1], NSFontAttributeName,
+                                   headerFont, NSFontAttributeName,
                                    textColor, NSForegroundColorAttributeName,
                                    nil];
             [lineAttr appendAttributedString:[[[NSAttributedString alloc] initWithString:header attributes:attrs] autorelease]];
         }
         else if ([line hasPrefix:@"## "]) {
             NSString *header = [line substringFromIndex:3];
+            NSFont *headerFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask];
+            headerFont = [[NSFontManager sharedFontManager] convertFont:headerFont toSize:propFontSize + 2];
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont boldSystemFontOfSize:baseFontSize + 2], NSFontAttributeName,
+                                   headerFont, NSFontAttributeName,
                                    textColor, NSForegroundColorAttributeName,
                                    nil];
             [lineAttr appendAttributedString:[[[NSAttributedString alloc] initWithString:header attributes:attrs] autorelease]];
         }
         else if ([line hasPrefix:@"# "]) {
             NSString *header = [line substringFromIndex:2];
+            NSFont *headerFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask];
+            headerFont = [[NSFontManager sharedFontManager] convertFont:headerFont toSize:propFontSize + 3];
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont boldSystemFontOfSize:baseFontSize + 3], NSFontAttributeName,
+                                   headerFont, NSFontAttributeName,
                                    textColor, NSForegroundColorAttributeName,
                                    nil];
             [lineAttr appendAttributedString:[[[NSAttributedString alloc] initWithString:header attributes:attrs] autorelease]];
@@ -503,24 +622,25 @@
             NSString *bullet = @"• ";
             NSString *content = [line substringFromIndex:2];
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont systemFontOfSize:baseFontSize], NSFontAttributeName,
+                                   propFont, NSFontAttributeName,
                                    textColor, NSForegroundColorAttributeName,
                                    nil];
             [lineAttr appendAttributedString:[[[NSAttributedString alloc] initWithString:bullet attributes:attrs] autorelease]];
-            [lineAttr appendAttributedString:[[[NSAttributedString alloc] initWithString:content attributes:attrs] autorelease]];
+            // Parse inline markdown in bullet content
+            [self parseInlineMarkdown:content into:lineAttr propFont:propFont monoFont:monoFont textColor:textColor codeColor:codeColor];
         }
         // Check for code blocks (simple backtick detection)
         else if ([line hasPrefix:@"`"] && [line hasSuffix:@"`"] && [line length] > 2) {
             NSString *code = [line substringWithRange:NSMakeRange(1, [line length] - 2)];
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont userFixedPitchFontOfSize:baseFontSize], NSFontAttributeName,
+                                   monoFont, NSFontAttributeName,
                                    codeColor, NSForegroundColorAttributeName,
                                    nil];
             [lineAttr appendAttributedString:[[[NSAttributedString alloc] initWithString:code attributes:attrs] autorelease]];
         }
         // Regular text with inline formatting
         else {
-            [self parseInlineMarkdown:line into:lineAttr baseFontSize:baseFontSize textColor:textColor codeColor:codeColor];
+            [self parseInlineMarkdown:line into:lineAttr propFont:propFont monoFont:monoFont textColor:textColor codeColor:codeColor];
         }
         
         [result appendAttributedString:lineAttr];
@@ -536,17 +656,19 @@
 
 - (void)parseInlineMarkdown:(NSString *)text 
                         into:(NSMutableAttributedString *)result 
-                baseFontSize:(float)baseFontSize 
+                    propFont:(NSFont *)propFont
+                    monoFont:(NSFont *)monoFont
                    textColor:(NSColor *)textColor 
                    codeColor:(NSColor *)codeColor {
     
-    // Simple inline parsing for **bold** and *italic* and `code`
+    // Simple inline parsing for **bold**, *italic*, __underline__, and `code`
     NSMutableString *remaining = [NSMutableString stringWithString:text];
     
     while ([remaining length] > 0) {
-        // Check for bold
+        // Check for formatting markers
         NSRange boldRange = [remaining rangeOfString:@"**"];
         NSRange italicRange = [remaining rangeOfString:@"*"];
+        NSRange underlineRange = [remaining rangeOfString:@"__"];
         NSRange codeRange = [remaining rangeOfString:@"`"];
         
         // Find the earliest marker
@@ -556,6 +678,10 @@
         if (boldRange.location != NSNotFound && boldRange.location < minLocation) {
             minLocation = boldRange.location;
             markerType = @"bold";
+        }
+        if (underlineRange.location != NSNotFound && underlineRange.location < minLocation) {
+            minLocation = underlineRange.location;
+            markerType = @"underline";
         }
         if (codeRange.location != NSNotFound && codeRange.location < minLocation) {
             minLocation = codeRange.location;
@@ -570,7 +696,7 @@
         if (markerType == nil) {
             // No more formatting, add the rest as plain text
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont systemFontOfSize:baseFontSize], NSFontAttributeName,
+                                   propFont, NSFontAttributeName,
                                    textColor, NSForegroundColorAttributeName,
                                    nil];
             [result appendAttributedString:[[[NSAttributedString alloc] initWithString:remaining attributes:attrs] autorelease]];
@@ -581,7 +707,7 @@
         if (minLocation > 0) {
             NSString *before = [remaining substringToIndex:minLocation];
             NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSFont systemFontOfSize:baseFontSize], NSFontAttributeName,
+                                   propFont, NSFontAttributeName,
                                    textColor, NSForegroundColorAttributeName,
                                    nil];
             [result appendAttributedString:[[[NSAttributedString alloc] initWithString:before attributes:attrs] autorelease]];
@@ -593,15 +719,20 @@
             NSRange endRange = [remaining rangeOfString:@"**"];
             if (endRange.location != NSNotFound) {
                 NSString *boldText = [remaining substringToIndex:endRange.location];
+                NSFont *boldFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask];
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSFont boldSystemFontOfSize:baseFontSize], NSFontAttributeName,
+                                       boldFont, NSFontAttributeName,
                                        textColor, NSForegroundColorAttributeName,
                                        nil];
                 [result appendAttributedString:[[[NSAttributedString alloc] initWithString:boldText attributes:attrs] autorelease]];
                 [remaining deleteCharactersInRange:NSMakeRange(0, endRange.location + 2)];
             } else {
                 // No closing marker, treat as literal
-                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"**"] autorelease]];
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       propFont, NSFontAttributeName,
+                                       textColor, NSForegroundColorAttributeName,
+                                       nil];
+                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"**" attributes:attrs] autorelease]];
             }
         }
         else if ([markerType isEqualToString:@"italic"]) {
@@ -611,7 +742,7 @@
                 NSString *italicText = [remaining substringToIndex:endRange.location];
                 // Use oblique trait for italic on Tiger
                 NSFont *italicFont = [[NSFontManager sharedFontManager] 
-                                      convertFont:[NSFont systemFontOfSize:baseFontSize]
+                                      convertFont:propFont
                                       toHaveTrait:NSItalicFontMask];
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                                        italicFont, NSFontAttributeName,
@@ -621,7 +752,32 @@
                 [remaining deleteCharactersInRange:NSMakeRange(0, endRange.location + 1)];
             } else {
                 // No closing marker, treat as literal
-                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"*"] autorelease]];
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       propFont, NSFontAttributeName,
+                                       textColor, NSForegroundColorAttributeName,
+                                       nil];
+                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"*" attributes:attrs] autorelease]];
+            }
+        }
+        else if ([markerType isEqualToString:@"underline"]) {
+            [remaining deleteCharactersInRange:NSMakeRange(0, minLocation + 2)];
+            NSRange endRange = [remaining rangeOfString:@"__"];
+            if (endRange.location != NSNotFound) {
+                NSString *underlineText = [remaining substringToIndex:endRange.location];
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       propFont, NSFontAttributeName,
+                                       textColor, NSForegroundColorAttributeName,
+                                       [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
+                                       nil];
+                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:underlineText attributes:attrs] autorelease]];
+                [remaining deleteCharactersInRange:NSMakeRange(0, endRange.location + 2)];
+            } else {
+                // No closing marker, treat as literal
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       propFont, NSFontAttributeName,
+                                       textColor, NSForegroundColorAttributeName,
+                                       nil];
+                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"__" attributes:attrs] autorelease]];
             }
         }
         else if ([markerType isEqualToString:@"code"]) {
@@ -630,14 +786,18 @@
             if (endRange.location != NSNotFound) {
                 NSString *codeText = [remaining substringToIndex:endRange.location];
                 NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                       [NSFont userFixedPitchFontOfSize:baseFontSize], NSFontAttributeName,
+                                       monoFont, NSFontAttributeName,
                                        codeColor, NSForegroundColorAttributeName,
                                        nil];
                 [result appendAttributedString:[[[NSAttributedString alloc] initWithString:codeText attributes:attrs] autorelease]];
                 [remaining deleteCharactersInRange:NSMakeRange(0, endRange.location + 1)];
             } else {
                 // No closing marker, treat as literal
-                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"`"] autorelease]];
+                NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                       monoFont, NSFontAttributeName,
+                                       codeColor, NSForegroundColorAttributeName,
+                                       nil];
+                [result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"`" attributes:attrs] autorelease]];
             }
         }
     }
@@ -695,7 +855,11 @@
         [[chatTextView textStorage] deleteCharactersInRange:NSMakeRange(0, [[chatTextView string] length])];
         
         // Reset API manager with new conversation
-        [apiManager release];
+        if (apiManager) {
+            [apiManager setDelegate:nil];
+            [apiManager release];
+            apiManager = nil;
+        }
         apiManager = [[ClaudeAPIManager alloc] init];
         [apiManager setDelegate:self];
         
@@ -749,6 +913,166 @@
             [self loadCurrentConversation];
         }
     }
+}
+
+- (void)fontPreferencesChanged:(NSNotification *)notification {
+    // Refresh the chat history with new fonts
+    NSMutableAttributedString *newHistory = [[NSMutableAttributedString alloc] init];
+    
+    // Get current conversation messages
+    Conversation *currentConv = [[ConversationManager sharedManager] currentConversation];
+    if (currentConv && [currentConv messages]) {
+        NSArray *messages = [currentConv messages];
+        int i;
+        for (i = 0; i < [messages count]; i++) {
+            NSDictionary *msg = [messages objectAtIndex:i];
+            NSString *role = [msg objectForKey:@"role"];
+            NSString *content = [msg objectForKey:@"content"];
+            
+            BOOL isUser = [role isEqualToString:@"user"];
+            NSString *sender = isUser ? @"You: " : @"Claude: ";
+            
+            // Re-parse markdown with new fonts
+            AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+            BOOL isDark = [appDelegate isDarkMode];
+            NSColor *senderColor = isUser ? 
+                [ThemeColors userTextColorForDarkMode:isDark] : 
+                [ThemeColors claudeTextColorForDarkMode:isDark];
+            
+            NSFont *propFont = [NSFont fontWithName:[appDelegate proportionalFontName] 
+                                               size:[appDelegate proportionalFontSize]];
+            if (!propFont) propFont = [NSFont systemFontOfSize:[appDelegate proportionalFontSize]];
+            
+            NSAttributedString *senderStr = [[NSAttributedString alloc] initWithString:sender 
+                                                                           attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                       [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask], NSFontAttributeName,
+                                                                                       senderColor, NSForegroundColorAttributeName,
+                                                                                       nil]];
+            NSAttributedString *messageStr = [self parseMarkdown:content isUser:isUser];
+            
+            [newHistory appendAttributedString:senderStr];
+            [senderStr release];
+            [newHistory appendAttributedString:messageStr];
+            
+            if (i < [messages count] - 1) {
+                NSAttributedString *newline = [[NSAttributedString alloc] initWithString:@"\n\n" 
+                                                                               attributes:[NSDictionary dictionary]];
+                [newHistory appendAttributedString:newline];
+                [newline release];
+            }
+        }
+    }
+    
+    // Update the text view
+    [chatHistory release];
+    chatHistory = newHistory;
+    [[chatTextView textStorage] setAttributedString:chatHistory];
+    
+    // Scroll to bottom
+    NSRange endRange = NSMakeRange([chatHistory length], 0);
+    [chatTextView scrollRangeToVisible:endRange];
+}
+
+#pragma mark - Code Block Button Management
+
+- (void)removeAllCodeBlockButtons {
+    // Remove all existing code block buttons
+    NSEnumerator *enumerator = [codeBlockButtons objectEnumerator];
+    NSButton *button;
+    while ((button = [enumerator nextObject])) {
+        [button removeFromSuperview];
+    }
+    [codeBlockButtons removeAllObjects];
+    [codeBlockRanges removeAllObjects];
+}
+
+- (void)addCodeBlockButton:(NSString *)code atRange:(NSRange)range {
+    // Store the code block info
+    NSDictionary *blockInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                               code, @"code",
+                               [NSValue valueWithRange:range], @"range",
+                               nil];
+    [codeBlockRanges addObject:blockInfo];
+    
+    // Create a copy button for this code block
+    NSButton *copyButton = [[[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 50, 20)] autorelease];
+    [copyButton setTitle:@"Copy"];
+    [copyButton setBezelStyle:NSRoundRectBezelStyle];
+    [copyButton setFont:[NSFont systemFontOfSize:10]];
+    [copyButton setTag:[codeBlockRanges count] - 1]; // Use index as tag
+    [copyButton setTarget:self];
+    [copyButton setAction:@selector(copyCodeBlock:)];
+    [copyButton setAlphaValue:0.9];
+    
+    [codeBlockButtons addObject:copyButton];
+    [self updateCodeBlockButtonPositions];
+}
+
+- (void)updateCodeBlockButtonPositions {
+    // Update positions of all code block buttons based on text layout
+    int i;
+    for (i = 0; i < [codeBlockButtons count]; i++) {
+        NSButton *button = [codeBlockButtons objectAtIndex:i];
+        NSDictionary *blockInfo = [codeBlockRanges objectAtIndex:i];
+        NSRange range = [[blockInfo objectForKey:@"range"] rangeValue];
+        
+        if (range.location < [[chatTextView string] length]) {
+            // Get the bounding rect for the code block
+            NSRange glyphRange = [[chatTextView layoutManager] glyphRangeForCharacterRange:range 
+                                                                       actualCharacterRange:NULL];
+            NSRect boundingRect = [[chatTextView layoutManager] boundingRectForGlyphRange:glyphRange 
+                                                                          inTextContainer:[chatTextView textContainer]];
+            
+            // Position button at top-right of code block
+            NSPoint textOrigin = [chatTextView textContainerOrigin];
+            NSRect buttonFrame = [button frame];
+            buttonFrame.origin.x = boundingRect.origin.x + boundingRect.size.width - buttonFrame.size.width - 5 + textOrigin.x;
+            buttonFrame.origin.y = boundingRect.origin.y + 2 + textOrigin.y;
+            
+            // Convert to scroll view coordinates
+            NSRect convertedFrame = [chatTextView convertRect:buttonFrame toView:scrollView];
+            [button setFrame:convertedFrame];
+            
+            if (![button superview]) {
+                [scrollView addSubview:button];
+            }
+        }
+    }
+}
+
+- (void)copyCodeBlock:(id)sender {
+    NSButton *button = (NSButton *)sender;
+    int index = [button tag];
+    
+    if (index >= 0 && index < [codeBlockRanges count]) {
+        NSDictionary *blockInfo = [codeBlockRanges objectAtIndex:index];
+        NSString *code = [blockInfo objectForKey:@"code"];
+        
+        // Copy to pasteboard
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [pasteboard setString:code forType:NSStringPboardType];
+        
+        // Visual feedback
+        NSString *originalTitle = [button title];
+        [button setTitle:@"Copied!"];
+        [button setEnabled:NO];
+        
+        // Reset after delay
+        [self performSelector:@selector(resetCopyButton:) 
+                   withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                               button, @"button",
+                               originalTitle, @"title",
+                               nil]
+                   afterDelay:1.0];
+    }
+}
+
+- (void)resetCopyButton:(NSDictionary *)info {
+    NSButton *button = [info objectForKey:@"button"];
+    NSString *title = [info objectForKey:@"title"];
+    [button setTitle:title];
+    [button setEnabled:YES];
 }
 
 @end
