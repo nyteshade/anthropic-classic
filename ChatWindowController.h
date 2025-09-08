@@ -1,0 +1,34 @@
+//
+//  ChatWindowController.h
+//  ClaudeChat
+//
+
+#import <Cocoa/Cocoa.h>
+#import "ClaudeAPIManager.h"
+
+@class ClaudeAPIManager;
+
+@interface ChatWindowController : NSWindowController <ClaudeAPIManagerDelegate, NSTableViewDataSource, NSTableViewDelegate> {
+    NSTextView *chatTextView;
+    NSTextField *messageField;
+    NSButton *sendButton;
+    NSProgressIndicator *progressIndicator;
+    NSScrollView *scrollView;
+    
+    NSDrawer *conversationDrawer;
+    NSTableView *conversationTable;
+    
+    ClaudeAPIManager *apiManager;
+    NSMutableAttributedString *chatHistory;
+}
+
+- (id)init;
+- (void)sendMessage:(id)sender;
+- (void)appendMessage:(NSString *)message fromUser:(BOOL)isUser;
+- (void)clearConversation;
+- (void)updateWindowTitle;
+- (void)updateTheme;
+- (void)updateFontSize;
+- (NSAttributedString *)parseMarkdown:(NSString *)text isUser:(BOOL)isUser;
+
+@end
