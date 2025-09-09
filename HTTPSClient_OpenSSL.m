@@ -8,26 +8,11 @@
 #import "HTTPSClient.h"
 
 // Check if we have OpenSSL available
-// Try multiple possible locations for OpenSSL
-#if __has_include(<openssl/ssl.h>)
-  // System OpenSSL or Homebrew
-  #define HAS_OPENSSL 1
-  #include <openssl/ssl.h>
-  #include <openssl/err.h>
-  #include <openssl/bio.h>
-#elif defined(__POWERPC__) || defined(__ppc__) || defined(__ppc64__)
-  // MacPorts location for PowerPC systems
-  #define HAS_OPENSSL 1
-  #include "/opt/local/include/openssl/ssl.h"
-  #include "/opt/local/include/openssl/err.h"
-  #include "/opt/local/include/openssl/bio.h"
-#else
-  // Fallback - assume OpenSSL is available
-  #define HAS_OPENSSL 1
-  #include <openssl/ssl.h>
-  #include <openssl/err.h>
-  #include <openssl/bio.h>
-#endif
+// Just include OpenSSL directly - the Makefile handles the include paths
+#define HAS_OPENSSL 1
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/bio.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -43,10 +28,12 @@
         hostname = [host retain];
         port = portNum;
         
-        // Initialize OpenSSL (using older API for compatibility)
+        // Initialize OpenSSL (not needed for OpenSSL 1.1.0+)
+        #if OPENSSL_VERSION_NUMBER < 0x10100000L
         SSL_load_error_strings();
         SSL_library_init();
         OpenSSL_add_all_algorithms();
+        #endif
     }
     return self;
 }
@@ -62,8 +49,12 @@
     int sockfd = -1;
     NSMutableData *responseData = nil;
     
-    // Create SSL context
-    const SSL_METHOD *method = SSLv23_client_method();
+    // Create SSL context (use TLS_client_method if available, fall back to SSLv23)
+    #if OPENSSL_VERSION_NUMBER >= 0x10100000L
+        const SSL_METHOD *method = TLS_client_method();
+    #else
+        const SSL_METHOD *method = SSLv23_client_method();
+    #endif
     ctx = SSL_CTX_new(method);
     if (!ctx) {
         NSLog(@"Failed to create SSL context");
@@ -110,8 +101,8 @@
     SSL_set_fd(ssl, sockfd);
     
     // Set SNI hostname (only if available)
-    #ifdef SSL_set_tlsext_host_name
-    SSL_set_tlsext_host_name(ssl, [hostname UTF8String]);
+    #ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
+    SSL_ctrl(ssl, SSL_CTRL_SET_TLSEXT_HOSTNAME, TLSEXT_NAMETYPE_host_name, (char *)[hostname UTF8String]);
     #endif
     
     // Perform SSL handshake
