@@ -43,6 +43,112 @@
     [super dealloc];
 }
 
+- (NSData *)sendRequestData:(NSData *)requestData {
+    SSL_CTX *ctx = NULL;
+    SSL *ssl = NULL;
+    int sockfd = -1;
+    NSMutableData *responseData = nil;
+    
+    // Create SSL context (use TLS_client_method if available, fall back to SSLv23)
+    #if OPENSSL_VERSION_NUMBER >= 0x10100000L
+        const SSL_METHOD *method = TLS_client_method();
+    #else
+        const SSL_METHOD *method = SSLv23_client_method();
+    #endif
+    ctx = SSL_CTX_new(method);
+    if (!ctx) {
+        NSLog(@"Failed to create SSL context");
+        return nil;
+    }
+    
+    // Set options for compatibility
+    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3);
+    
+    // Create socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        NSLog(@"Failed to create socket");
+        SSL_CTX_free(ctx);
+        return nil;
+    }
+    
+    // Resolve hostname
+    struct hostent *host_entry = gethostbyname([hostname UTF8String]);
+    if (!host_entry) {
+        NSLog(@"Failed to resolve hostname: %@", hostname);
+        close(sockfd);
+        SSL_CTX_free(ctx);
+        return nil;
+    }
+    
+    // Setup server address
+    struct sockaddr_in server_addr;
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(port);
+    memcpy(&server_addr.sin_addr.s_addr, host_entry->h_addr_list[0], host_entry->h_length);
+    
+    // Connect to server
+    if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
+        NSLog(@"Failed to connect to server");
+        close(sockfd);
+        SSL_CTX_free(ctx);
+        return nil;
+    }
+    
+    // Create SSL connection
+    ssl = SSL_new(ctx);
+    SSL_set_fd(ssl, sockfd);
+    
+    // Set SNI hostname (only if available)
+    #ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
+    SSL_ctrl(ssl, SSL_CTRL_SET_TLSEXT_HOSTNAME, TLSEXT_NAMETYPE_host_name, (char *)[hostname UTF8String]);
+    #endif
+    
+    // Perform SSL handshake
+    if (SSL_connect(ssl) <= 0) {
+        NSLog(@"SSL handshake failed");
+        ERR_print_errors_fp(stderr);
+        SSL_free(ssl);
+        close(sockfd);
+        SSL_CTX_free(ctx);
+        return nil;
+    }
+    
+    // Send request data
+    const char *requestBytes = [requestData bytes];
+    int totalSent = 0;
+    int requestLen = [requestData length];
+    
+    while (totalSent < requestLen) {
+        int sent = SSL_write(ssl, requestBytes + totalSent, requestLen - totalSent);
+        if (sent <= 0) {
+            NSLog(@"Failed to send request");
+            SSL_free(ssl);
+            close(sockfd);
+            SSL_CTX_free(ctx);
+            return nil;
+        }
+        totalSent += sent;
+    }
+    
+    // Read response
+    responseData = [NSMutableData data];
+    char buffer[4096];
+    int bytes;
+    
+    while ((bytes = SSL_read(ssl, buffer, sizeof(buffer))) > 0) {
+        [responseData appendBytes:buffer length:bytes];
+    }
+    
+    // Clean up
+    SSL_free(ssl);
+    close(sockfd);
+    SSL_CTX_free(ctx);
+    
+    return responseData;
+}
+
 - (NSData *)sendRequest:(NSString *)request {
     SSL_CTX *ctx = NULL;
     SSL *ssl = NULL;
@@ -176,11 +282,8 @@
     [fullRequest appendData:[request dataUsingEncoding:NSUTF8StringEncoding]];
     [fullRequest appendData:bodyData];
     
-    // Convert to string for sending
-    NSString *fullRequestStr = [[[NSString alloc] initWithData:fullRequest encoding:NSUTF8StringEncoding] autorelease];
-    
-    // Send request and get response
-    NSData *response = [self sendRequest:fullRequestStr];
+    // Send request directly as data
+    NSData *response = [self sendRequestData:fullRequest];
     
     if (!response) {
         return nil;

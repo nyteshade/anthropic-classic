@@ -61,7 +61,7 @@
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString *message = [[info objectForKey:@"message"] retain];
-    NSString *apiKey = [[info objectForKey:@"apiKey"] retain];
+    NSString *apiKey = [[[info objectForKey:@"apiKey"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] retain];
     
     // Get selected model from AppDelegate
     AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];

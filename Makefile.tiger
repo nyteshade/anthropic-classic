@@ -4,7 +4,8 @@
 APP_NAME = ClaudeChat
 BUNDLE_ID = com.example.claudechat
 
-# Source files
+# Source files  
+# Note: Using HTTPSClient_OpenSSL.m instead of HTTPSClient.m for OpenSSL support
 SOURCES = main.m \
           AppDelegate.m \
           ChatWindowController.m \
