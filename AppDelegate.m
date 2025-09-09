@@ -110,12 +110,11 @@
     [preferencesWindow center];
     [preferencesWindow setReleasedWhenClosed:NO];  // Important: don't release on close
     [preferencesWindow setDelegate:self];  // Set delegate for window events
+    [preferencesWindow setBackgroundColor:[ThemeColors windowBackgroundColorForDarkMode:isDarkMode]];
     
     NSView *contentView = [preferencesWindow contentView];
     
-    // Apply theme to window background
-    [contentView setWantsLayer:YES];
-    [[contentView layer] setBackgroundColor:[[ThemeColors windowBackgroundColorForDarkMode:isDarkMode] CGColor]];
+    // Note: Can't use CALayer on Tiger, so we set window background color instead
     
     // === API Key Section ===
     NSTextField *apiLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(20, 400, 100, 20)] autorelease];

@@ -8,7 +8,7 @@
 
 @class ClaudeAPIManager;
 
-@interface ChatWindowController : NSWindowController <ClaudeAPIManagerDelegate, NSTableViewDataSource, NSTableViewDelegate> {
+@interface ChatWindowController : NSWindowController <ClaudeAPIManagerDelegate> {
     NSTextView *chatTextView;
     NSTextView *messageField;
     NSScrollView *messageScrollView;
