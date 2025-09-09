@@ -9,7 +9,7 @@
 
 @class ChatWindowController;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate> {
+@interface AppDelegate : NSObject {
     ChatWindowController *chatWindowController;
     NSString *apiKey;
     NSString *selectedModel;
