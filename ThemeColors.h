@@ -20,6 +20,7 @@
 + (NSColor *)textBackgroundColorForDarkMode:(BOOL)isDark;
 + (NSColor *)windowBackgroundColorForDarkMode:(BOOL)isDark;
 + (NSColor *)controlBackgroundColorForDarkMode:(BOOL)isDark;
++ (NSColor *)alternatingRowColorForDarkMode:(BOOL)isDark;
 
 // Accent colors
 + (NSColor *)linkColorForDarkMode:(BOOL)isDark;

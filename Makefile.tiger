@@ -12,7 +12,8 @@ SOURCES = main.m \
           NetworkManager_Tiger.m \
           HTTPSClient_OpenSSL.m \
           HTTPSClient.m \
-          ThemeColors.m \
+          ThemeColors_Tiger.m \
+          ThemedView.m \
           ConversationManager.m \
           CodeBlockView.m
 

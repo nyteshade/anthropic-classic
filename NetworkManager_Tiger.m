@@ -5,7 +5,7 @@
 //  Simplified network layer for Tiger compatibility
 //
 
-#import "NetworkManager_Tiger.h"
+#import "NetworkManager.h"
 
 @implementation NetworkManager
 

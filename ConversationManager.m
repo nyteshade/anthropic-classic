@@ -202,10 +202,9 @@ static ConversationManager *sharedInstance = nil;
         if ([conversations count] > 0) {
             currentConversation = [[conversations objectAtIndex:0] retain];
         } else {
-            // Create and add new conversation when all are deleted
-            Conversation *newConv = [self createNewConversation];
-            [conversations addObject:newConv];
-            currentConversation = [newConv retain];
+            // Create new conversation when all are deleted
+            // createNewConversation already adds it to the array and selects it
+            [self createNewConversation];
         }
     }
 }

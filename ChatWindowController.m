@@ -8,6 +8,7 @@
 #import "AppDelegate.h"
 #import "ThemeColors.h"
 #import "ConversationManager.h"
+#import "ThemedView.h"
 
 @implementation ChatWindowController
 
@@ -37,6 +38,7 @@
     [codeBlockRanges release];
     [apiManager release];
     [chatHistory release];
+    [messageScrollView release];
     [super dealloc];
 }
 
@@ -161,19 +163,41 @@
     [sendButton setAutoresizingMask:NSViewMinXMargin];
     [contentView addSubview:sendButton];
     
-    // Create message input field with proper spacing
-    NSRect messageFrame = NSMakeRect(margin, 
-                                     margin + (inputAreaHeight - fieldHeight) / 2.0,  // Center vertically
-                                     frame.size.width - (margin * 2) - sendButtonWidth - spacing, 
-                                     fieldHeight);
-    messageField = [[NSTextField alloc] initWithFrame:messageFrame];
+    // Set up min/max heights for the message field
+    messageFieldMinHeight = fieldHeight;
+    messageFieldMaxHeight = 120.0;  // Maximum height before scrolling
+    
+    // Create message input field with NSTextView in NSScrollView
+    NSRect messageScrollFrame = NSMakeRect(margin, 
+                                           margin,
+                                           frame.size.width - (margin * 2) - sendButtonWidth - spacing, 
+                                           messageFieldMinHeight);
+    messageScrollView = [[NSScrollView alloc] initWithFrame:messageScrollFrame];
+    [messageScrollView setAutoresizingMask:NSViewWidthSizable];
+    [messageScrollView setBorderType:NSBezelBorder];
+    [messageScrollView setHasVerticalScroller:YES];
+    [messageScrollView setHasHorizontalScroller:NO];
+    [messageScrollView setAutohidesScrollers:YES];
+    
+    // Create the text view for message input
+    NSSize contentSize = [messageScrollView contentSize];
+    messageField = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, contentSize.width, contentSize.height)];
+    [messageField setMinSize:NSMakeSize(0.0, contentSize.height)];
+    [messageField setMaxSize:NSMakeSize(FLT_MAX, FLT_MAX)];
+    [messageField setVerticallyResizable:YES];
+    [messageField setHorizontallyResizable:NO];
     [messageField setAutoresizingMask:NSViewWidthSizable];
-    [messageField setTarget:self];
-    [messageField setAction:@selector(sendMessage:)];
+    [[messageField textContainer] setContainerSize:NSMakeSize(contentSize.width, FLT_MAX)];
+    [[messageField textContainer] setWidthTracksTextView:YES];
+    [messageField setDelegate:self];
     [messageField setFont:[NSFont systemFontOfSize:13.0]];  // Message font
-    [[messageField cell] setPlaceholderString:@"Type a message..."];
-    [[messageField cell] setFocusRingType:NSFocusRingTypeDefault];
-    [contentView addSubview:messageField];
+    [messageField setRichText:NO];
+    [messageField setImportsGraphics:NO];
+    [messageField setUsesRuler:NO];
+    [messageField setAllowsUndo:YES];
+    
+    [messageScrollView setDocumentView:messageField];
+    [contentView addSubview:messageScrollView];
     
     // Create progress indicator - better positioned
     NSRect progressFrame = NSMakeRect(frame.size.width - margin - sendButtonWidth - spacing - 20, 
@@ -210,8 +234,13 @@
     [conversationDrawer setMinContentSize:NSMakeSize(200, 300)];
     [conversationDrawer setMaxContentSize:NSMakeSize(400, 10000)];
     
-    // Create drawer content view
-    NSView *drawerContent = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, 250, 400)] autorelease];
+    // Get current theme
+    AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+    BOOL isDark = [appDelegate isDarkMode];
+    
+    // Create drawer content view with themed background
+    ThemedView *drawerContent = [[[ThemedView alloc] initWithFrame:NSMakeRect(0, 0, 250, 400)] autorelease];
+    [drawerContent setDarkMode:isDark];
     
     // Add title label with semantic font
     NSTextField *titleLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(10, 370, 230, 20)] autorelease];
@@ -220,6 +249,8 @@
     [titleLabel setBordered:NO];
     [titleLabel setDrawsBackground:NO];
     [titleLabel setFont:[NSFont boldSystemFontOfSize:[NSFont systemFontSize] + 1.0]];  // Semantic size
+    [titleLabel setTextColor:[ThemeColors labelColorForDarkMode:isDark]];
+    
     [drawerContent addSubview:titleLabel];
     
     // Create table view for conversations
@@ -230,7 +261,7 @@
     conversationTable = [[[NSTableView alloc] initWithFrame:[[tableScroll contentView] frame]] autorelease];
     [conversationTable setDataSource:self];
     [conversationTable setDelegate:self];
-    [conversationTable setUsesAlternatingRowBackgroundColors:YES];
+    [conversationTable setUsesAlternatingRowBackgroundColors:YES];  // Enable alternating rows
     
     NSTableColumn *column = [[[NSTableColumn alloc] initWithIdentifier:@"title"] autorelease];
     [[column headerCell] setStringValue:@"Title"];
@@ -263,9 +294,86 @@
     [conversationDrawer open];
 }
 
+- (void)textDidChange:(NSNotification *)notification {
+    if ([notification object] == messageField) {
+        [self adjustMessageFieldHeight];
+    }
+}
+
+- (BOOL)textView:(NSTextView *)textView doCommandBySelector:(SEL)aSelector {
+    // Handle Enter key to send message (without Shift)
+    if (aSelector == @selector(insertNewline:)) {
+        NSEvent *currentEvent = [NSApp currentEvent];
+        if ([currentEvent modifierFlags] & NSShiftKeyMask) {
+            // Shift+Enter: Insert newline
+            return NO;
+        } else {
+            // Enter alone: Send message
+            [self sendMessage:nil];
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (void)adjustMessageFieldHeight {
+    // Calculate the height needed for the current text
+    NSLayoutManager *layoutManager = [messageField layoutManager];
+    NSTextContainer *textContainer = [messageField textContainer];
+    
+    // Force layout
+    [layoutManager glyphRangeForTextContainer:textContainer];
+    NSRect usedRect = [layoutManager usedRectForTextContainer:textContainer];
+    
+    float newHeight = usedRect.size.height + 10;  // Add some padding
+    
+    // Clamp to min/max heights
+    if (newHeight < messageFieldMinHeight) {
+        newHeight = messageFieldMinHeight;
+    } else if (newHeight > messageFieldMaxHeight) {
+        newHeight = messageFieldMaxHeight;
+    }
+    
+    // Get current frame
+    NSRect scrollFrame = [messageScrollView frame];
+    float heightDiff = newHeight - scrollFrame.size.height;
+    
+    if (fabs(heightDiff) > 0.1) {  // Only resize if there's a significant change
+        // Adjust the scroll view frame
+        scrollFrame.size.height = newHeight;
+        [messageScrollView setFrame:scrollFrame];
+        
+        // Adjust the chat scroll view to compensate
+        NSRect chatFrame = [scrollView frame];
+        float controlBarHeight = 44.0;
+        float bottomMargin = 10.0;
+        chatFrame.origin.y = scrollFrame.origin.y + scrollFrame.size.height + bottomMargin;
+        chatFrame.size.height = [[self window] frame].size.height - controlBarHeight - chatFrame.origin.y - bottomMargin;
+        // Make sure we don't overlap with the control bar
+        if (chatFrame.size.height + chatFrame.origin.y > [[self window] frame].size.height - controlBarHeight) {
+            chatFrame.size.height = [[self window] frame].size.height - controlBarHeight - chatFrame.origin.y;
+        }
+        [scrollView setFrame:chatFrame];
+        
+        // Adjust send button position
+        NSRect buttonFrame = [sendButton frame];
+        buttonFrame.origin.y = scrollFrame.origin.y + (scrollFrame.size.height - buttonFrame.size.height) / 2.0;
+        [sendButton setFrame:buttonFrame];
+        
+        // Adjust progress indicator position if visible
+        if (progressIndicator) {
+            NSRect progressFrame = [progressIndicator frame];
+            progressFrame.origin.y = scrollFrame.origin.y + (scrollFrame.size.height - progressFrame.size.height) / 2.0;
+            [progressIndicator setFrame:progressFrame];
+        }
+    }
+}
+
 - (void)sendMessage:(id)sender {
-    NSString *message = [messageField stringValue];
-    if ([message length] == 0) return;
+    NSString *message = [[messageField textStorage] string];
+    // Trim whitespace and newlines to check if message has actual content
+    NSString *trimmedMessage = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([trimmedMessage length] == 0) return;
     
     // Add to current conversation
     Conversation *current = [[ConversationManager sharedManager] currentConversation];
@@ -280,13 +388,15 @@
     
     // Add user message to chat
     [self appendMessage:message fromUser:YES];
-    [messageField setStringValue:@""];
+    [messageField setString:@""];
+    // Force immediate height adjustment after clearing
+    [self performSelector:@selector(adjustMessageFieldHeight) withObject:nil afterDelay:0.0];
     
     // Update table to show new summary
     [conversationTable reloadData];
     
     // Disable controls and show progress
-    [messageField setEnabled:NO];
+    [messageField setEditable:NO];
     [sendButton setEnabled:NO];
     [progressIndicator startAnimation:self];
     
@@ -305,7 +415,7 @@
 }
 
 - (void)resetControls {
-    [messageField setEnabled:YES];
+    [messageField setEditable:YES];
     [sendButton setEnabled:YES];
     [progressIndicator stopAnimation:self];
     [[self window] makeFirstResponder:messageField];
@@ -401,7 +511,9 @@
     [apiManager setDelegate:self];
     
     // Reset the message field
-    [messageField setStringValue:@""];
+    [messageField setString:@""];
+    // Force immediate height adjustment after clearing
+    [self performSelector:@selector(adjustMessageFieldHeight) withObject:nil afterDelay:0.0];
     [[self window] makeFirstResponder:messageField];
 }
 
@@ -461,16 +573,109 @@
     AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
     BOOL isDark = [appDelegate isDarkMode];
     
-    // Update text view background using semantic colors
+    // Update text view background and text color using semantic colors
     [chatTextView setBackgroundColor:[ThemeColors textBackgroundColorForDarkMode:isDark]];
+    [chatTextView setTextColor:[ThemeColors labelColorForDarkMode:isDark]];
+    [chatTextView setInsertionPointColor:[ThemeColors labelColorForDarkMode:isDark]];
     [scrollView setBackgroundColor:[ThemeColors windowBackgroundColorForDarkMode:isDark]];
     
     // Update window background
     [[self window] setBackgroundColor:[ThemeColors windowBackgroundColorForDarkMode:isDark]];
     
+    // Update input field colors and font
+    [messageField setTextColor:[ThemeColors labelColorForDarkMode:isDark]];
+    [messageField setBackgroundColor:[ThemeColors controlBackgroundColorForDarkMode:isDark]];
+    [messageField setInsertionPointColor:[ThemeColors labelColorForDarkMode:isDark]];
+    [messageScrollView setBackgroundColor:[ThemeColors controlBackgroundColorForDarkMode:isDark]];
+    
+    // Apply user's chosen proportional font to input field
+    NSString *propFontName = [appDelegate proportionalFontName];
+    float propFontSize = [appDelegate proportionalFontSize];
+    NSFont *inputFont = [NSFont fontWithName:propFontName size:propFontSize];
+    if (!inputFont) inputFont = [NSFont systemFontOfSize:propFontSize];
+    [messageField setFont:inputFont];
+    
+    // Update button text colors by setting their attributed title
+    NSColor *buttonTextColor = [ThemeColors labelColorForDarkMode:isDark];
+    
+    // Update Send button
+    NSMutableAttributedString *sendTitle = [[NSMutableAttributedString alloc] initWithString:[sendButton title]];
+    [sendTitle addAttribute:NSForegroundColorAttributeName 
+                      value:buttonTextColor 
+                      range:NSMakeRange(0, [sendTitle length])];
+    [sendButton setAttributedTitle:sendTitle];
+    [sendTitle release];
+    
+    // Update other buttons in control bar
+    NSView *contentView = [[self window] contentView];
+    NSArray *allSubviews = [contentView subviews];
+    int j;
+    for (j = 0; j < [allSubviews count]; j++) {
+        id subview = [allSubviews objectAtIndex:j];
+        
+        // Find control bar and update its buttons
+        if ([subview isKindOfClass:[NSView class]]) {
+            NSArray *controlBarSubviews = [subview subviews];
+            int k;
+            for (k = 0; k < [controlBarSubviews count]; k++) {
+                id controlView = [controlBarSubviews objectAtIndex:k];
+                if ([controlView isKindOfClass:[NSButton class]]) {
+                    NSButton *button = (NSButton *)controlView;
+                    NSMutableAttributedString *buttonTitle = [[NSMutableAttributedString alloc] initWithString:[button title]];
+                    [buttonTitle addAttribute:NSForegroundColorAttributeName 
+                                       value:buttonTextColor 
+                                       range:NSMakeRange(0, [buttonTitle length])];
+                    [button setAttributedTitle:buttonTitle];
+                    [buttonTitle release];
+                }
+            }
+        }
+    }
+    
     // Update drawer if exists
     if (conversationDrawer) {
+        NSView *drawerView = [conversationDrawer contentView];
+        
+        // Update drawer background if it's a ThemedView
+        if ([drawerView isKindOfClass:[ThemedView class]]) {
+            [(ThemedView *)drawerView setDarkMode:isDark];
+        }
+        
+        // Update all subviews in drawer
+        NSArray *subviews = [drawerView subviews];
+        int i;
+        for (i = 0; i < [subviews count]; i++) {
+            id view = [subviews objectAtIndex:i];
+            if ([view isKindOfClass:[NSTextField class]]) {
+                NSTextField *field = (NSTextField *)view;
+                [field setTextColor:[ThemeColors labelColorForDarkMode:isDark]];
+            } else if ([view isKindOfClass:[NSButton class]]) {
+                NSButton *button = (NSButton *)view;
+                NSMutableAttributedString *buttonTitle = [[NSMutableAttributedString alloc] initWithString:[button title]];
+                [buttonTitle addAttribute:NSForegroundColorAttributeName 
+                                   value:buttonTextColor 
+                                   range:NSMakeRange(0, [buttonTitle length])];
+                [button setAttributedTitle:buttonTitle];
+                [buttonTitle release];
+            } else if ([view isKindOfClass:[NSScrollView class]]) {
+                NSScrollView *scroll = (NSScrollView *)view;
+                [scroll setBackgroundColor:[ThemeColors controlBackgroundColorForDarkMode:isDark]];
+                [scroll setDrawsBackground:YES];
+            }
+        }
+        
         [[conversationDrawer contentView] setNeedsDisplay:YES];
+        
+        // Set table view background to match window background
+        [conversationTable setBackgroundColor:[ThemeColors windowBackgroundColorForDarkMode:isDark]];
+        
+        // Set grid color to be subtle
+        if (isDark) {
+            [conversationTable setGridColor:[NSColor colorWithCalibratedWhite:0.2 alpha:0.5]];
+        } else {
+            [conversationTable setGridColor:[NSColor colorWithCalibratedWhite:0.85 alpha:0.5]];
+        }
+        
         [conversationTable reloadData];
     }
     
@@ -479,14 +684,85 @@
 }
 
 - (void)updateFontSize {
+    // Update input field font
+    AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+    NSString *propFontName = [appDelegate proportionalFontName];
+    float propFontSize = [appDelegate proportionalFontSize];
+    NSFont *inputFont = [NSFont fontWithName:propFontName size:propFontSize];
+    if (!inputFont) inputFont = [NSFont systemFontOfSize:propFontSize];
+    [messageField setFont:inputFont];
+    
     // Refresh the chat with new font sizes
     [self refreshChatColors];
 }
 
 - (void)refreshChatColors {
-    // This would ideally re-render all messages with new colors/fonts
-    // For simplicity, new messages will use the new settings
-    [chatTextView setNeedsDisplay:YES];
+    // Re-render all messages with new colors/fonts
+    NSMutableAttributedString *newHistory = [[NSMutableAttributedString alloc] init];
+    
+    // Get current conversation messages
+    Conversation *currentConv = [[ConversationManager sharedManager] currentConversation];
+    if (currentConv && [currentConv messages]) {
+        NSArray *messages = [currentConv messages];
+        int i;
+        for (i = 0; i < [messages count]; i++) {
+            NSDictionary *msg = [messages objectAtIndex:i];
+            NSString *role = [msg objectForKey:@"role"];
+            NSString *content = [msg objectForKey:@"content"];
+            
+            BOOL isUser = [role isEqualToString:@"user"];
+            NSString *sender = isUser ? @"You: " : @"Claude: ";
+            
+            // Re-parse markdown with current theme colors
+            AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+            BOOL isDark = [appDelegate isDarkMode];
+            NSColor *senderColor = isUser ? 
+                [ThemeColors systemBlueForDarkMode:isDark] : 
+                [ThemeColors systemPurpleForDarkMode:isDark];
+            
+            NSFont *propFont = [NSFont fontWithName:[appDelegate proportionalFontName] 
+                                               size:[appDelegate proportionalFontSize]];
+            if (!propFont) propFont = [NSFont systemFontOfSize:[appDelegate proportionalFontSize]];
+            
+            NSFont *boldFont = [[NSFontManager sharedFontManager] convertFont:propFont toHaveTrait:NSBoldFontMask];
+            if (!boldFont) boldFont = [NSFont boldSystemFontOfSize:[propFont pointSize]];
+            
+            NSAttributedString *senderStr = [[NSAttributedString alloc] initWithString:sender 
+                                                                           attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                       boldFont, NSFontAttributeName,
+                                                                                       senderColor, NSForegroundColorAttributeName,
+                                                                                       nil]];
+            NSAttributedString *messageStr = [self parseMarkdown:content isUser:isUser];
+            
+            [newHistory appendAttributedString:senderStr];
+            [senderStr release];
+            [newHistory appendAttributedString:messageStr];
+            
+            if (i < [messages count] - 1) {
+                NSAttributedString *newline = [[NSAttributedString alloc] initWithString:@"\n\n" 
+                                                                               attributes:[NSDictionary dictionary]];
+                [newHistory appendAttributedString:newline];
+                [newline release];
+            }
+        }
+    }
+    
+    // Update the text view
+    [chatHistory release];
+    chatHistory = newHistory;
+    [[chatTextView textStorage] setAttributedString:chatHistory];
+    
+    // Scroll to bottom if we were already at bottom
+    NSScrollView *enclosingScrollView = [chatTextView enclosingScrollView];
+    NSClipView *clipView = [enclosingScrollView contentView];
+    NSRect docRect = [[enclosingScrollView documentView] frame];
+    NSRect clipRect = [clipView bounds];
+    
+    if (NSMaxY(clipRect) >= NSMaxY(docRect) - 10) {
+        // Scroll to the end of the document
+        NSRange range = NSMakeRange([[chatTextView textStorage] length], 0);
+        [chatTextView scrollRangeToVisible:range];
+    }
 }
 
 - (NSDictionary *)parseMarkdownWithCodeBlocks:(NSString *)text isUser:(BOOL)isUser {
@@ -911,6 +1187,38 @@
             Conversation *conv = [conversations objectAtIndex:selectedRow];
             [[ConversationManager sharedManager] selectConversation:conv];
             [self loadCurrentConversation];
+        }
+    }
+}
+
+- (void)tableView:(NSTableView *)tableView 
+  willDisplayCell:(id)cell 
+   forTableColumn:(NSTableColumn *)tableColumn 
+              row:(NSInteger)row {
+    AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+    BOOL isDark = [appDelegate isDarkMode];
+    
+    // Set text color for the cell
+    if ([cell isKindOfClass:[NSTextFieldCell class]]) {
+        NSTextFieldCell *textCell = (NSTextFieldCell *)cell;
+        
+        // Set text color based on selection and theme
+        if ([tableView selectedRow] == row) {
+            // Selected row - white text on selection
+            [textCell setTextColor:[NSColor whiteColor]];
+            [textCell setDrawsBackground:NO];
+        } else {
+            // Normal row - use theme-appropriate text color
+            [textCell setTextColor:[ThemeColors labelColorForDarkMode:isDark]];
+            
+            // Set alternating row background colors
+            if (row % 2 == 1) {
+                [textCell setBackgroundColor:[ThemeColors alternatingRowColorForDarkMode:isDark]];
+                [textCell setDrawsBackground:YES];
+            } else {
+                [textCell setBackgroundColor:[ThemeColors windowBackgroundColorForDarkMode:isDark]];
+                [textCell setDrawsBackground:YES];
+            }
         }
     }
 }

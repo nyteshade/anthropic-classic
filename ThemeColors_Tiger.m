@@ -1,137 +1,126 @@
 //
-//  ThemeColors.m
+//  ThemeColors_Tiger.m
 //  ClaudeChat
 //
-//  Apple semantic colors hardcoded for Tiger compatibility
+//  Tiger/Leopard-specific implementation using default Aqua colors
 //
 
 #import "ThemeColors.h"
 
 @implementation ThemeColors
 
-// MARK: - Text Colors (based on macOS semantic colors)
+// MARK: - Text Colors (use system defaults on Tiger/Leopard)
 
 + (NSColor *)labelColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // ~85% white
+        // Dark mode simulation on Tiger - use light text
         return [NSColor colorWithCalibratedWhite:0.85 alpha:1.0];
     } else {
-        // Pure black
-        return [NSColor colorWithCalibratedWhite:0.0 alpha:1.0];
+        // Use system default black text for Aqua
+        return [NSColor controlTextColor];
     }
 }
 
 + (NSColor *)secondaryLabelColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // ~55% white
         return [NSColor colorWithCalibratedWhite:0.55 alpha:1.0];
     } else {
-        // ~50% black
-        return [NSColor colorWithCalibratedWhite:0.5 alpha:1.0];
+        // Use system disabled control text color
+        return [NSColor disabledControlTextColor];
     }
 }
 
 + (NSColor *)tertiaryLabelColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // ~35% white
         return [NSColor colorWithCalibratedWhite:0.35 alpha:1.0];
     } else {
-        // ~66% black
         return [NSColor colorWithCalibratedWhite:0.66 alpha:1.0];
     }
 }
 
 + (NSColor *)quaternaryLabelColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // ~25% white
         return [NSColor colorWithCalibratedWhite:0.25 alpha:1.0];
     } else {
-        // ~75% black
         return [NSColor colorWithCalibratedWhite:0.75 alpha:1.0];
     }
 }
 
-// MARK: - Background Colors
+// MARK: - Background Colors (use Aqua defaults for light mode)
 
 + (NSColor *)textBackgroundColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Dark gray background
+        // Dark mode simulation
         return [NSColor colorWithCalibratedRed:0.118 green:0.118 blue:0.118 alpha:1.0];
     } else {
-        // Pure white
-        return [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+        // Use system text background (white)
+        return [NSColor textBackgroundColor];
     }
 }
 
 + (NSColor *)windowBackgroundColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Slightly lighter than text background
+        // Dark mode simulation
         return [NSColor colorWithCalibratedRed:0.149 green:0.149 blue:0.149 alpha:1.0];
     } else {
-        // Very light gray
-        return [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
+        // Use system window background (Aqua pinstripe on Tiger)
+        return [NSColor windowBackgroundColor];
     }
 }
 
 + (NSColor *)controlBackgroundColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Medium dark gray
+        // Dark mode simulation
         return [NSColor colorWithCalibratedRed:0.25 green:0.25 blue:0.25 alpha:1.0];
     } else {
-        // White
-        return [NSColor colorWithCalibratedWhite:1.0 alpha:1.0];
+        // Use system control color
+        return [NSColor controlColor];
     }
 }
 
 + (NSColor *)alternatingRowColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Slightly lighter than window background for subtle contrast
+        // Dark mode simulation - slightly lighter for alternating rows
         return [NSColor colorWithCalibratedRed:0.17 green:0.17 blue:0.17 alpha:1.0];
     } else {
-        // Very light blue-gray, typical macOS alternating row color
-        return [NSColor colorWithCalibratedRed:0.96 green:0.97 blue:0.98 alpha:1.0];
+        // Use system alternating row colors (blue-white stripes in Aqua)
+        // Tiger doesn't have controlAlternatingRowBackgroundColors, so we'll use a light blue
+        return [NSColor colorWithCalibratedRed:0.929 green:0.953 blue:0.996 alpha:1.0];
     }
 }
 
-// MARK: - System Colors
+// MARK: - System Colors (use Aqua defaults for light mode)
 
 + (NSColor *)systemBlueForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Brighter blue for dark mode
         return [NSColor colorWithCalibratedRed:0.039 green:0.518 blue:1.0 alpha:1.0];
     } else {
-        // Standard system blue
-        return [NSColor colorWithCalibratedRed:0.0 green:0.478 blue:1.0 alpha:1.0];
+        // Classic Aqua blue
+        return [NSColor colorWithCalibratedRed:0.0 green:0.4 blue:0.8 alpha:1.0];
     }
 }
 
 + (NSColor *)systemPurpleForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Brighter purple for dark mode
         return [NSColor colorWithCalibratedRed:0.75 green:0.35 blue:0.95 alpha:1.0];
     } else {
-        // Standard system purple
-        return [NSColor colorWithCalibratedRed:0.686 green:0.322 blue:0.871 alpha:1.0];
+        return [NSColor purpleColor];
     }
 }
 
 + (NSColor *)systemGreenForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Brighter green for dark mode
         return [NSColor colorWithCalibratedRed:0.196 green:0.843 blue:0.294 alpha:1.0];
     } else {
-        // Standard system green
-        return [NSColor colorWithCalibratedRed:0.161 green:0.682 blue:0.208 alpha:1.0];
+        return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:0.0 alpha:1.0];
     }
 }
 
 + (NSColor *)systemRedForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Brighter red for dark mode
         return [NSColor colorWithCalibratedRed:1.0 green:0.271 blue:0.227 alpha:1.0];
     } else {
-        // Standard system red
-        return [NSColor colorWithCalibratedRed:0.863 green:0.196 blue:0.184 alpha:1.0];
+        return [NSColor redColor];
     }
 }
 
@@ -143,20 +132,16 @@
 
 + (NSColor *)codeColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Mint/cyan for dark mode
         return [NSColor colorWithCalibratedRed:0.4 green:0.9 blue:0.8 alpha:1.0];
     } else {
-        // Dark green for light mode
         return [NSColor colorWithCalibratedRed:0.0 green:0.5 blue:0.25 alpha:1.0];
     }
 }
 
 + (NSColor *)codeBackgroundColorForDarkMode:(BOOL)isDark {
     if (isDark) {
-        // Very dark gray
         return [NSColor colorWithCalibratedRed:0.08 green:0.08 blue:0.08 alpha:1.0];
     } else {
-        // Very light gray
         return [NSColor colorWithCalibratedWhite:0.96 alpha:1.0];
     }
 }

@@ -9,7 +9,7 @@
 
 @class ChatWindowController;
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate> {
     ChatWindowController *chatWindowController;
     NSString *apiKey;
     NSString *selectedModel;
@@ -21,6 +21,8 @@
     NSString *proportionalFontName;
     float monospaceFontSize;
     float proportionalFontSize;
+    NSWindow *preferencesWindow;
+    NSFontManager *fontManager;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
