@@ -84,7 +84,8 @@
                                     buttonHeight);
     NSButton *toggleButton = [[[NSButton alloc] initWithFrame:toggleFrame] autorelease];
     [toggleButton setTitle:@"Conversations"];
-    [toggleButton setBezelStyle:NSTexturedRoundedBezelStyle];
+    [toggleButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [[toggleButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [toggleButton setTarget:self];
     [toggleButton setAction:@selector(toggleDrawer:)];
     [toggleButton setFont:[NSFont systemFontOfSize:11.0]]; // Small control font
@@ -98,7 +99,8 @@
                                      buttonHeight);
     NSButton *newConvButton = [[[NSButton alloc] initWithFrame:newConvFrame] autorelease];
     [newConvButton setTitle:@"New Chat"];
-    [newConvButton setBezelStyle:NSTexturedRoundedBezelStyle];
+    [newConvButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [[newConvButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [newConvButton setTarget:self];
     [newConvButton setAction:@selector(newConversation:)];
     [newConvButton setFont:[NSFont systemFontOfSize:11.0]];
@@ -111,7 +113,8 @@
                                    buttonHeight);
     NSButton *clearButton = [[[NSButton alloc] initWithFrame:clearFrame] autorelease];
     [clearButton setTitle:@"Clear"];
-    [clearButton setBezelStyle:NSTexturedRoundedBezelStyle];
+    [clearButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [[clearButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [clearButton setTarget:self];
     [clearButton setAction:@selector(clearCurrentChat:)];
     [clearButton setFont:[NSFont systemFontOfSize:11.0]];
@@ -121,11 +124,12 @@
     // Input area height
     float inputAreaHeight = 32.0;
     
-    // Create chat text view with scroll view - adjusted for control bar
+    // Create chat text view with scroll view - adjusted for control bar with extra padding
+    float topPadding = 8.0;  // Extra padding between control bar and text area
     NSRect scrollFrame = NSMakeRect(margin, 
                                     margin + inputAreaHeight + sectionSpacing, 
                                     frame.size.width - (margin * 2), 
-                                    frame.size.height - controlBarHeight - (margin * 2) - inputAreaHeight - (sectionSpacing * 2));
+                                    frame.size.height - controlBarHeight - topPadding - (margin * 2) - inputAreaHeight - (sectionSpacing * 2));
     scrollView = [[NSScrollView alloc] initWithFrame:scrollFrame];
     [scrollView setHasVerticalScroller:YES];
     [scrollView setHasHorizontalScroller:NO];
@@ -157,7 +161,8 @@
                                     sendButtonHeight);
     sendButton = [[NSButton alloc] initWithFrame:buttonFrame];
     [sendButton setTitle:@"Send"];
-    [sendButton setBezelStyle:NSRoundedBezelStyle];
+    [sendButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [[sendButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [sendButton setTarget:self];
     [sendButton setAction:@selector(sendMessage:)];
     [sendButton setAutoresizingMask:NSViewMinXMargin];
@@ -274,7 +279,8 @@
     // Add buttons
     NSButton *newButton = [[[NSButton alloc] initWithFrame:NSMakeRect(10, 10, 110, 25)] autorelease];
     [newButton setTitle:@"New Chat"];
-    [newButton setBezelStyle:NSRoundedBezelStyle];
+    [newButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [[newButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [newButton setTarget:self];
     [newButton setAction:@selector(newConversation:)];
     [newButton setFont:[NSFont systemFontOfSize:12]];
@@ -282,7 +288,8 @@
     
     NSButton *deleteButton = [[[NSButton alloc] initWithFrame:NSMakeRect(125, 10, 110, 25)] autorelease];
     [deleteButton setTitle:@"Delete"];
-    [deleteButton setBezelStyle:NSRoundedBezelStyle];
+    [deleteButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [[deleteButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [deleteButton setTarget:self];
     [deleteButton setAction:@selector(deleteConversation:)];
     [deleteButton setFont:[NSFont systemFontOfSize:12]];
@@ -380,14 +387,14 @@
     if (current) {
         NSDictionary *userMsg = [NSDictionary dictionaryWithObjectsAndKeys:
                                   @"user", @"role",
-                                  message, @"content",
+                                  trimmedMessage, @"content",
                                   nil];
         [current addMessage:userMsg];
         [[ConversationManager sharedManager] saveCurrentConversation];
     }
     
     // Add user message to chat
-    [self appendMessage:message fromUser:YES];
+    [self appendMessage:trimmedMessage fromUser:YES];
     [messageField setString:@""];
     // Force immediate height adjustment after clearing
     [self performSelector:@selector(adjustMessageFieldHeight) withObject:nil afterDelay:0.0];
@@ -411,7 +418,7 @@
     }
     
     // Send to API using delegate pattern
-    [apiManager sendMessage:message withAPIKey:apiKey];
+    [apiManager sendMessage:trimmedMessage withAPIKey:apiKey];
 }
 
 - (void)resetControls {
