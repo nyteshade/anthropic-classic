@@ -11,7 +11,6 @@ SOURCES = main.m \
           ClaudeAPIManager_Tiger.m \
           NetworkManager_Tiger.m \
           HTTPSClient_OpenSSL.m \
-          HTTPSClient.m \
           ThemeColors_Tiger.m \
           ThemedView.m \
           ConversationManager.m \

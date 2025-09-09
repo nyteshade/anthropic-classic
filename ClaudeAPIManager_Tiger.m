@@ -129,6 +129,24 @@
         }
         
         NSLog(@"JSON Response length: %lu", (unsigned long)[jsonResponse length]);
+        
+        // Check if response is empty or just whitespace
+        NSString *trimmedResponse = [jsonResponse stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([trimmedResponse length] == 0) {
+            NSLog(@"Response is empty or contains only whitespace");
+            NSError *emptyError = [NSError errorWithDomain:@"ClaudeAPI"
+                                                       code:500
+                                                   userInfo:[NSDictionary dictionaryWithObject:@"Empty response from server"
+                                                                                        forKey:NSLocalizedDescriptionKey]];
+            [self performSelectorOnMainThread:@selector(notifyDelegateWithError:)
+                                   withObject:emptyError
+                                waitUntilDone:NO];
+            [message release];
+            [apiKey release];
+            [pool release];
+            return;
+        }
+        
         NSString *responseText = [self extractResponseText:jsonResponse];
         
         if (responseText) {
@@ -287,8 +305,20 @@
     
     // Get content array
     yyjson_val *content = yyjson_obj_get(root, "content");
-    if (!content || !yyjson_is_arr(content)) {
-        NSLog(@"No content array found in response");
+    if (!content) {
+        NSLog(@"No 'content' field found in response root");
+        // Log all keys in the root object for debugging
+        yyjson_obj_iter iter = yyjson_obj_iter_with(root);
+        yyjson_val *key;
+        while ((key = yyjson_obj_iter_next(&iter))) {
+            const char *key_str = yyjson_get_str(key);
+            NSLog(@"Root object has key: %s", key_str);
+        }
+        yyjson_doc_free(doc);
+        return nil;
+    }
+    if (!yyjson_is_arr(content)) {
+        NSLog(@"'content' field is not an array");
         yyjson_doc_free(doc);
         return nil;
     }
