@@ -8,13 +8,25 @@
 #import "HTTPSClient.h"
 
 // Check if we have OpenSSL available
-#ifdef __has_include
-  #if __has_include(<openssl/ssl.h>)
-    #define HAS_OPENSSL 1
-    #include <openssl/ssl.h>
-    #include <openssl/err.h>
-    #include <openssl/bio.h>
-  #endif
+// Try multiple possible locations for OpenSSL
+#if __has_include(<openssl/ssl.h>)
+  // System OpenSSL or Homebrew
+  #define HAS_OPENSSL 1
+  #include <openssl/ssl.h>
+  #include <openssl/err.h>
+  #include <openssl/bio.h>
+#elif defined(__POWERPC__) || defined(__ppc__) || defined(__ppc64__)
+  // MacPorts location for PowerPC systems
+  #define HAS_OPENSSL 1
+  #include "/opt/local/include/openssl/ssl.h"
+  #include "/opt/local/include/openssl/err.h"
+  #include "/opt/local/include/openssl/bio.h"
+#else
+  // Fallback - assume OpenSSL is available
+  #define HAS_OPENSSL 1
+  #include <openssl/ssl.h>
+  #include <openssl/err.h>
+  #include <openssl/bio.h>
 #endif
 
 #include <sys/socket.h>
@@ -31,7 +43,7 @@
         hostname = [host retain];
         port = portNum;
         
-        // Initialize OpenSSL
+        // Initialize OpenSSL (using older API for compatibility)
         SSL_load_error_strings();
         SSL_library_init();
         OpenSSL_add_all_algorithms();
@@ -97,8 +109,10 @@
     ssl = SSL_new(ctx);
     SSL_set_fd(ssl, sockfd);
     
-    // Set SNI hostname
+    // Set SNI hostname (only if available)
+    #ifdef SSL_set_tlsext_host_name
     SSL_set_tlsext_host_name(ssl, [hostname UTF8String]);
+    #endif
     
     // Perform SSL handshake
     if (SSL_connect(ssl) <= 0) {
