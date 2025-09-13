@@ -42,6 +42,27 @@
     [super dealloc];
 }
 
+- (float) calculateButtonWidth:(NSString*)title 
+						  font:(NSFont*)font {
+    // Create attributes dictionary
+    NSDictionary *attributes = [NSDictionary dictionaryWithObject:font 
+														   forKey:NSFontAttributeName];
+    
+    // Calculate text size
+    NSSize textSize = [title sizeWithAttributes:attributes];
+    
+    // Add horizontal padding for NSRoundedBezelStyle
+    // Apple uses approximately 14 pixels on each side for standard Aqua buttons
+    float width = ceil(textSize.width) + 32.0;
+    
+    // Ensure minimum width per HIG
+    if (width < 32.0) {
+        width = 32.0;
+    }
+    
+    return width;
+}
+
 - (void)createWindow {
     // Create window - Tiger compatible with better default size
     NSRect frame = NSMakeRect(100, 100, 900, 700);
@@ -80,11 +101,13 @@
     float controlX = margin;
     NSRect toggleFrame = NSMakeRect(controlX, 
                                     (controlBarHeight - buttonHeight) / 2.0,
-                                    controlButtonWidth,
+                                    [self calculateButtonWidth:@"Conversations" 
+														  font:[NSFont systemFontOfSize:11.0]],
                                     buttonHeight);
+		
     NSButton *toggleButton = [[[NSButton alloc] initWithFrame:toggleFrame] autorelease];
     [toggleButton setTitle:@"Conversations"];
-    [toggleButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [toggleButton setBezelStyle:NSRoundedBezelStyle];  // Proper Aqua style
     [[toggleButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [toggleButton setTarget:self];
     [toggleButton setAction:@selector(toggleDrawer:)];
@@ -95,11 +118,12 @@
     controlX += controlButtonWidth + spacing;
     NSRect newConvFrame = NSMakeRect(controlX,
                                      (controlBarHeight - buttonHeight) / 2.0,
-                                     80.0,
+                                     [self calculateButtonWidth:@"New Chat" 
+														   font:[NSFont systemFontOfSize:11.0]],
                                      buttonHeight);
     NSButton *newConvButton = [[[NSButton alloc] initWithFrame:newConvFrame] autorelease];
     [newConvButton setTitle:@"New Chat"];
-    [newConvButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [newConvButton setBezelStyle:NSRoundedBezelStyle];  // Proper Aqua style
     [[newConvButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [newConvButton setTarget:self];
     [newConvButton setAction:@selector(newConversation:)];
@@ -109,11 +133,12 @@
     // Clear button (right aligned)
     NSRect clearFrame = NSMakeRect(frame.size.width - margin - 70.0,
                                    (controlBarHeight - buttonHeight) / 2.0,
-                                   70.0,
+                                   [self calculateButtonWidth:@"Clear" 
+														 font:[NSFont systemFontOfSize:11.0]],
                                    buttonHeight);
     NSButton *clearButton = [[[NSButton alloc] initWithFrame:clearFrame] autorelease];
     [clearButton setTitle:@"Clear"];
-    [clearButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [clearButton setBezelStyle:NSRoundedBezelStyle];  // Proper Aqua style
     [[clearButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [clearButton setTarget:self];
     [clearButton setAction:@selector(clearCurrentChat:)];
@@ -157,11 +182,12 @@
     float sendButtonHeight = 28.0; // Standard push button height
     NSRect buttonFrame = NSMakeRect(frame.size.width - margin - sendButtonWidth, 
                                     margin + (inputAreaHeight - sendButtonHeight) / 2.0, 
-                                    sendButtonWidth, 
+                                    [self calculateButtonWidth:@"Send" 
+														  font:[NSFont systemFontOfSize:11.0]], 
                                     sendButtonHeight);
     sendButton = [[NSButton alloc] initWithFrame:buttonFrame];
     [sendButton setTitle:@"Send"];
-    [sendButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [sendButton setBezelStyle:NSRoundedBezelStyle];  // Proper Aqua style
     [[sendButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [sendButton setTarget:self];
     [sendButton setAction:@selector(sendMessage:)];
@@ -205,15 +231,16 @@
     [contentView addSubview:messageScrollView];
     
     // Create progress indicator - better positioned
-    NSRect progressFrame = NSMakeRect(frame.size.width - margin - sendButtonWidth - spacing - 20, 
+    NSRect progressFrame = NSMakeRect(frame.size.width - margin - sendButtonWidth - spacing - 54, 
                                       margin + (inputAreaHeight - 16) / 2.0,  // Center with input area
-                                      16, 
+                                      48, 
                                       16);
     progressIndicator = [[NSProgressIndicator alloc] initWithFrame:progressFrame];
-    [progressIndicator setStyle:NSProgressIndicatorSpinningStyle];
+    [progressIndicator setStyle:NSProgressIndicatorBarStyle];
     [progressIndicator setDisplayedWhenStopped:NO];
     [progressIndicator setAutoresizingMask:NSViewMinXMargin];
     [progressIndicator setControlSize:NSSmallControlSize];
+	[progressIndicator setIndeterminate:YES];
     [contentView addSubview:progressIndicator];
     
     [self setWindow:window];
@@ -279,7 +306,7 @@
     // Add buttons
     NSButton *newButton = [[[NSButton alloc] initWithFrame:NSMakeRect(10, 10, 110, 25)] autorelease];
     [newButton setTitle:@"New Chat"];
-    [newButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [newButton setBezelStyle:NSRoundedBezelStyle];  // Proper Aqua style
     [[newButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [newButton setTarget:self];
     [newButton setAction:@selector(newConversation:)];
@@ -288,7 +315,7 @@
     
     NSButton *deleteButton = [[[NSButton alloc] initWithFrame:NSMakeRect(125, 10, 110, 25)] autorelease];
     [deleteButton setTitle:@"Delete"];
-    [deleteButton setBezelStyle:NSRoundRectBezelStyle];  // Proper Aqua style
+    [deleteButton setBezelStyle:NSRoundedBezelStyle];  // Proper Aqua style
     [[deleteButton cell] setAlignment:NSCenterTextAlignment];  // Center text
     [deleteButton setTarget:self];
     [deleteButton setAction:@selector(deleteConversation:)];
@@ -405,6 +432,7 @@
     // Disable controls and show progress
     [messageField setEditable:NO];
     [sendButton setEnabled:NO];
+	[progressIndicator setHidden:NO];
     [progressIndicator startAnimation:self];
     
     // Get API key
@@ -425,6 +453,7 @@
     [messageField setEditable:YES];
     [sendButton setEnabled:YES];
     [progressIndicator stopAnimation:self];
+	[progressIndicator setHidden:YES];
     [[self window] makeFirstResponder:messageField];
 }
 
@@ -1312,7 +1341,7 @@
     // Create a copy button for this code block
     NSButton *copyButton = [[[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 50, 20)] autorelease];
     [copyButton setTitle:@"Copy"];
-    [copyButton setBezelStyle:NSRoundRectBezelStyle];
+    [copyButton setBezelStyle:NSRoundedBezelStyle];
     [copyButton setFont:[NSFont systemFontOfSize:10]];
     [copyButton setTag:[codeBlockRanges count] - 1]; // Use index as tag
     [copyButton setTarget:self];
