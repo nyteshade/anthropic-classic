@@ -6,6 +6,9 @@ BUNDLE_ID = com.example.claudechat
 
 # Source files
 SOURCES = main.m \
+          NEPadding.m \
+          NSView+Essentials.m \
+					NSObject+Associations.m \
           AppDelegate.m \
           ChatWindowController.m \
           ClaudeAPIManager_Tiger.m \

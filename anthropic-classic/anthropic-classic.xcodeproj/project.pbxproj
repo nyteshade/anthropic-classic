@@ -1,0 +1,253 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXFileReference section */
+		011073F02E86EBF0006894FD /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../AppDelegate.h; sourceTree = SOURCE_ROOT; };
+		011073F12E86EBF0006894FD /* ChatWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatWindowController.h; path = ../ChatWindowController.h; sourceTree = SOURCE_ROOT; };
+		011073F22E86EBF0006894FD /* CodeBlockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CodeBlockView.h; path = ../CodeBlockView.h; sourceTree = SOURCE_ROOT; };
+		011073F32E86EBF0006894FD /* ConversationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConversationManager.h; path = ../ConversationManager.h; sourceTree = SOURCE_ROOT; };
+		011073F42E86EBF0006894FD /* ClaudeAPIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClaudeAPIManager.h; path = ../ClaudeAPIManager.h; sourceTree = SOURCE_ROOT; };
+		011073F52E86EBF0006894FD /* HTTPSClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPSClient.h; path = ../HTTPSClient.h; sourceTree = SOURCE_ROOT; };
+		011073F62E86EBF0006894FD /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NetworkManager.h; path = ../NetworkManager.h; sourceTree = SOURCE_ROOT; };
+		011073F72E86EBF0006894FD /* ThemeColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThemeColors.h; path = ../ThemeColors.h; sourceTree = SOURCE_ROOT; };
+		011073F82E86EBF0006894FD /* ThemedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ThemedView.h; path = ../ThemedView.h; sourceTree = SOURCE_ROOT; };
+		011073F92E86EBF0006894FD /* yyjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = yyjson.h; path = ../yyjson.h; sourceTree = SOURCE_ROOT; };
+		011073FA2E86EC94006894FD /* test_json_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = test_json_parser.c; path = ../test_json_parser.c; sourceTree = SOURCE_ROOT; };
+		011073FB2E86EC94006894FD /* yyjson.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = yyjson.c; path = ../yyjson.c; sourceTree = SOURCE_ROOT; };
+		011073FC2E86EC94006894FD /* CLAUDE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CLAUDE.md; path = ../CLAUDE.md; sourceTree = SOURCE_ROOT; };
+		011073FD2E86EC94006894FD /* DEVELOPMENT_NOTES.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = DEVELOPMENT_NOTES.md; path = ../DEVELOPMENT_NOTES.md; sourceTree = SOURCE_ROOT; };
+		011073FE2E86EC94006894FD /* NOTES.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = NOTES.md; path = ../NOTES.md; sourceTree = SOURCE_ROOT; };
+		011073FF2E86EC94006894FD /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
+		011074002E86EC94006894FD /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../AppDelegate.m; sourceTree = SOURCE_ROOT; };
+		011074012E86EC94006894FD /* ChatWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatWindowController.m; path = ../ChatWindowController.m; sourceTree = SOURCE_ROOT; };
+		011074022E86EC94006894FD /* ClaudeAPIManager_Tiger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClaudeAPIManager_Tiger.m; path = ../ClaudeAPIManager_Tiger.m; sourceTree = SOURCE_ROOT; };
+		011074032E86EC94006894FD /* ClaudeAPIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClaudeAPIManager.m; path = ../ClaudeAPIManager.m; sourceTree = SOURCE_ROOT; };
+		011074042E86EC94006894FD /* CodeBlockView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CodeBlockView.m; path = ../CodeBlockView.m; sourceTree = SOURCE_ROOT; };
+		011074052E86EC94006894FD /* ConversationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ConversationManager.m; path = ../ConversationManager.m; sourceTree = SOURCE_ROOT; };
+		011074062E86EC94006894FD /* HTTPSClient_OpenSSL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPSClient_OpenSSL.m; path = ../HTTPSClient_OpenSSL.m; sourceTree = SOURCE_ROOT; };
+		011074072E86EC94006894FD /* HTTPSClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPSClient.m; path = ../HTTPSClient.m; sourceTree = SOURCE_ROOT; };
+		011074082E86EC94006894FD /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../main.m; sourceTree = SOURCE_ROOT; };
+		011074092E86EC94006894FD /* NetworkManager_Tiger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NetworkManager_Tiger.m; path = ../NetworkManager_Tiger.m; sourceTree = SOURCE_ROOT; };
+		0110740A2E86EC94006894FD /* NSString+Sizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+Sizing.m"; path = "../NSString+Sizing.m"; sourceTree = SOURCE_ROOT; };
+		0110740B2E86EC94006894FD /* ThemeColors_Tiger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThemeColors_Tiger.m; path = ../ThemeColors_Tiger.m; sourceTree = SOURCE_ROOT; };
+		0110740C2E86EC94006894FD /* ThemeColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThemeColors.m; path = ../ThemeColors.m; sourceTree = SOURCE_ROOT; };
+		0110740D2E86EC94006894FD /* ThemedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThemedView.m; path = ../ThemedView.m; sourceTree = SOURCE_ROOT; };
+		01BE9B1B2E90FBB4000E0A8B /* NSView+Essentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSView+Essentials.h"; path = "../NSView+Essentials.h"; sourceTree = SOURCE_ROOT; };
+		01BE9B1C2E90FBB4000E0A8B /* NSView+Essentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSView+Essentials.m"; path = "../NSView+Essentials.m"; sourceTree = SOURCE_ROOT; };
+		01C7753D2E91E3B900F2B2D2 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../Makefile; sourceTree = SOURCE_ROOT; };
+		01C7753E2E91E3B900F2B2D2 /* Makefile.tiger */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.tiger; path = ../Makefile.tiger; sourceTree = SOURCE_ROOT; };
+		01C775712E91E92600F2B2D2 /* NSObject+Associations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+Associations.m"; path = "../NSObject+Associations.m"; sourceTree = SOURCE_ROOT; };
+		01C775722E91E93500F2B2D2 /* NSObject+Associations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+Associations.h"; path = "../NSObject+Associations.h"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0110740F2E86EC9D006894FD /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				011074142E86EDFF006894FD /* Third Party */,
+				011073F02E86EBF0006894FD /* AppDelegate.h */,
+				011073F12E86EBF0006894FD /* ChatWindowController.h */,
+				011073F42E86EBF0006894FD /* ClaudeAPIManager.h */,
+				011073F22E86EBF0006894FD /* CodeBlockView.h */,
+				011073F32E86EBF0006894FD /* ConversationManager.h */,
+				011073F52E86EBF0006894FD /* HTTPSClient.h */,
+				011073F62E86EBF0006894FD /* NetworkManager.h */,
+				01C775722E91E93500F2B2D2 /* NSObject+Associations.h */,
+				01BE9B1B2E90FBB4000E0A8B /* NSView+Essentials.h */,
+				011073F72E86EBF0006894FD /* ThemeColors.h */,
+				011073F82E86EBF0006894FD /* ThemedView.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		011074102E86ECB8006894FD /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				011074132E86ED57006894FD /* Third Party */,
+				011074002E86EC94006894FD /* AppDelegate.m */,
+				011074012E86EC94006894FD /* ChatWindowController.m */,
+				011074022E86EC94006894FD /* ClaudeAPIManager_Tiger.m */,
+				011074032E86EC94006894FD /* ClaudeAPIManager.m */,
+				011074042E86EC94006894FD /* CodeBlockView.m */,
+				011074052E86EC94006894FD /* ConversationManager.m */,
+				011074072E86EC94006894FD /* HTTPSClient.m */,
+				011074062E86EC94006894FD /* HTTPSClient_OpenSSL.m */,
+				011074082E86EC94006894FD /* main.m */,
+				011074092E86EC94006894FD /* NetworkManager_Tiger.m */,
+				01C775712E91E92600F2B2D2 /* NSObject+Associations.m */,
+				0110740A2E86EC94006894FD /* NSString+Sizing.m */,
+				01BE9B1C2E90FBB4000E0A8B /* NSView+Essentials.m */,
+				0110740C2E86EC94006894FD /* ThemeColors.m */,
+				0110740B2E86EC94006894FD /* ThemeColors_Tiger.m */,
+				0110740D2E86EC94006894FD /* ThemedView.m */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		011074112E86ED38006894FD /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				011073FA2E86EC94006894FD /* test_json_parser.c */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		011074122E86ED42006894FD /* Read Mes */ = {
+			isa = PBXGroup;
+			children = (
+				011073FC2E86EC94006894FD /* CLAUDE.md */,
+				011073FD2E86EC94006894FD /* DEVELOPMENT_NOTES.md */,
+				011073FE2E86EC94006894FD /* NOTES.md */,
+				011073FF2E86EC94006894FD /* README.md */,
+			);
+			name = "Read Mes";
+			sourceTree = "<group>";
+		};
+		011074132E86ED57006894FD /* Third Party */ = {
+			isa = PBXGroup;
+			children = (
+				011073FB2E86EC94006894FD /* yyjson.c */,
+			);
+			name = "Third Party";
+			sourceTree = "<group>";
+		};
+		011074142E86EDFF006894FD /* Third Party */ = {
+			isa = PBXGroup;
+			children = (
+				011073F92E86EBF0006894FD /* yyjson.h */,
+			);
+			name = "Third Party";
+			sourceTree = "<group>";
+		};
+		08FB7794FE84155DC02AAC07 /* anthropic-classic */ = {
+			isa = PBXGroup;
+			children = (
+				01C7753D2E91E3B900F2B2D2 /* Makefile */,
+				01C7753E2E91E3B900F2B2D2 /* Makefile.tiger */,
+				011074122E86ED42006894FD /* Read Mes */,
+				011074112E86ED38006894FD /* Tests */,
+				011074102E86ECB8006894FD /* Sources */,
+				0110740F2E86EC9D006894FD /* Headers */,
+			);
+			name = "anthropic-classic";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		D28A88AD04BDD90700651E21 /* anthropic-classic */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "anthropic-classic" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = "anthropic-classic";
+			passBuildSettingsInEnvironment = 1;
+			productName = "anthropic-classic";
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "anthropic-classic" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* anthropic-classic */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D28A88AD04BDD90700651E21 /* anthropic-classic */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB919008733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "anthropic-classic";
+			};
+			name = Debug;
+		};
+		1DEB919108733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "anthropic-classic";
+			};
+			name = Release;
+		};
+		1DEB919408733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					"$(ARCHS_STANDARD_64_BIT)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.4;
+			};
+			name = Debug;
+		};
+		1DEB919508733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					"$(ARCHS_STANDARD_64_BIT)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.4;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "anthropic-classic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919008733D9F0010E9CD /* Debug */,
+				1DEB919108733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "anthropic-classic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debug */,
+				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

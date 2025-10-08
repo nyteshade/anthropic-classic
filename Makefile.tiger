@@ -7,6 +7,9 @@ BUNDLE_ID = com.example.claudechat
 # Source files  
 # Note: Using HTTPSClient_OpenSSL.m instead of HTTPSClient.m for OpenSSL support
 SOURCES = main.m \
+          NEPadding.m \
+          NSView+Essentials.m \
+					NSObject+Associations.m \
           AppDelegate.m \
           ChatWindowController.m \
           ClaudeAPIManager_Tiger.m \
@@ -28,7 +31,7 @@ HEADERS = AppDelegate.h \
 # Compiler settings for Tiger compatibility
 CC = gcc
 OBJC = $(CC)
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -w
 OBJCFLAGS = $(CFLAGS) -ObjC
 
 # Framework flags
@@ -84,6 +87,8 @@ $(CONTENTS_DIR)/Info.plist: | $(APP_BUNDLE)
 	@echo '    <string>$(BUNDLE_ID)</string>' >> $@
 	@echo '    <key>CFBundleName</key>' >> $@
 	@echo '    <string>$(APP_NAME)</string>' >> $@
+	@echo '    <key>CFBundleIconFile</key>' >> $@
+	@echo '    <string>ClaudeClassic</string>' >> $@
 	@echo '    <key>CFBundlePackageType</key>' >> $@
 	@echo '    <string>APPL</string>' >> $@
 	@echo '    <key>CFBundleShortVersionString</key>' >> $@
