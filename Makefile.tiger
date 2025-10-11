@@ -9,7 +9,7 @@ BUNDLE_ID = com.example.claudechat
 SOURCES = main.m \
           NEPadding.m \
           NSView+Essentials.m \
-					NSObject+Associations.m \
+          NSObject+Associations.m \
           AppDelegate.m \
           ChatWindowController.m \
           ClaudeAPIManager_Tiger.m \
@@ -18,7 +18,8 @@ SOURCES = main.m \
           ThemeColors_Tiger.m \
           ThemedView.m \
           ConversationManager.m \
-          CodeBlockView.m
+          CodeBlockView.m \
+          SystemInfoCollector.m
 
 C_SOURCES = yyjson.c
 
@@ -29,7 +30,7 @@ HEADERS = AppDelegate.h \
           CodeBlockView.h
 
 # Compiler settings for Tiger compatibility
-CC = gcc
+CC = gcc-apple-4.2
 OBJC = $(CC)
 CFLAGS = -Wall -O2 -w
 OBJCFLAGS = $(CFLAGS) -ObjC

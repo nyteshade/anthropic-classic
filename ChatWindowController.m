@@ -9,6 +9,7 @@
 #import "ThemeColors.h"
 #import "ConversationManager.h"
 #import "ThemedView.h"
+#import "NSView+Essentials.h"
 
 @implementation ChatWindowController
 
@@ -556,28 +557,30 @@
 }
 
 - (void)updateWindowTitle {
-  AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
-  NSString *model = [appDelegate selectedModel];
-  
-  // Extract model name for display
-  NSString *modelDisplay = @"";
-  if ([model rangeOfString:@"opus-4-1"].location != NSNotFound) {
-    modelDisplay = @"Opus 4.1";
-  } else if ([model rangeOfString:@"opus-4"].location != NSNotFound) {
-    modelDisplay = @"Opus 4";
-  } else if ([model rangeOfString:@"sonnet-4"].location != NSNotFound) {
-    modelDisplay = @"Sonnet 4";
-  } else if ([model rangeOfString:@"3-7-sonnet"].location != NSNotFound) {
-    modelDisplay = @"Sonnet 3.7";
-  } else if ([model rangeOfString:@"haiku"].location != NSNotFound) {
-    modelDisplay = @"Haiku 3";
-  }
-  
-  if ([modelDisplay length] > 0) {
-    [[self window] setTitle:[NSString stringWithFormat:@"Claude Chat - %@", modelDisplay]];
-  } else {
-    [[self window] setTitle:@"Claude Chat"];
-  }
+    AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+    NSString *model = [appDelegate selectedModel];
+    
+    // Extract model name for display
+    NSString *modelDisplay = @"";
+    if ([model rangeOfString:@"opus-4-1"].location != NSNotFound) {
+        modelDisplay = @"Opus 4.1";
+    } else if ([model rangeOfString:@"opus-4"].location != NSNotFound) {
+        modelDisplay = @"Opus 4";
+    } else if ([model rangeOfString:@"sonnet-4"].location != NSNotFound) {
+        modelDisplay = @"Sonnet 4";
+    } else if ([model rangeOfString:@"claude-sonnet-4-5-20250929"].location != NSNotFound) { 
+		modelDisplay = @"Sonnet 4.5";
+    } else if ([model rangeOfString:@"3-7-sonnet"].location != NSNotFound) {
+        modelDisplay = @"Sonnet 3.7";
+    } else if ([model rangeOfString:@"haiku"].location != NSNotFound) {
+        modelDisplay = @"Haiku 3";
+    }
+    
+    if ([modelDisplay length] > 0) {
+        [[self window] setTitle:[NSString stringWithFormat:@"Claude Chat - %@", modelDisplay]];
+    } else {
+        [[self window] setTitle:@"Claude Chat"];
+    }
 }
 
 #pragma mark - ClaudeAPIManagerDelegate

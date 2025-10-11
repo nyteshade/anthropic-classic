@@ -8,16 +8,17 @@ BUNDLE_ID = com.example.claudechat
 SOURCES = main.m \
           NEPadding.m \
           NSView+Essentials.m \
-					NSObject+Associations.m \
+          NSObject+Associations.m \
           AppDelegate.m \
           ChatWindowController.m \
           ClaudeAPIManager_Tiger.m \
           NetworkManager_Tiger.m \
-          HTTPSClient.m \
+          HTTPSClient_OpenSSL.m \
           ThemeColors.m \
           ThemedView.m \
           ConversationManager.m \
-          CodeBlockView.m
+          CodeBlockView.m \
+          SystemInfoCollector.m
 
 C_SOURCES = yyjson.c
 
@@ -28,9 +29,9 @@ HEADERS = AppDelegate.h \
           CodeBlockView.h
 
 # Compiler settings
-CC = clang
+CC = gcc-apple-4.2
 OBJC = $(CC)
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -w -arch x86_64
 OBJCFLAGS = $(CFLAGS) -ObjC
 
 # Framework flags
@@ -40,6 +41,10 @@ FRAMEWORKS = -framework Cocoa -framework Foundation
 # You can override this with: make MACOSX_DEPLOYMENT_TARGET=10.4
 MACOSX_DEPLOYMENT_TARGET ?= 10.6
 SDKFLAGS = -mmacosx-version-min=$(MACOSX_DEPLOYMENT_TARGET)
+
+# OpenSSL support via MacPorts (required for Tiger/Leopard)
+OPENSSL_CFLAGS = -I/opt/local/include
+OPENSSL_LIBS = -L/opt/local/lib -lssl -lcrypto
 
 # Build directories
 BUILD_DIR = build
@@ -61,15 +66,15 @@ $(APP_BUNDLE):
 
 # Build executable
 $(MACOS_DIR)/$(APP_NAME): $(OBJECTS) | $(APP_BUNDLE)
-	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) $(FRAMEWORKS) -o $@ $(OBJECTS)
+	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) $(FRAMEWORKS) $(OPENSSL_LIBS) -o $@ $(OBJECTS)
 
 # Compile Objective-C source files
 %.o: %.m $(HEADERS)
-	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) -c $< -o $@
+	$(OBJC) $(OBJCFLAGS) $(OPENSSL_CFLAGS) $(SDKFLAGS) -c $< -o $@
 
 # Compile C source files
 %.o: %.c
-	$(CC) $(CFLAGS) $(SDKFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(SDKFLAGS) $(OPENSSL_CFLAGS) -c $< -o $@
 
 # Create Info.plist
 $(CONTENTS_DIR)/Info.plist: | $(APP_BUNDLE)
@@ -83,6 +88,8 @@ $(CONTENTS_DIR)/Info.plist: | $(APP_BUNDLE)
 	@echo '    <string>$(BUNDLE_ID)</string>' >> $@
 	@echo '    <key>CFBundleName</key>' >> $@
 	@echo '    <string>$(APP_NAME)</string>' >> $@
+	@echo '    <key>CFBundleIconFile</key>' >> $@
+	@echo '    <string>ClaudeClassic</string>' >> $@
 	@echo '    <key>CFBundlePackageType</key>' >> $@
 	@echo '    <string>APPL</string>' >> $@
 	@echo '    <key>CFBundleShortVersionString</key>' >> $@

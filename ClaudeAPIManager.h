@@ -18,6 +18,11 @@
 }
 
 - (id)init;
+
+- (NSString *)arrayToJSON:(NSArray *)array;
+- (NSString *)dictionaryToJSON:(NSDictionary *)dict;
+- (NSString *)extractResponseText:(NSString *)jsonResponse;
+
 - (void)setDelegate:(id)aDelegate;
 - (void)sendMessage:(NSString *)message withAPIKey:(NSString *)apiKey;
 - (void)addToHistory:(NSString *)message isUser:(BOOL)isUser;

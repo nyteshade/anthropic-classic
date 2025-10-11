@@ -238,8 +238,10 @@
 #       define yyjson_inline __forceinline
 #   elif defined(_MSC_VER)
 #       define yyjson_inline __inline
+/*
 #   elif yyjson_has_attribute(always_inline) || YYJSON_GCC_VER >= 4
 #       define yyjson_inline __inline__ __attribute__((always_inline))
+*/
 #   elif defined(__clang__) || defined(__GNUC__)
 #       define yyjson_inline __inline__
 #   elif defined(__cplusplus) || YYJSON_STDC_VER >= 199901L

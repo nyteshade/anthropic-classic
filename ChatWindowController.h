@@ -28,13 +28,37 @@
 }
 
 - (id)init;
-- (void)sendMessage:(id)sender;
+
+- (void)parseInlineMarkdown:(NSString *)text 
+											 into:(NSMutableAttributedString *)result 
+									 propFont:(NSFont *)propFont
+									 monoFont:(NSFont *)monoFont
+									textColor:(NSColor *)textColor 
+									codeColor:(NSColor *)codeColor;
+
+- (NSAttributedString *)parseMarkdown:(NSString *)text 
+															 isUser:(BOOL)isUser;
+
+- (NSAttributedString *)parseMarkdownInternal:(NSString *)text 
+																			 isUser:(BOOL)isUser 
+																	 codeBlocks:(NSMutableArray *)codeBlocksArray;
+
+- (NSDictionary *)parseMarkdownWithCodeBlocks:(NSString *)text isUser:(BOOL)isUser;
+
+- (void)addCodeBlockButton:(NSString *)code atRange:(NSRange)range;
+- (void)adjustMessageFieldHeight;
 - (void)appendMessage:(NSString *)message fromUser:(BOOL)isUser;
 - (void)clearConversation;
-- (void)updateWindowTitle;
-- (void)updateTheme;
+- (void)createConversationDrawer;
+- (void)createWindow;
+- (void)loadCurrentConversation;
+- (void)refreshChatColors;
+- (void)removeAllCodeBlockButtons;
+- (void)resetControls;
+- (void)sendMessage:(id)sender;
+- (void)updateCodeBlockButtonPositions;
 - (void)updateFontSize;
-- (NSAttributedString *)parseMarkdown:(NSString *)text isUser:(BOOL)isUser;
-- (NSDictionary *)parseMarkdownWithCodeBlocks:(NSString *)text isUser:(BOOL)isUser;
+- (void)updateTheme;
+- (void)updateWindowTitle;
 
 @end

@@ -3,6 +3,7 @@
 //  ClaudeChat
 //
 
+#import "AppDelegate.h"
 #import "ClaudeAPIManager.h"
 #import "NetworkManager.h"
 
@@ -33,10 +34,13 @@
     [conversationHistory addObject:userMessage];
     
     // Prepare request body
+	AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
+	NSLog(@"Selected model is %@", [appDelegate selectedModel]);
+
     NSDictionary *requestBody = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  @"claude-3-haiku-20240307", @"model",
+                                  @"claude-sonnet-4-5-20250929", @"model",
                                   conversationHistory, @"messages",
-                                  [NSNumber numberWithInt:1024], @"max_tokens",
+                                  [NSNumber numberWithInt:64000], @"max_tokens",
                                   nil];
     
     NSError *jsonError = nil;

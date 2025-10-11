@@ -23,25 +23,35 @@
     float proportionalFontSize;
     NSWindow *preferencesWindow;
     NSFontManager *fontManager;
+	  NSMutableDictionary *models;
 }
 
-- (void)applicationDidFinishLaunching:(NSNotification *)notification;
-- (void)applicationWillTerminate:(NSNotification *)notification;
-- (NSString *)apiKey;
-- (void)setApiKey:(NSString *)key;
-- (NSString *)selectedModel;
-- (void)setSelectedModel:(NSString *)model;
-- (void)fetchAvailableModels;
-- (void)selectModel:(id)sender;
 - (BOOL)isDarkMode;
-- (int)fontSizeAdjustment;
-- (void)increaseFontSize:(id)sender;
-- (void)decreaseFontSize:(id)sender;
-- (void)resetFontSize:(id)sender;
-- (NSString *)monospaceFontName;
-- (NSString *)proportionalFontName;
 - (float)monospaceFontSize;
 - (float)proportionalFontSize;
+- (int)fontSizeAdjustment;
+
+- (NSDictionary*)modelMap;
+- (NSString *)apiKey;
+- (NSString *)monospaceFontName;
+- (NSString *)proportionalFontName;
+- (NSString *)selectedModel;
+
+- (void)addDefaultModelsToMenu;
+- (void)applicationDidFinishLaunching:(NSNotification *)notification;
+- (void)applicationWillTerminate:(NSNotification *)notification;
+- (void)decreaseFontSize:(id)sender;
+- (void)fetchAvailableModels;
+- (void)increaseFontSize:(id)sender;
+- (void)resetFontSize:(id)sender;
+- (void)selectModel:(id)sender;
+- (void)setApiKey:(NSString *)key;
+- (void)setSelectedModel:(NSString *)model;
+- (void)setupMenus;
 - (void)showFontPreferences:(id)sender;
+- (void)showPreferencesWindow;
+- (void)updateFontPreview;
+- (void)updateModelMenuCheckmarks;
+- (void)updateThemeMenus;
 
 @end

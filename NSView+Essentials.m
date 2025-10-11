@@ -7,6 +7,7 @@
 //
 
 #import "NSView+Essentials.h"
+#import "NSObject+Associations.h"
 #import "NEPadding.h"
 #import <objc/runtime.h>
 
@@ -181,11 +182,6 @@ NSString* NEPaddingToString(NEPadding padding)
   NSGraphicsContext *context = [NSGraphicsContext currentContext];
   [context saveGraphicsState];
   
-  // Get the full bounds of the view
-  NSRect bounds = [self bounds];
-    
-  // Get your styling properties
-  NEPadding padding = [self padding];
   NSColor *backgroundColor = [self backgroundColor];
   NSColor *borderColor = [self borderColor];
   CGFloat borderWidth = [self borderWidth];
