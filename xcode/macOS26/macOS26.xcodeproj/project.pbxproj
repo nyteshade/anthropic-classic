@@ -1,0 +1,449 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01722FF92E9AF01B00563EDA /* CodeBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FE42E9AF01B00563EDA /* CodeBlockView.m */; };
+		01722FFA2E9AF01B00563EDA /* ThemedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FF62E9AF01B00563EDA /* ThemedView.m */; };
+		01722FFB2E9AF01B00563EDA /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FE62E9AF01B00563EDA /* ConversationManager.m */; };
+		01722FFC2E9AF01B00563EDA /* SystemInfoCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FF22E9AF01B00563EDA /* SystemInfoCollector.m */; };
+		01722FFD2E9AF01B00563EDA /* yyjson.c in Sources */ = {isa = PBXBuildFile; fileRef = 01722FF82E9AF01B00563EDA /* yyjson.c */; };
+		01722FFE2E9AF01B00563EDA /* NSObject+Associations.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FEE2E9AF01B00563EDA /* NSObject+Associations.m */; };
+		01722FFF2E9AF01B00563EDA /* NetworkManager_Tiger.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FEC2E9AF01B00563EDA /* NetworkManager_Tiger.m */; };
+		017230002E9AF01B00563EDA /* ThemeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FF42E9AF01B00563EDA /* ThemeColors.m */; };
+		017230012E9AF01B00563EDA /* NEPadding.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FEA2E9AF01B00563EDA /* NEPadding.m */; };
+		017230022E9AF01B00563EDA /* ClaudeAPIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FE12E9AF01B00563EDA /* ClaudeAPIManager.m */; };
+		017230032E9AF01B00563EDA /* HTTPSClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FE82E9AF01B00563EDA /* HTTPSClient.m */; };
+		017230042E9AF01B00563EDA /* ChatWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FDF2E9AF01B00563EDA /* ChatWindowController.m */; };
+		017230052E9AF01B00563EDA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FDD2E9AF01B00563EDA /* AppDelegate.m */; };
+		017230062E9AF01B00563EDA /* NSView+Essentials.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FF02E9AF01B00563EDA /* NSView+Essentials.m */; };
+		017230072E9AF01B00563EDA /* ClaudeClassic.icns in Resources */ = {isa = PBXBuildFile; fileRef = 01722FE22E9AF01B00563EDA /* ClaudeClassic.icns */; };
+		017230092E9AF48B00563EDA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 017230082E9AF48B00563EDA /* main.m */; };
+		0172300D2E9AF60800563EDA /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0172300B2E9AF5A500563EDA /* Info.plist */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01722FA12E9AEF4100563EDA /* Anthropic-Classic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anthropic-Classic.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01722FDC2E9AF01B00563EDA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "/Users/brie/Desktop/anthropic-classic/AppDelegate.h"; sourceTree = "<absolute>"; };
+		01722FDD2E9AF01B00563EDA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = "/Users/brie/Desktop/anthropic-classic/AppDelegate.m"; sourceTree = "<absolute>"; };
+		01722FDE2E9AF01B00563EDA /* ChatWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChatWindowController.h; path = "/Users/brie/Desktop/anthropic-classic/ChatWindowController.h"; sourceTree = "<absolute>"; };
+		01722FDF2E9AF01B00563EDA /* ChatWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ChatWindowController.m; path = "/Users/brie/Desktop/anthropic-classic/ChatWindowController.m"; sourceTree = "<absolute>"; };
+		01722FE02E9AF01B00563EDA /* ClaudeAPIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClaudeAPIManager.h; path = "/Users/brie/Desktop/anthropic-classic/ClaudeAPIManager.h"; sourceTree = "<absolute>"; };
+		01722FE12E9AF01B00563EDA /* ClaudeAPIManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClaudeAPIManager.m; path = "/Users/brie/Desktop/anthropic-classic/ClaudeAPIManager.m"; sourceTree = "<absolute>"; };
+		01722FE22E9AF01B00563EDA /* ClaudeClassic.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = ClaudeClassic.icns; path = "/Users/brie/Desktop/anthropic-classic/ClaudeClassic.icns"; sourceTree = "<absolute>"; };
+		01722FE32E9AF01B00563EDA /* CodeBlockView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CodeBlockView.h; path = "/Users/brie/Desktop/anthropic-classic/CodeBlockView.h"; sourceTree = "<absolute>"; };
+		01722FE42E9AF01B00563EDA /* CodeBlockView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CodeBlockView.m; path = "/Users/brie/Desktop/anthropic-classic/CodeBlockView.m"; sourceTree = "<absolute>"; };
+		01722FE52E9AF01B00563EDA /* ConversationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationManager.h; path = "/Users/brie/Desktop/anthropic-classic/ConversationManager.h"; sourceTree = "<absolute>"; };
+		01722FE62E9AF01B00563EDA /* ConversationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ConversationManager.m; path = "/Users/brie/Desktop/anthropic-classic/ConversationManager.m"; sourceTree = "<absolute>"; };
+		01722FE72E9AF01B00563EDA /* HTTPSClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HTTPSClient.h; path = "/Users/brie/Desktop/anthropic-classic/HTTPSClient.h"; sourceTree = "<absolute>"; };
+		01722FE82E9AF01B00563EDA /* HTTPSClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HTTPSClient.m; path = "/Users/brie/Desktop/anthropic-classic/HTTPSClient.m"; sourceTree = "<absolute>"; };
+		01722FE92E9AF01B00563EDA /* NEPadding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NEPadding.h; path = "/Users/brie/Desktop/anthropic-classic/NEPadding.h"; sourceTree = "<absolute>"; };
+		01722FEA2E9AF01B00563EDA /* NEPadding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NEPadding.m; path = "/Users/brie/Desktop/anthropic-classic/NEPadding.m"; sourceTree = "<absolute>"; };
+		01722FEB2E9AF01B00563EDA /* NetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkManager.h; path = "/Users/brie/Desktop/anthropic-classic/NetworkManager.h"; sourceTree = "<absolute>"; };
+		01722FEC2E9AF01B00563EDA /* NetworkManager_Tiger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NetworkManager_Tiger.m; path = "/Users/brie/Desktop/anthropic-classic/NetworkManager_Tiger.m"; sourceTree = "<absolute>"; };
+		01722FED2E9AF01B00563EDA /* NSObject+Associations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSObject+Associations.h"; path = "/Users/brie/Desktop/anthropic-classic/NSObject+Associations.h"; sourceTree = "<absolute>"; };
+		01722FEE2E9AF01B00563EDA /* NSObject+Associations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSObject+Associations.m"; path = "/Users/brie/Desktop/anthropic-classic/NSObject+Associations.m"; sourceTree = "<absolute>"; };
+		01722FEF2E9AF01B00563EDA /* NSView+Essentials.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSView+Essentials.h"; path = "/Users/brie/Desktop/anthropic-classic/NSView+Essentials.h"; sourceTree = "<absolute>"; };
+		01722FF02E9AF01B00563EDA /* NSView+Essentials.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSView+Essentials.m"; path = "/Users/brie/Desktop/anthropic-classic/NSView+Essentials.m"; sourceTree = "<absolute>"; };
+		01722FF12E9AF01B00563EDA /* SystemInfoCollector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SystemInfoCollector.h; path = "/Users/brie/Desktop/anthropic-classic/SystemInfoCollector.h"; sourceTree = "<absolute>"; };
+		01722FF22E9AF01B00563EDA /* SystemInfoCollector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SystemInfoCollector.m; path = "/Users/brie/Desktop/anthropic-classic/SystemInfoCollector.m"; sourceTree = "<absolute>"; };
+		01722FF32E9AF01B00563EDA /* ThemeColors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThemeColors.h; path = "/Users/brie/Desktop/anthropic-classic/ThemeColors.h"; sourceTree = "<absolute>"; };
+		01722FF42E9AF01B00563EDA /* ThemeColors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThemeColors.m; path = "/Users/brie/Desktop/anthropic-classic/ThemeColors.m"; sourceTree = "<absolute>"; };
+		01722FF52E9AF01B00563EDA /* ThemedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThemedView.h; path = "/Users/brie/Desktop/anthropic-classic/ThemedView.h"; sourceTree = "<absolute>"; };
+		01722FF62E9AF01B00563EDA /* ThemedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThemedView.m; path = "/Users/brie/Desktop/anthropic-classic/ThemedView.m"; sourceTree = "<absolute>"; };
+		01722FF72E9AF01B00563EDA /* yyjson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = yyjson.h; path = "/Users/brie/Desktop/anthropic-classic/yyjson.h"; sourceTree = "<absolute>"; };
+		01722FF82E9AF01B00563EDA /* yyjson.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = yyjson.c; path = "/Users/brie/Desktop/anthropic-classic/yyjson.c"; sourceTree = "<absolute>"; };
+		017230082E9AF48B00563EDA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = "/Users/brie/Desktop/anthropic-classic/main.m"; sourceTree = "<absolute>"; };
+		0172300B2E9AF5A500563EDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "/Users/brie/Desktop/anthropic-classic/Info.plist"; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		01722F9E2E9AEF4100563EDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01722F982E9AEF4100563EDA = {
+			isa = PBXGroup;
+			children = (
+				01722FDB2E9AEFE400563EDA /* Source */,
+				01722FA22E9AEF4100563EDA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		01722FA22E9AEF4100563EDA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				01722FA12E9AEF4100563EDA /* Anthropic-Classic.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		01722FDB2E9AEFE400563EDA /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				0172300B2E9AF5A500563EDA /* Info.plist */,
+				017230082E9AF48B00563EDA /* main.m */,
+				01722FDC2E9AF01B00563EDA /* AppDelegate.h */,
+				01722FDD2E9AF01B00563EDA /* AppDelegate.m */,
+				01722FDE2E9AF01B00563EDA /* ChatWindowController.h */,
+				01722FDF2E9AF01B00563EDA /* ChatWindowController.m */,
+				01722FE02E9AF01B00563EDA /* ClaudeAPIManager.h */,
+				01722FE12E9AF01B00563EDA /* ClaudeAPIManager.m */,
+				01722FE22E9AF01B00563EDA /* ClaudeClassic.icns */,
+				01722FE32E9AF01B00563EDA /* CodeBlockView.h */,
+				01722FE42E9AF01B00563EDA /* CodeBlockView.m */,
+				01722FE52E9AF01B00563EDA /* ConversationManager.h */,
+				01722FE62E9AF01B00563EDA /* ConversationManager.m */,
+				01722FE72E9AF01B00563EDA /* HTTPSClient.h */,
+				01722FE82E9AF01B00563EDA /* HTTPSClient.m */,
+				01722FE92E9AF01B00563EDA /* NEPadding.h */,
+				01722FEA2E9AF01B00563EDA /* NEPadding.m */,
+				01722FEB2E9AF01B00563EDA /* NetworkManager.h */,
+				01722FEC2E9AF01B00563EDA /* NetworkManager_Tiger.m */,
+				01722FED2E9AF01B00563EDA /* NSObject+Associations.h */,
+				01722FEE2E9AF01B00563EDA /* NSObject+Associations.m */,
+				01722FEF2E9AF01B00563EDA /* NSView+Essentials.h */,
+				01722FF02E9AF01B00563EDA /* NSView+Essentials.m */,
+				01722FF12E9AF01B00563EDA /* SystemInfoCollector.h */,
+				01722FF22E9AF01B00563EDA /* SystemInfoCollector.m */,
+				01722FF32E9AF01B00563EDA /* ThemeColors.h */,
+				01722FF42E9AF01B00563EDA /* ThemeColors.m */,
+				01722FF52E9AF01B00563EDA /* ThemedView.h */,
+				01722FF62E9AF01B00563EDA /* ThemedView.m */,
+				01722FF72E9AF01B00563EDA /* yyjson.h */,
+				01722FF82E9AF01B00563EDA /* yyjson.c */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		01722FA02E9AEF4100563EDA /* macOS26 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01722FAC2E9AEF4200563EDA /* Build configuration list for PBXNativeTarget "macOS26" */;
+			buildPhases = (
+				01722F9D2E9AEF4100563EDA /* Sources */,
+				01722F9E2E9AEF4100563EDA /* Frameworks */,
+				01722F9F2E9AEF4100563EDA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = macOS26;
+			packageProductDependencies = (
+			);
+			productName = macOS26;
+			productReference = 01722FA12E9AEF4100563EDA /* Anthropic-Classic.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		01722F992E9AEF4100563EDA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					01722FA02E9AEF4100563EDA = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 01722F9C2E9AEF4100563EDA /* Build configuration list for PBXProject "macOS26" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 01722F982E9AEF4100563EDA;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 01722FA22E9AEF4100563EDA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				01722FA02E9AEF4100563EDA /* macOS26 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		01722F9F2E9AEF4100563EDA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0172300D2E9AF60800563EDA /* Info.plist in Resources */,
+				017230072E9AF01B00563EDA /* ClaudeClassic.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		01722F9D2E9AEF4100563EDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01722FF92E9AF01B00563EDA /* CodeBlockView.m in Sources */,
+				01722FFA2E9AF01B00563EDA /* ThemedView.m in Sources */,
+				01722FFB2E9AF01B00563EDA /* ConversationManager.m in Sources */,
+				01722FFC2E9AF01B00563EDA /* SystemInfoCollector.m in Sources */,
+				01722FFD2E9AF01B00563EDA /* yyjson.c in Sources */,
+				01722FFE2E9AF01B00563EDA /* NSObject+Associations.m in Sources */,
+				01722FFF2E9AF01B00563EDA /* NetworkManager_Tiger.m in Sources */,
+				017230002E9AF01B00563EDA /* ThemeColors.m in Sources */,
+				017230012E9AF01B00563EDA /* NEPadding.m in Sources */,
+				017230022E9AF01B00563EDA /* ClaudeAPIManager.m in Sources */,
+				017230092E9AF48B00563EDA /* main.m in Sources */,
+				017230032E9AF01B00563EDA /* HTTPSClient.m in Sources */,
+				017230042E9AF01B00563EDA /* ChatWindowController.m in Sources */,
+				017230052E9AF01B00563EDA /* AppDelegate.m in Sources */,
+				017230062E9AF01B00563EDA /* NSView+Essentials.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		01722FAA2E9AEF4200563EDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = ClaudeClassic;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_LINK_OBJC_RUNTIME = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4HK2NGRWKW;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nyteshade.anthropic-classic";
+				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		01722FAB2E9AEF4200563EDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = ClaudeClassic;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++98";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_LINK_OBJC_RUNTIME = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4HK2NGRWKW;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nyteshade.anthropic-classic";
+				RUNTIME_EXCEPTION_ALLOW_JIT = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		01722FAD2E9AEF4200563EDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = ClaudeClassic;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4HK2NGRWKW;
+				DONT_GENERATE_INFOPLIST_FILE = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ../../Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_PREPROCESS = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nyteshade.anthropic-classic";
+				PRODUCT_NAME = "Anthropic-Classic";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		01722FAE2E9AEF4200563EDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = ClaudeClassic;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4HK2NGRWKW;
+				DONT_GENERATE_INFOPLIST_FILE = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ../../Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_PREPROCESS = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nyteshade.anthropic-classic";
+				PRODUCT_NAME = "Anthropic-Classic";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		01722F9C2E9AEF4100563EDA /* Build configuration list for PBXProject "macOS26" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01722FAA2E9AEF4200563EDA /* Debug */,
+				01722FAB2E9AEF4200563EDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01722FAC2E9AEF4200563EDA /* Build configuration list for PBXNativeTarget "macOS26" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01722FAD2E9AEF4200563EDA /* Debug */,
+				01722FAE2E9AEF4200563EDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 01722F992E9AEF4100563EDA /* Project object */;
+}
