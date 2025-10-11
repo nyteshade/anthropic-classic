@@ -91,15 +91,14 @@
 		01722FDB2E9AEFE400563EDA /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				0172300B2E9AF5A500563EDA /* Info.plist */,
-				017230082E9AF48B00563EDA /* main.m */,
+				01EEE1182E9B040B007EC817 /* Other Source and Resources */,
+				0172300E2E9B03A900563EDA /* Extensions */,
 				01722FDC2E9AF01B00563EDA /* AppDelegate.h */,
 				01722FDD2E9AF01B00563EDA /* AppDelegate.m */,
 				01722FDE2E9AF01B00563EDA /* ChatWindowController.h */,
 				01722FDF2E9AF01B00563EDA /* ChatWindowController.m */,
 				01722FE02E9AF01B00563EDA /* ClaudeAPIManager.h */,
 				01722FE12E9AF01B00563EDA /* ClaudeAPIManager.m */,
-				01722FE22E9AF01B00563EDA /* ClaudeClassic.icns */,
 				01722FE32E9AF01B00563EDA /* CodeBlockView.h */,
 				01722FE42E9AF01B00563EDA /* CodeBlockView.m */,
 				01722FE52E9AF01B00563EDA /* ConversationManager.h */,
@@ -110,10 +109,6 @@
 				01722FEA2E9AF01B00563EDA /* NEPadding.m */,
 				01722FEB2E9AF01B00563EDA /* NetworkManager.h */,
 				01722FEC2E9AF01B00563EDA /* NetworkManager_Tiger.m */,
-				01722FED2E9AF01B00563EDA /* NSObject+Associations.h */,
-				01722FEE2E9AF01B00563EDA /* NSObject+Associations.m */,
-				01722FEF2E9AF01B00563EDA /* NSView+Essentials.h */,
-				01722FF02E9AF01B00563EDA /* NSView+Essentials.m */,
 				01722FF12E9AF01B00563EDA /* SystemInfoCollector.h */,
 				01722FF22E9AF01B00563EDA /* SystemInfoCollector.m */,
 				01722FF32E9AF01B00563EDA /* ThemeColors.h */,
@@ -124,6 +119,27 @@
 				01722FF82E9AF01B00563EDA /* yyjson.c */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		0172300E2E9B03A900563EDA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				01722FED2E9AF01B00563EDA /* NSObject+Associations.h */,
+				01722FEE2E9AF01B00563EDA /* NSObject+Associations.m */,
+				01722FEF2E9AF01B00563EDA /* NSView+Essentials.h */,
+				01722FF02E9AF01B00563EDA /* NSView+Essentials.m */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		01EEE1182E9B040B007EC817 /* Other Source and Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0172300B2E9AF5A500563EDA /* Info.plist */,
+				017230082E9AF48B00563EDA /* main.m */,
+				01722FE22E9AF01B00563EDA /* ClaudeClassic.icns */,
+			);
+			path = "Other Source and Resources";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
