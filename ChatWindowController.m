@@ -9,7 +9,10 @@
 #import "ThemeColors.h"
 #import "ConversationManager.h"
 #import "ThemedView.h"
+#import "NESizingHelpers.h"
+
 #import "NSView+Essentials.h"
+#import "NSString+TextMeasure.h"
 
 @implementation ChatWindowController
 
@@ -115,6 +118,8 @@
   [toggleButton setTarget:self];
   [toggleButton setAction:@selector(toggleDrawer:)];
   [toggleButton setFont:[NSFont systemFontOfSize:11.0]]; // Small control font
+  NSButtonSizeToFitWithMinimum(toggleButton);
+  
   [controlBar addSubview:toggleButton];
   
   // New conversation button
@@ -131,6 +136,7 @@
   [newConvButton setTarget:self];
   [newConvButton setAction:@selector(newConversation:)];
   [newConvButton setFont:[NSFont systemFontOfSize:11.0]];
+  NSButtonSizeToFitWithMinimum(newConvButton);
   [controlBar addSubview:newConvButton];
   
   // Clear button (right aligned)
@@ -147,6 +153,7 @@
   [clearButton setAction:@selector(clearCurrentChat:)];
   [clearButton setFont:[NSFont systemFontOfSize:11.0]];
   [clearButton setAutoresizingMask:NSViewMinXMargin];
+  NSButtonSizeToFitWithMinimum(clearButton);
   [controlBar addSubview:clearButton];
   
   // Input area height
@@ -195,6 +202,7 @@
   [sendButton setTarget:self];
   [sendButton setAction:@selector(sendMessage:)];
   [sendButton setAutoresizingMask:NSViewMinXMargin];
+  NSButtonSizeToFitWithMinimum(sendButton);
   [contentView addSubview:sendButton];
   
   // Set up min/max heights for the message field
@@ -278,6 +286,8 @@
   [drawerContent setDarkMode:isDark];
   
   // Add title label with semantic font
+  NSString* btnTitle = @"Conversations";
+  
   NSTextField *titleLabel = [[[NSTextField alloc] initWithFrame:NSMakeRect(10, 370, 230, 20)] autorelease];
   [titleLabel setStringValue:@"Conversations"];
   [titleLabel setEditable:NO];
@@ -314,6 +324,7 @@
   [newButton setTarget:self];
   [newButton setAction:@selector(newConversation:)];
   [newButton setFont:[NSFont systemFontOfSize:12]];
+  NSButtonSizeToFitWithMinimum(newButton);
   [drawerContent addSubview:newButton];
   
   NSButton *deleteButton = [[[NSButton alloc] initWithFrame:NSMakeRect(125, 10, 110, 25)] autorelease];
@@ -323,6 +334,7 @@
   [deleteButton setTarget:self];
   [deleteButton setAction:@selector(deleteConversation:)];
   [deleteButton setFont:[NSFont systemFontOfSize:12]];
+  NSButtonSizeToFitWithMinimum(deleteButton);
   [drawerContent addSubview:deleteButton];
   
   [conversationDrawer setContentView:drawerContent];

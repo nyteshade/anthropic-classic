@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		010DCF7E2E9C7F070008969A /* NEDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 010DCF7D2E9C7F070008969A /* NEDrawer.m */; };
+		010DCF822E9DAA220008969A /* NSString+TextMeasure.m in Sources */ = {isa = PBXBuildFile; fileRef = 010DCF812E9DAA220008969A /* NSString+TextMeasure.m */; };
+		010DCF852E9DAE0A0008969A /* NESizingHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 010DCF842E9DAE0A0008969A /* NESizingHelpers.m */; };
 		01722FF92E9AF01B00563EDA /* CodeBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FE42E9AF01B00563EDA /* CodeBlockView.m */; };
 		01722FFA2E9AF01B00563EDA /* ThemedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FF62E9AF01B00563EDA /* ThemedView.m */; };
 		01722FFB2E9AF01B00563EDA /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 01722FE62E9AF01B00563EDA /* ConversationManager.m */; };
@@ -30,6 +32,11 @@
 /* Begin PBXFileReference section */
 		010DCF7C2E9C7F070008969A /* NEDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NEDrawer.h; path = "/Users/brie/Desktop/anthropic-classic/NEDrawer.h"; sourceTree = "<absolute>"; };
 		010DCF7D2E9C7F070008969A /* NEDrawer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NEDrawer.m; path = "/Users/brie/Desktop/anthropic-classic/NEDrawer.m"; sourceTree = "<absolute>"; };
+		010DCF7F2E9CC0280008969A /* TigerCompat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TigerCompat.h; sourceTree = "<group>"; };
+		010DCF802E9DAA220008969A /* NSString+TextMeasure.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NSString+TextMeasure.h"; path = "/Users/brie/Desktop/anthropic-classic/NSString+TextMeasure.h"; sourceTree = "<absolute>"; };
+		010DCF812E9DAA220008969A /* NSString+TextMeasure.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "NSString+TextMeasure.m"; path = "/Users/brie/Desktop/anthropic-classic/NSString+TextMeasure.m"; sourceTree = "<absolute>"; };
+		010DCF832E9DAE0A0008969A /* NESizingHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NESizingHelpers.h; path = "/Users/brie/Desktop/anthropic-classic/NESizingHelpers.h"; sourceTree = "<absolute>"; };
+		010DCF842E9DAE0A0008969A /* NESizingHelpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NESizingHelpers.m; path = "/Users/brie/Desktop/anthropic-classic/NESizingHelpers.m"; sourceTree = "<absolute>"; };
 		01722FA12E9AEF4100563EDA /* Anthropic-Classic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Anthropic-Classic.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01722FDC2E9AF01B00563EDA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = "/Users/brie/Desktop/anthropic-classic/AppDelegate.h"; sourceTree = "<absolute>"; };
 		01722FDD2E9AF01B00563EDA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = "/Users/brie/Desktop/anthropic-classic/AppDelegate.m"; sourceTree = "<absolute>"; };
@@ -80,6 +87,7 @@
 			children = (
 				01722FDB2E9AEFE400563EDA /* Source */,
 				01722FA22E9AEF4100563EDA /* Products */,
+				010DCF7F2E9CC0280008969A /* TigerCompat.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -103,6 +111,7 @@
 				01722FE72E9AF01B00563EDA /* HTTPSClient.h */,
 				010DCF7C2E9C7F070008969A /* NEDrawer.h */,
 				01722FE92E9AF01B00563EDA /* NEPadding.h */,
+				010DCF832E9DAE0A0008969A /* NESizingHelpers.h */,
 				01722FEB2E9AF01B00563EDA /* NetworkManager.h */,
 				01722FF12E9AF01B00563EDA /* SystemInfoCollector.h */,
 				01722FF32E9AF01B00563EDA /* ThemeColors.h */,
@@ -116,6 +125,7 @@
 				01722FE82E9AF01B00563EDA /* HTTPSClient.m */,
 				010DCF7D2E9C7F070008969A /* NEDrawer.m */,
 				01722FEA2E9AF01B00563EDA /* NEPadding.m */,
+				010DCF842E9DAE0A0008969A /* NESizingHelpers.m */,
 				01722FEC2E9AF01B00563EDA /* NetworkManager_Tiger.m */,
 				01722FF22E9AF01B00563EDA /* SystemInfoCollector.m */,
 				01722FF42E9AF01B00563EDA /* ThemeColors.m */,
@@ -129,6 +139,8 @@
 		0172300E2E9B03A900563EDA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				010DCF802E9DAA220008969A /* NSString+TextMeasure.h */,
+				010DCF812E9DAA220008969A /* NSString+TextMeasure.m */,
 				01722FED2E9AF01B00563EDA /* NSObject+Associations.h */,
 				01722FEE2E9AF01B00563EDA /* NSObject+Associations.m */,
 				01722FEF2E9AF01B00563EDA /* NSView+Essentials.h */,
@@ -230,9 +242,11 @@
 				010DCF7E2E9C7F070008969A /* NEDrawer.m in Sources */,
 				017230002E9AF01B00563EDA /* ThemeColors.m in Sources */,
 				017230012E9AF01B00563EDA /* NEPadding.m in Sources */,
+				010DCF822E9DAA220008969A /* NSString+TextMeasure.m in Sources */,
 				017230022E9AF01B00563EDA /* ClaudeAPIManager.m in Sources */,
 				017230092E9AF48B00563EDA /* main.m in Sources */,
 				017230032E9AF01B00563EDA /* HTTPSClient.m in Sources */,
+				010DCF852E9DAE0A0008969A /* NESizingHelpers.m in Sources */,
 				017230042E9AF01B00563EDA /* ChatWindowController.m in Sources */,
 				017230052E9AF01B00563EDA /* AppDelegate.m in Sources */,
 				017230062E9AF01B00563EDA /* NSView+Essentials.m in Sources */,

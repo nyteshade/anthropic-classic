@@ -10,10 +10,17 @@
 #import "TigerCompat.h"
 
 typedef struct NEPadding {
+#if IS_TIGER_OR_LATER
   CGFloat top;
   CGFloat right;
   CGFloat bottom;
   CGFloat left;
+#else
+  float top;
+  float right;
+  float bottom;
+  float left;
+#endif
 } NEPadding;
 
 extern const NEPadding NEZeroPadding;

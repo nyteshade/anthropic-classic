@@ -3,7 +3,7 @@
 //  anthropic-classic
 //
 //  Created by Brielle Harrison on 10/4/25.
-//  Copyright 2025 __MyCompanyName__. All rights reserved.
+//  Copyright 2025 Nyteshade Enterprises. All rights reserved.
 //
 
 #import "NSObject+Associations.h"
