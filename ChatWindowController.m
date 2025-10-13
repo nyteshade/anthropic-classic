@@ -263,12 +263,12 @@
   NSWindow *window = [self window];
   
   // Create drawer
-  conversationDrawer = [[NSDrawer alloc] initWithContentSize:NSMakeSize(250, 400) 
-                          preferredEdge:NSMinXEdge];
+  conversationDrawer = [[NEDrawer alloc] initWithContentSize:NSMakeSize(250, 400)
+                          preferredEdge:NSMaxXEdge];
   [conversationDrawer setParentWindow:window];
   [conversationDrawer setMinContentSize:NSMakeSize(200, 300)];
   [conversationDrawer setMaxContentSize:NSMakeSize(400, 10000)];
-  
+
   // Get current theme
   AppDelegate *appDelegate = (AppDelegate *)[[NSApplication sharedApplication] delegate];
   BOOL isDark = [appDelegate isDarkMode];
@@ -1123,8 +1123,8 @@
 #pragma mark - Control Actions
 
 - (void)toggleDrawer:(id)sender {
-  if ([conversationDrawer state] == NSDrawerOpenState || 
-    [conversationDrawer state] == NSDrawerOpeningState) {
+  if ([conversationDrawer state] == NEDrawerStateOpen ||
+    [conversationDrawer state] == NEDrawerStateOpening) {
     [conversationDrawer close];
   } else {
     [conversationDrawer open];
@@ -1422,6 +1422,53 @@
   NSString *title = [info objectForKey:@"title"];
   [button setTitle:title];
   [button setEnabled:YES];
+}
+
+/**
+ * Forces dark mode rendering for the drawer by manipulating
+ * the drawer window's appearance at a deeper level.
+ * Only use if the standard approach isn't working.
+ */
+- (void)forceDrawerDarkMode:(NSDrawer *)drawer isDark:(BOOL)isDark {
+  // Get the drawer's private window
+  SEL windowSelector = @selector(_drawerWindow);
+  
+  if (![drawer respondsToSelector:windowSelector])
+    return;
+  
+  NSWindow *drawerWindow = [drawer performSelector:windowSelector];
+  
+  if (!drawerWindow)
+    return;
+  
+  // Try to set the window's appearance if on 10.14+
+  if ([drawerWindow respondsToSelector:@selector(setAppearance:)]) {
+    Class NSAppearanceClass = NSClassFromString(@"NSAppearance");
+    
+    if (NSAppearanceClass) {
+      SEL namedSelector = @selector(appearanceNamed:);
+      
+      if ([NSAppearanceClass respondsToSelector:namedSelector]) {
+        NSString *appearanceName = isDark ? 
+          @"NSAppearanceNameVibrantDark" : 
+          @"NSAppearanceNameAqua";
+        
+        id appearance = [NSAppearanceClass performSelector:namedSelector 
+                                                 withObject:appearanceName];
+        
+        if (appearance)
+          [drawerWindow performSelector:@selector(setAppearance:) 
+                             withObject:appearance];
+      }
+    }
+  }
+  
+  // Set hasShadow to NO to reduce chrome visibility
+  [drawerWindow setHasShadow:NO];
+  
+  // Make the window fully opaque
+  [drawerWindow setOpaque:YES];
+  [drawerWindow setAlphaValue:1.0];
 }
 
 @end

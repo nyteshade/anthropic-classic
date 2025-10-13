@@ -4,6 +4,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "NEDrawer.h"
 #import "ClaudeAPIManager.h"
 
 @class ClaudeAPIManager;
@@ -18,7 +19,7 @@
     float messageFieldMinHeight;
     float messageFieldMaxHeight;
     
-    NSDrawer *conversationDrawer;
+    NEDrawer *conversationDrawer;
     NSTableView *conversationTable;
     
     ClaudeAPIManager *apiManager;
