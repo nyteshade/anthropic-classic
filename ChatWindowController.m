@@ -1154,7 +1154,7 @@
   // Clear the current conversation's messages
   Conversation *current = [[ConversationManager sharedManager] currentConversation];
   if (current) {
-    [current.messages removeAllObjects];
+    [[current messages] removeAllObjects];
     [[ConversationManager sharedManager] saveCurrentConversation];
   }
   
@@ -1182,8 +1182,8 @@
     
     // Reload messages from conversation
     int i;
-    for (i = 0; i < [current.messages count]; i++) {
-      NSDictionary *msg = [current.messages objectAtIndex:i];
+    for (i = 0; i < [[current messages] count]; i++) {
+      NSDictionary *msg = [[current messages] objectAtIndex:i];
       NSString *role = [msg objectForKey:@"role"];
       NSString *content = [msg objectForKey:@"content"];
       

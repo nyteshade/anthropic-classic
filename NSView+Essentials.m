@@ -9,7 +9,13 @@
 #import "NSView+Essentials.h"
 #import "NSObject+Associations.h"
 #import "NEPadding.h"
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
+#import <objc/objc-runtime.h>
+#import <objc/objc-class.h>
+#else
 #import <objc/runtime.h>
+#endif
 
 NSString* NSRectToString(NSRect rect)
 {
@@ -156,13 +162,16 @@ NSString* NEPaddingToString(NEPadding padding)
 + (void)load {		
 	Method original = class_getInstanceMethod(self, @selector(drawRect:));
 	Method swizzled = class_getInstanceMethod(self, @selector(drawRectEssentials:));
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
+	IMP originalIMP = original->method_imp;
+	IMP swizzledIMP = swizzled->method_imp;
 	
+	original->method_imp = swizzledIMP;
+	swizzled->method_imp = originalIMP;
+#else
 	method_exchangeImplementations(original, swizzled);
-	
-  // Method original2 = class_getInstanceMethod(self, @selector(bounds));
-  // Method swizzled2 = class_getInstanceMethod(self, @selector(paddableBounds));
-  // 
-  // method_exchangeImplementations(original2, swizzled2);
+#endif
 }
 
 - (NSRect)paddableBounds 

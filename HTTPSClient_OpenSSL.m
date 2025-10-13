@@ -294,7 +294,7 @@
     NSRange headerEnd = [responseStr rangeOfString:@"\r\n\r\n"];
     
     if (headerEnd.location != NSNotFound) {
-        NSUInteger bodyStart = headerEnd.location + 4;
+        unsigned int bodyStart = headerEnd.location + 4;
         if (bodyStart < [response length]) {
             return [response subdataWithRange:NSMakeRange(bodyStart, [response length] - bodyStart)];
         }
@@ -335,7 +335,7 @@
     NSRange headerEnd = [responseStr rangeOfString:@"\r\n\r\n"];
     
     if (headerEnd.location != NSNotFound) {
-        NSUInteger bodyStart = headerEnd.location + 4;
+        unsigned int bodyStart = headerEnd.location + 4;
         if (bodyStart < [response length]) {
             return [response subdataWithRange:NSMakeRange(bodyStart, [response length] - bodyStart)];
         }

@@ -7,48 +7,48 @@
 
 @implementation Conversation
 
-@synthesize conversationId;
-@synthesize title;
-@synthesize lastModified;
-@synthesize messages;
-@synthesize displayContent;
+NEMProperty(NSString*, conversationId, setConversationId);
+NEMProperty(NSString*, title, setTitle);
+NEMProperty(NSDate*, lastModified, setLastModified);
+NEMProperty(NSMutableArray*, messages, setMessages);
+NEMProperty(NSAttributedString*, displayContent, setDisplayContent);
 
 - (id)initWithTitle:(NSString *)aTitle {
     self = [super init];
     if (self) {
         // Generate unique ID
-        conversationId = [[NSString stringWithFormat:@"conv_%d_%d", 
+        _conversationId = [[NSString stringWithFormat:@"conv_%d_%d", 
                           (int)[[NSDate date] timeIntervalSince1970], 
                           arc4random()] retain];
-        title = [aTitle retain];
-        lastModified = [[NSDate date] retain];
-        messages = [[NSMutableArray alloc] init];
-        displayContent = nil;
+        _title = [aTitle retain];
+        _lastModified = [[NSDate date] retain];
+        _messages = [[NSMutableArray alloc] init];
+        _displayContent = nil;
     }
     return self;
 }
 
 - (void)dealloc {
-    [conversationId release];
-    [title release];
-    [lastModified release];
-    [messages release];
-    [displayContent release];
+    [_conversationId release];
+    [_title release];
+    [_lastModified release];
+    [_messages release];
+    [_displayContent release];
     [super dealloc];
 }
 
 - (void)addMessage:(NSDictionary *)message {
-    [messages addObject:message];
-    [lastModified release];
-    lastModified = [[NSDate date] retain];
+    [_messages addObject:message];
+    [_lastModified release];
+    _lastModified = [[NSDate date] retain];
 }
 
 - (NSString *)summary {
-    if ([messages count] > 0) {
+    if ([_messages count] > 0) {
         NSDictionary *firstUserMessage = nil;
         int i;
-        for (i = 0; i < [messages count]; i++) {
-            NSDictionary *msg = [messages objectAtIndex:i];
+        for (i = 0; i < [_messages count]; i++) {
+            NSDictionary *msg = [_messages objectAtIndex:i];
             if ([[msg objectForKey:@"role"] isEqualToString:@"user"]) {
                 firstUserMessage = msg;
                 break;
@@ -62,7 +62,7 @@
             return content;
         }
     }
-    return title;
+    return _title;
 }
 
 @end
@@ -147,14 +147,14 @@ static ConversationManager *sharedInstance = nil;
 - (void)saveCurrentConversation {
     if (!currentConversation) return;
     
-    NSString *filename = [currentConversation.conversationId stringByAppendingPathExtension:@"plist"];
+    NSString *filename = [[currentConversation conversationId] stringByAppendingPathExtension:@"plist"];
     NSString *path = [storageDirectory stringByAppendingPathComponent:filename];
     
     NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                          currentConversation.conversationId, @"id",
-                          currentConversation.title, @"title",
-                          currentConversation.lastModified, @"lastModified",
-                          currentConversation.messages, @"messages",
+                          [currentConversation conversationId], @"id",
+                          [currentConversation title], @"title",
+                          [currentConversation lastModified], @"lastModified",
+                          [currentConversation messages], @"messages",
                           nil];
     
     [data writeToFile:path atomically:YES];
@@ -173,10 +173,10 @@ static ConversationManager *sharedInstance = nil;
             
             if (data) {
                 Conversation *conv = [[[Conversation alloc] init] autorelease];
-                conv.conversationId = [data objectForKey:@"id"];
-                conv.title = [data objectForKey:@"title"];
-                conv.lastModified = [data objectForKey:@"lastModified"];
-                conv.messages = [NSMutableArray arrayWithArray:[data objectForKey:@"messages"]];
+                [conv setConversationId:[data objectForKey:@"id"]];
+                [conv setTitle:[data objectForKey:@"title"]];
+                [conv setLastModified:[data objectForKey:@"lastModified"]];
+                [conv setMessages:[NSMutableArray arrayWithArray:[data objectForKey:@"messages"]]];
                 [conversations addObject:conv];
             }
         }
@@ -184,7 +184,7 @@ static ConversationManager *sharedInstance = nil;
 }
 
 - (void)deleteConversation:(Conversation *)conversation {
-    NSString *filename = [conversation.conversationId stringByAppendingPathExtension:@"plist"];
+    NSString *filename = [[conversation conversationId] stringByAppendingPathExtension:@"plist"];
     NSString *path = [storageDirectory stringByAppendingPathComponent:filename];
     
     [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];

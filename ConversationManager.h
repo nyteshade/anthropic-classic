@@ -6,20 +6,21 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TigerCompat.h"
 
 @interface Conversation : NSObject {
-    NSString *conversationId;
-    NSString *title;
-    NSDate *lastModified;
-    NSMutableArray *messages;
-    NSAttributedString *displayContent;
+    NSString *_conversationId;
+    NSString *_title;
+    NSDate *_lastModified;
+    NSMutableArray *_messages;
+    NSAttributedString *_displayContent;
 }
 
-@property (retain) NSString *conversationId;
-@property (retain) NSString *title;
-@property (retain) NSDate *lastModified;
-@property (retain) NSMutableArray *messages;
-@property (retain) NSAttributedString *displayContent;
+NEHProperty(NSString*, conversationId, setConversationId);
+NEHProperty(NSString*, title, setTitle);
+NEHProperty(NSDate*, lastModified, setLastModified);
+NEHProperty(NSMutableArray*, messages, setMessages);
+NEHProperty(NSAttributedString*, displayContent, setDisplayContent);
 
 - (id)initWithTitle:(NSString *)aTitle;
 - (void)addMessage:(NSDictionary *)message;
