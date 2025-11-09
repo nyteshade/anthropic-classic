@@ -88,10 +88,11 @@ else
   NEEDS_OPENSSL = no
 endif
 
-# PowerPC detection
+# PowerPC detection - don't override platform, just note it
+IS_PPC = no
 ifneq (,$(findstring ppc,$(ARCH)))
-  PLATFORM = tiger
-  MIN_OS_VERSION = 10.4
+  IS_PPC = yes
+  # PowerPC systems need OpenSSL regardless of OS version
   NEEDS_OPENSSL = yes
 endif
 
@@ -124,36 +125,50 @@ else
   endif
 endif
 
+# Set architecture flags based on actual CPU architecture
+# PowerPC doesn't use -arch flags (or uses -arch ppc/ppc64)
+# Intel uses -arch x86_64 or -arch i386
+ifeq ($(IS_PPC),yes)
+  # PowerPC - no arch flags needed for single architecture builds
+  ARCH_FLAGS =
+else
+  # Intel - use x86_64 for 64-bit
+  ifeq ($(ARCH),x86_64)
+    ARCH_FLAGS = -arch x86_64
+  else
+    ifeq ($(ARCH),i386)
+      ARCH_FLAGS = -arch i386
+    else
+      # Default to x86_64 for Intel
+      ARCH_FLAGS = -arch x86_64
+    endif
+  endif
+endif
+
 # Select compiler based on platform
 ifeq ($(PLATFORM),tiger)
   CC = $(GCC_COMPILER)
   OBJC = $(CC)
-  ARCH_FLAGS =
 else
   ifeq ($(PLATFORM),leopard)
     CC = $(GCC_COMPILER)
     OBJC = $(CC)
-    ARCH_FLAGS = -arch x86_64
   else
     ifeq ($(PLATFORM),snow)
       CC = $(GCC_COMPILER)
       OBJC = $(CC)
-      ARCH_FLAGS = -arch x86_64
     else
       ifeq ($(PLATFORM),lion)
         CC = $(GCC_COMPILER)
         OBJC = $(CC)
-        ARCH_FLAGS = -arch x86_64
       else
         ifeq ($(PLATFORM),mountain)
           CC = $(GCC_COMPILER)
           OBJC = $(CC)
-          ARCH_FLAGS = -arch x86_64
         else
           # Modern platforms (10.9+) - use clang
           CC = clang
           OBJC = clang
-          ARCH_FLAGS = -arch x86_64
         endif
       endif
     endif
@@ -311,6 +326,12 @@ info:
 	@echo "Platform:      $(PLATFORM)"
 	@echo "OS Version:    $(OS_VERSION)"
 	@echo "Architecture:  $(ARCH)"
+ifeq ($(IS_PPC),yes)
+	@echo "CPU Type:      PowerPC"
+else
+	@echo "CPU Type:      Intel"
+endif
+	@echo "Arch Flags:    $(ARCH_FLAGS)"
 	@echo "Min OS:        $(MIN_OS_VERSION)"
 ifeq ($(NEEDS_OPENSSL),yes)
 	@echo "OpenSSL:       $(NEEDS_OPENSSL) ($(OPENSSL_PREFIX))"
