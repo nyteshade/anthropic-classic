@@ -205,7 +205,9 @@ ifeq ($(NEEDS_OPENSSL),yes)
 
   ifneq ($(OPENSSL_PREFIX),)
     OPENSSL_CFLAGS = -I$(OPENSSL_PREFIX)/include
-    OPENSSL_LDFLAGS = -L$(OPENSSL_PREFIX)/lib -lssl -lcrypto
+    # Use explicit library paths and prioritize our OpenSSL over system libraries
+    # -Wl,-search_paths_first ensures our -L path is searched before system paths
+    OPENSSL_LDFLAGS = -Wl,-search_paths_first -L$(OPENSSL_PREFIX)/lib -lssl -lcrypto
   else
     OPENSSL_CFLAGS =
     OPENSSL_LDFLAGS =
@@ -333,7 +335,7 @@ $(APP_BUNDLE): | $(BUILD_DIR)
 # Build executable
 $(MACOS_DIR)/$(APP_NAME): $(OBJECTS) | $(APP_BUNDLE)
 	@echo "Linking $(APP_NAME)..."
-	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) $(FRAMEWORKS) $(OPENSSL_LDFLAGS) -o $@ $(OBJECTS)
+	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) -o $@ $(OBJECTS) $(FRAMEWORKS) $(OPENSSL_LDFLAGS)
 	@chmod +x $@
 	@echo "Build complete: $@"
 
