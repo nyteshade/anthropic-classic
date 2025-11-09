@@ -35,6 +35,21 @@
   return self;
 }
 
+- (void)showWindow:(id)sender {
+  NSWindow *window;
+
+  window = [self window];
+  if (!window) {
+    NSLog(@"ERROR: ChatWindowController showWindow called but window is nil!");
+    return;
+  }
+
+  NSLog(@"ChatWindowController showWindow: centering and showing window");
+  [window center];
+  [window makeKeyAndOrderFront:sender];
+  NSLog(@"ChatWindowController showWindow: window should be visible now");
+}
+
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [self removeAllCodeBlockButtons];
