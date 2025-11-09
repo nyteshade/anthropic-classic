@@ -157,7 +157,13 @@ CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS)
 OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
 
 # SDK flags
-SDKFLAGS = -mmacosx-version-min=$(MIN_OS_VERSION)
+# Note: -mmacosx-version-min not supported on Tiger's gcc-4.2
+# Only use on platforms where it's supported (10.5+)
+ifeq ($(PLATFORM),tiger)
+  SDKFLAGS =
+else
+  SDKFLAGS = -mmacosx-version-min=$(MIN_OS_VERSION)
+endif
 
 # Framework flags
 FRAMEWORKS = -framework Cocoa -framework Foundation
