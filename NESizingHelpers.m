@@ -26,11 +26,6 @@ static const NSRect kNSZeroRect = {{0, 0}, {0, 0}};
 #define NSZeroRect kNSZeroRect
 #endif
 
-// Tiger compatibility: NSMiniControlSize
-#ifndef NSMiniControlSize
-#define NSMiniControlSize NSSmallControlSize
-#endif
-
 // Tiger compatibility: systemFontSizeForControlSize
 #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
 static CGFloat SystemFontSizeForControlSize(NSControlSize controlSize)
@@ -68,8 +63,10 @@ CGFloat NSButtonMinimumWidthForControlSize(NSControlSize size)
 {
   switch (size)
   {
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
     case NSMiniControlSize:
       return 50.0f;
+#endif
     case NSSmallControlSize:
       return 64.0f;
     case NSRegularControlSize:
