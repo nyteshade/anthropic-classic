@@ -82,7 +82,7 @@ void NSButtonSizeToFitWithMinimum(NSButton *button)
   NSRect frame;
   NSSize size;
   CGFloat minW;
-  NSControlSize cs;
+  int cs;
 
   if (!button)
   {
@@ -90,8 +90,8 @@ void NSButtonSizeToFitWithMinimum(NSButton *button)
   }
 
   // Ensure font matches control size before measuring
-  cs = [button controlSize];
-  fsize = SystemFontSizeForControlSize(cs);
+  cs = (int)[button controlSize];
+  fsize = SystemFontSizeForControlSize((NSControlSize)cs);
   font = [NSFont systemFontOfSize:fsize];
   [button setFont:font];
 
