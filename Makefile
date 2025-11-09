@@ -164,12 +164,13 @@ endif
 # NOTE: We use manual reference counting (MRC) via SAFEArc.h for compatibility
 #       ARC was introduced in OS X 10.7 Lion, so no ARC flags for older systems
 # NOTE: gcc-4.0 doesn't support -std=c99, use -std=gnu99 or omit
+# Add -MMD -MP for automatic dependency generation (only recompile what changed)
 ifeq ($(GCC_VERSION),4.0)
-  CFLAGS = -Wall -O2 $(ARCH_FLAGS)
-  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
+  CFLAGS = -Wall -O2 $(ARCH_FLAGS) -MMD -MP
+  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS) -MMD -MP
 else
-  CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS)
-  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
+  CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS) -MMD -MP
+  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS) -MMD -MP
 endif
 
 # SDK flags
@@ -392,7 +393,7 @@ run: app
 clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf $(BUILD_DIR)
-	@rm -f *.o
+	@rm -f *.o *.d
 	@echo "Clean complete."
 
 # Debug build
@@ -415,3 +416,7 @@ sources:
 	@echo ""
 	@echo "Object files:"
 	@for obj in $(OBJECTS); do echo "  $$obj"; done
+
+# Include auto-generated dependency files
+# The - prefix means don't error if files don't exist yet (first build)
+-include $(OBJECTS:.o=.d)
