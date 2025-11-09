@@ -23,7 +23,7 @@
 
 APP_NAME = ClaudeChat
 BUNDLE_ID = com.nyteshade.anthropic-classic
-VERSION = 1.0
+VERSION = 1.1.0
 BUILD_NUMBER = 1
 
 
@@ -89,9 +89,18 @@ else
 endif
 
 # PowerPC detection - don't override platform, just note it
+# Check for "ppc", "powerpc", or "Power" in architecture string
 IS_PPC = no
 ifneq (,$(findstring ppc,$(ARCH)))
   IS_PPC = yes
+endif
+ifneq (,$(findstring powerpc,$(ARCH)))
+  IS_PPC = yes
+endif
+ifneq (,$(findstring Power,$(ARCH)))
+  IS_PPC = yes
+endif
+ifeq ($(IS_PPC),yes)
   # PowerPC systems need OpenSSL regardless of OS version
   NEEDS_OPENSSL = yes
 endif
@@ -177,15 +186,23 @@ endif
 
 # Base compiler flags
 # NOTE: We use manual reference counting (MRC) via SAFEArc.h for compatibility
-#       ARC was introduced in OS X 10.7 Lion, so we explicitly disable it
+#       ARC was introduced in OS X 10.7 Lion, so we disable it on modern compilers
+# NOTE: gcc-4.0 and gcc-4.2 don't support -fno-objc-arc (ARC didn't exist yet)
 # NOTE: gcc-4.0 doesn't support -std=c99, use -std=gnu99 or omit
 # Add -MMD -MP for automatic dependency generation (only recompile what changed)
 ifeq ($(GCC_VERSION),4.0)
   CFLAGS = -Wall -O2 $(ARCH_FLAGS) -MMD -MP
-  OBJCFLAGS = -Wall -O2 -ObjC -fno-objc-arc $(ARCH_FLAGS) -MMD -MP
+  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS) -MMD -MP
 else
-  CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS) -MMD -MP
-  OBJCFLAGS = -Wall -O2 -ObjC -fno-objc-arc $(ARCH_FLAGS) -MMD -MP
+  ifeq ($(CC),clang)
+    # Clang supports -fno-objc-arc, use it to explicitly disable ARC
+    CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS) -MMD -MP
+    OBJCFLAGS = -Wall -O2 -ObjC -fno-objc-arc $(ARCH_FLAGS) -MMD -MP
+  else
+    # GCC 4.2 and earlier don't have ARC, so no flag needed
+    CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS) -MMD -MP
+    OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS) -MMD -MP
+  endif
 endif
 
 # SDK flags
