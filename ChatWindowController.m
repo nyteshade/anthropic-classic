@@ -54,12 +54,12 @@
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [self removeAllCodeBlockButtons];
-  [codeBlockButtons release];
-  [codeBlockRanges release];
-  [apiManager release];
-  [chatHistory release];
-  [messageScrollView release];
-  [super dealloc];
+  SAFE_ARC_RELEASE(codeBlockButtons);
+  SAFE_ARC_RELEASE(codeBlockRanges);
+  SAFE_ARC_RELEASE(apiManager);
+  SAFE_ARC_RELEASE(chatHistory);
+  SAFE_ARC_RELEASE(messageScrollView);
+  SAFE_ARC_SUPER_DEALLOC;
 }
 
 - (float) calculateButtonWidth:(NSString*)title 

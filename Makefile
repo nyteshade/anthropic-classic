@@ -162,15 +162,15 @@ endif
 
 # Base compiler flags
 # NOTE: We use manual reference counting (MRC) via SAFEArc.h for compatibility
-#       ARC was introduced in OS X 10.7 Lion, so no ARC flags for older systems
+#       ARC was introduced in OS X 10.7 Lion, so we explicitly disable it
 # NOTE: gcc-4.0 doesn't support -std=c99, use -std=gnu99 or omit
 # Add -MMD -MP for automatic dependency generation (only recompile what changed)
 ifeq ($(GCC_VERSION),4.0)
   CFLAGS = -Wall -O2 $(ARCH_FLAGS) -MMD -MP
-  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS) -MMD -MP
+  OBJCFLAGS = -Wall -O2 -ObjC -fno-objc-arc $(ARCH_FLAGS) -MMD -MP
 else
   CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS) -MMD -MP
-  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS) -MMD -MP
+  OBJCFLAGS = -Wall -O2 -ObjC -fno-objc-arc $(ARCH_FLAGS) -MMD -MP
 endif
 
 # SDK flags

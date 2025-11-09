@@ -12,13 +12,13 @@
 @implementation AppDelegate
 
 - (void)dealloc {
-  [chatWindowController release];
-  [apiKey release];
-  [selectedModel release];
-  [availableModels release];
-  [monospaceFontName release];
-  [proportionalFontName release];
-  [super dealloc];
+  SAFE_ARC_RELEASE(chatWindowController);
+  SAFE_ARC_RELEASE(apiKey);
+  SAFE_ARC_RELEASE(selectedModel);
+  SAFE_ARC_RELEASE(availableModels);
+  SAFE_ARC_RELEASE(monospaceFontName);
+  SAFE_ARC_RELEASE(proportionalFontName);
+  SAFE_ARC_SUPER_DEALLOC;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
@@ -30,32 +30,32 @@
   
   // Load preferences
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  apiKey = [[defaults stringForKey:@"ClaudeAPIKey"] retain];
-  selectedModel = [[defaults stringForKey:@"ClaudeSelectedModel"] retain];
+  apiKey = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeAPIKey"]);
+  selectedModel = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeSelectedModel"]);
   isDarkMode = [defaults boolForKey:@"ClaudeChatDarkMode"];
   fontSizeAdjustment = [defaults integerForKey:@"ClaudeChatFontSizeAdjustment"];
-  
+
   // Load font preferences
-  monospaceFontName = [[defaults stringForKey:@"ClaudeChatMonospaceFontName"] retain];
-  proportionalFontName = [[defaults stringForKey:@"ClaudeChatProportionalFontName"] retain];
+  monospaceFontName = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeChatMonospaceFontName"]);
+  proportionalFontName = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeChatProportionalFontName"]);
   monospaceFontSize = [defaults floatForKey:@"ClaudeChatMonospaceFontSize"];
   proportionalFontSize = [defaults floatForKey:@"ClaudeChatProportionalFontSize"];
-  
+
   // Set default fonts if not configured
   if (!monospaceFontName || [monospaceFontName length] == 0) {
-    monospaceFontName = [@"Monaco" retain];
+    monospaceFontName = SAFE_ARC_RETAIN(@"Monaco");
     monospaceFontSize = 11.0;
   }
   if (!proportionalFontName || [proportionalFontName length] == 0) {
-    proportionalFontName = [@"Lucida Grande" retain];
+    proportionalFontName = SAFE_ARC_RETAIN(@"Lucida Grande");
     proportionalFontSize = 13.0;
   }
   if (monospaceFontSize == 0) monospaceFontSize = 11.0;
   if (proportionalFontSize == 0) proportionalFontSize = 13.0;
-  
+
   // Default to Claude Haiku 3 if no model selected
   if (!selectedModel || [selectedModel length] == 0) {
-    selectedModel = [@"claude-3-haiku-20240307" retain];
+    selectedModel = SAFE_ARC_RETAIN(@"claude-3-haiku-20240307");
   }
   
   // Create and show main window
@@ -82,9 +82,9 @@
 
 - (void)setApiKey:(NSString *)key {
   if (apiKey != key) {
-    [apiKey release];
-    apiKey = [key retain];
-    
+    SAFE_ARC_RELEASE(apiKey);
+    apiKey = SAFE_ARC_RETAIN(key);
+
     // Save to preferences
     [[NSUserDefaults standardUserDefaults] setObject:apiKey forKey:@"ClaudeAPIKey"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -524,16 +524,16 @@
 
 - (void)setSelectedModel:(NSString *)model {
   if (selectedModel != model) {
-    [selectedModel release];
-    selectedModel = [model retain];
-    
+    SAFE_ARC_RELEASE(selectedModel);
+    selectedModel = SAFE_ARC_RETAIN(model);
+
     // Save to preferences
     [[NSUserDefaults standardUserDefaults] setObject:selectedModel forKey:@"ClaudeSelectedModel"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
     // Update menu checkmarks
     [self updateModelMenuCheckmarks];
-    
+
     // Update window title
     if (chatWindowController) {
       [chatWindowController updateWindowTitle];
@@ -805,8 +805,8 @@
   if (!currentFont) currentFont = [NSFont systemFontOfSize:proportionalFontSize];
   NSFont *newFont = [[NSFontManager sharedFontManager] convertFont:currentFont];
   if (newFont) {
-    [proportionalFontName release];
-    proportionalFontName = [[newFont fontName] retain];
+    SAFE_ARC_RELEASE(proportionalFontName);
+    proportionalFontName = SAFE_ARC_RETAIN([newFont fontName]);
     proportionalFontSize = [newFont pointSize];
     
     // Update display field in preferences window
@@ -825,8 +825,8 @@
   if (!currentFont) currentFont = [NSFont userFixedPitchFontOfSize:monospaceFontSize];
   NSFont *newFont = [[NSFontManager sharedFontManager] convertFont:currentFont];
   if (newFont) {
-    [monospaceFontName release];
-    monospaceFontName = [[newFont fontName] retain];
+    SAFE_ARC_RELEASE(monospaceFontName);
+    monospaceFontName = SAFE_ARC_RETAIN([newFont fontName]);
     monospaceFontSize = [newFont pointSize];
     
     // Update display field in preferences window

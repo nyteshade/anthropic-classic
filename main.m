@@ -5,18 +5,18 @@
 
 #import <Cocoa/Cocoa.h>
 #import "AppDelegate.h"
+#import "SAFEArc.h"
 
 int main(int argc, char *argv[]) {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
+    SAFE_ARC_AUTORELEASE_POOL_PUSH();
+
     NSApplication *application = [NSApplication sharedApplication];
-    AppDelegate *appDelegate = [[AppDelegate alloc] init];
-    
+    AppDelegate *appDelegate = SAFE_ARC_AUTORELEASE([[AppDelegate alloc] init]);
+
     [application setDelegate:appDelegate];
     [application run];
-    
-    [appDelegate release];
-    [pool release];
-    
+
+    SAFE_ARC_AUTORELEASE_POOL_POP();
+
     return 0;
 }
