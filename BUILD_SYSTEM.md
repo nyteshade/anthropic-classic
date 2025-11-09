@@ -37,16 +37,30 @@ make xcode
 
 The build system automatically detects your platform and configures appropriately:
 
-| Platform | OS Version | Compiler | OpenSSL | Min Target |
-|----------|------------|----------|---------|------------|
-| **tiger** | 10.4 | gcc-4.2 | MacPorts | 10.4 |
-| **leopard** | 10.5 | gcc-4.2 | MacPorts | 10.5 |
-| **snow** | 10.6 | gcc-4.2 | MacPorts | 10.6 |
-| **lion** | 10.7 | gcc-4.2 | MacPorts | 10.7 |
-| **mountain** | 10.8 | gcc-4.2 | MacPorts | 10.8 |
-| **modern** | 10.9+ | clang | System | 10.9+ |
+| Platform | OS Version | Compiler | OpenSSL | Min Target | ARC Support |
+|----------|------------|----------|---------|------------|-------------|
+| **tiger** | 10.4 | gcc-4.2* | MacPorts | 10.4 | No (MRC) |
+| **leopard** | 10.5 | gcc-4.2* | MacPorts | 10.5 | No (MRC) |
+| **snow** | 10.6 | gcc-4.2* | MacPorts | 10.6 | No (MRC) |
+| **lion** | 10.7 | gcc-4.2* | MacPorts | 10.7 | Yes** |
+| **mountain** | 10.8 | gcc-4.2* | MacPorts | 10.8 | Yes** |
+| **modern** | 10.9+ | clang | System | 10.9+ | Yes** |
+
+\* Auto-detects `gcc-apple-4.2` → `gcc-4.2` → `gcc` (uses first available)
+\** ARC available but not used - project uses MRC with SAFEArc.h for compatibility
 
 PowerPC systems automatically select Tiger platform.
+
+## Memory Management
+
+This project uses **Manual Reference Counting (MRC)** for maximum compatibility:
+
+- **No ARC flags**: The build system does not use `-fobjc-arc-exceptions` or any ARC-related flags
+- **SAFEArc.h**: Provides compatibility macros for retain/release across all platforms
+- **Tiger Compatible**: Works on OS X 10.4 where ARC doesn't exist
+- **Future Proof**: Can be compiled on modern systems without ARC
+
+**Note**: ARC was introduced in OS X 10.7 Lion (2011). Since we support Tiger (10.4), all code uses manual `retain`/`release`/`autorelease`.
 
 ## Platform-Specific Sources
 

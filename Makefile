@@ -92,29 +92,51 @@ endif
 # MARK: - Compiler Configuration
 ################################################################################
 
+# Detect available GCC compiler (try gcc-apple-4.2 first, then gcc-4.2)
+GCC_APPLE := $(shell which gcc-apple-4.2 2>/dev/null)
+GCC_STANDARD := $(shell which gcc-4.2 2>/dev/null)
+
+ifneq ($(GCC_APPLE),)
+  GCC_COMPILER = gcc-apple-4.2
+else ifneq ($(GCC_STANDARD),)
+  GCC_COMPILER = gcc-4.2
+else
+  GCC_COMPILER = gcc
+endif
+
 # Select compiler based on platform
 ifeq ($(PLATFORM),tiger)
-  CC = gcc-apple-4.2
+  CC = $(GCC_COMPILER)
   OBJC = $(CC)
   ARCH_FLAGS =
 else ifeq ($(PLATFORM),leopard)
-  CC = gcc-apple-4.2
+  CC = $(GCC_COMPILER)
   OBJC = $(CC)
   ARCH_FLAGS = -arch x86_64
 else ifeq ($(PLATFORM),snow)
-  CC = gcc-apple-4.2
+  CC = $(GCC_COMPILER)
+  OBJC = $(CC)
+  ARCH_FLAGS = -arch x86_64
+else ifeq ($(PLATFORM),lion)
+  CC = $(GCC_COMPILER)
+  OBJC = $(CC)
+  ARCH_FLAGS = -arch x86_64
+else ifeq ($(PLATFORM),mountain)
+  CC = $(GCC_COMPILER)
   OBJC = $(CC)
   ARCH_FLAGS = -arch x86_64
 else
-  # Modern platforms - use clang
+  # Modern platforms (10.9+) - use clang
   CC = clang
   OBJC = clang
   ARCH_FLAGS = -arch x86_64
 endif
 
 # Base compiler flags
+# NOTE: We use manual reference counting (MRC) via SAFEArc.h for compatibility
+#       ARC was introduced in OS X 10.7 Lion, so no ARC flags for older systems
 CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS)
-OBJCFLAGS = -Wall -O2 -ObjC -fobjc-arc-exceptions $(ARCH_FLAGS)
+OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
 
 # SDK flags
 SDKFLAGS = -mmacosx-version-min=$(MIN_OS_VERSION)
@@ -223,6 +245,11 @@ info:
 	@echo "Min OS:        $(MIN_OS_VERSION)"
 	@echo "OpenSSL:       $(NEEDS_OPENSSL)"
 	@echo "Compiler:      $(CC)"
+ifneq ($(GCC_APPLE),)
+	@echo "GCC detected:  gcc-apple-4.2"
+else ifneq ($(GCC_STANDARD),)
+	@echo "GCC detected:  gcc-4.2"
+endif
 	@echo "=========================================="
 	@echo ""
 
