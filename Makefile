@@ -223,8 +223,15 @@ VPATH = $(SRC_DIRS)
 # MARK: - Source File Discovery
 ################################################################################
 
-# Find all .m files, excluding build and xcode directories
-ALL_M_FILES := $(shell find . -name "*.m" ! -path "./build/*" ! -path "./xcode/*" ! -path "./.git/*" -type f)
+# Find all .m files, excluding build, xcode directories, and variant files
+# Variant files (*_OpenSSL.m, *_Tiger.m) are excluded here and selected via substitution below
+ALL_M_FILES := $(shell find . -name "*.m" \
+  ! -path "./build/*" \
+  ! -path "./xcode/*" \
+  ! -path "./.git/*" \
+  ! -name "*_OpenSSL.m" \
+  ! -name "*_Tiger.m" \
+  -type f)
 
 # Find all .c files
 ALL_C_FILES := $(shell find . -name "*.c" ! -path "./build/*" ! -path "./xcode/*" ! -path "./.git/*" -type f)
@@ -252,11 +259,11 @@ C_SOURCES := $(foreach src,$(C_BASENAMES),$(call find-source,$(src)))
 ifeq ($(NEEDS_OPENSSL),yes)
   # Use OpenSSL version for HTTPS client (required for Tiger-Mountain Lion)
   M_SOURCES := $(subst HTTPSClient.m,HTTPSClient_OpenSSL.m,$(M_SOURCES))
-  M_SOURCES := $(filter-out %/HTTPSClient.m,$(M_SOURCES))
+  M_SOURCES := $(filter-out %HTTPSClient.m ./HTTPSClient.m,$(M_SOURCES))
 
   # Use Tiger-specific NetworkManager if it exists
   M_SOURCES := $(subst NetworkManager.m,NetworkManager_Tiger.m,$(M_SOURCES))
-  M_SOURCES := $(filter-out %/NetworkManager.m,$(M_SOURCES))
+  M_SOURCES := $(filter-out %NetworkManager.m ./NetworkManager.m,$(M_SOURCES))
 
   # ClaudeAPIManager.m works on all platforms (no substitution needed)
   # ThemeColors.m works on all platforms with conditional compilation (no substitution needed)
