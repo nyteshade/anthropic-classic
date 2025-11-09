@@ -52,26 +52,34 @@ ifeq ($(OS_MAJOR),10)
     PLATFORM = tiger
     MIN_OS_VERSION = 10.4
     NEEDS_OPENSSL = yes
-  else ifeq ($(OS_MINOR),5)
-    PLATFORM = leopard
-    MIN_OS_VERSION = 10.5
-    NEEDS_OPENSSL = yes
-  else ifeq ($(OS_MINOR),6)
-    PLATFORM = snow
-    MIN_OS_VERSION = 10.6
-    NEEDS_OPENSSL = yes
-  else ifeq ($(OS_MINOR),7)
-    PLATFORM = lion
-    MIN_OS_VERSION = 10.7
-    NEEDS_OPENSSL = yes
-  else ifeq ($(OS_MINOR),8)
-    PLATFORM = mountain
-    MIN_OS_VERSION = 10.8
-    NEEDS_OPENSSL = yes
   else
-    PLATFORM = modern
-    MIN_OS_VERSION = 10.9
-    NEEDS_OPENSSL = no
+    ifeq ($(OS_MINOR),5)
+      PLATFORM = leopard
+      MIN_OS_VERSION = 10.5
+      NEEDS_OPENSSL = yes
+    else
+      ifeq ($(OS_MINOR),6)
+        PLATFORM = snow
+        MIN_OS_VERSION = 10.6
+        NEEDS_OPENSSL = yes
+      else
+        ifeq ($(OS_MINOR),7)
+          PLATFORM = lion
+          MIN_OS_VERSION = 10.7
+          NEEDS_OPENSSL = yes
+        else
+          ifeq ($(OS_MINOR),8)
+            PLATFORM = mountain
+            MIN_OS_VERSION = 10.8
+            NEEDS_OPENSSL = yes
+          else
+            PLATFORM = modern
+            MIN_OS_VERSION = 10.9
+            NEEDS_OPENSSL = no
+          endif
+        endif
+      endif
+    endif
   endif
 else
   # macOS 11+
@@ -98,10 +106,12 @@ GCC_STANDARD := $(shell which gcc-4.2 2>/dev/null)
 
 ifneq ($(GCC_APPLE),)
   GCC_COMPILER = gcc-apple-4.2
-else ifneq ($(GCC_STANDARD),)
-  GCC_COMPILER = gcc-4.2
 else
-  GCC_COMPILER = gcc
+  ifneq ($(GCC_STANDARD),)
+    GCC_COMPILER = gcc-4.2
+  else
+    GCC_COMPILER = gcc
+  endif
 endif
 
 # Select compiler based on platform
@@ -109,27 +119,35 @@ ifeq ($(PLATFORM),tiger)
   CC = $(GCC_COMPILER)
   OBJC = $(CC)
   ARCH_FLAGS =
-else ifeq ($(PLATFORM),leopard)
-  CC = $(GCC_COMPILER)
-  OBJC = $(CC)
-  ARCH_FLAGS = -arch x86_64
-else ifeq ($(PLATFORM),snow)
-  CC = $(GCC_COMPILER)
-  OBJC = $(CC)
-  ARCH_FLAGS = -arch x86_64
-else ifeq ($(PLATFORM),lion)
-  CC = $(GCC_COMPILER)
-  OBJC = $(CC)
-  ARCH_FLAGS = -arch x86_64
-else ifeq ($(PLATFORM),mountain)
-  CC = $(GCC_COMPILER)
-  OBJC = $(CC)
-  ARCH_FLAGS = -arch x86_64
 else
-  # Modern platforms (10.9+) - use clang
-  CC = clang
-  OBJC = clang
-  ARCH_FLAGS = -arch x86_64
+  ifeq ($(PLATFORM),leopard)
+    CC = $(GCC_COMPILER)
+    OBJC = $(CC)
+    ARCH_FLAGS = -arch x86_64
+  else
+    ifeq ($(PLATFORM),snow)
+      CC = $(GCC_COMPILER)
+      OBJC = $(CC)
+      ARCH_FLAGS = -arch x86_64
+    else
+      ifeq ($(PLATFORM),lion)
+        CC = $(GCC_COMPILER)
+        OBJC = $(CC)
+        ARCH_FLAGS = -arch x86_64
+      else
+        ifeq ($(PLATFORM),mountain)
+          CC = $(GCC_COMPILER)
+          OBJC = $(CC)
+          ARCH_FLAGS = -arch x86_64
+        else
+          # Modern platforms (10.9+) - use clang
+          CC = clang
+          OBJC = clang
+          ARCH_FLAGS = -arch x86_64
+        endif
+      endif
+    endif
+  endif
 endif
 
 # Base compiler flags
@@ -248,8 +266,10 @@ info:
 	@echo "Compiler:      $(CC)"
 ifneq ($(GCC_APPLE),)
 	@echo "GCC detected:  gcc-apple-4.2"
-else ifneq ($(GCC_STANDARD),)
+else
+  ifneq ($(GCC_STANDARD),)
 	@echo "GCC detected:  gcc-4.2"
+  endif
 endif
 	@echo "=========================================="
 	@echo ""
