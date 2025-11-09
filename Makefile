@@ -334,6 +334,7 @@ $(APP_BUNDLE): | $(BUILD_DIR)
 $(MACOS_DIR)/$(APP_NAME): $(OBJECTS) | $(APP_BUNDLE)
 	@echo "Linking $(APP_NAME)..."
 	$(OBJC) $(OBJCFLAGS) $(SDKFLAGS) $(FRAMEWORKS) $(OPENSSL_LDFLAGS) -o $@ $(OBJECTS)
+	@chmod +x $@
 	@echo "Build complete: $@"
 
 # Compile Objective-C files
@@ -349,14 +350,20 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 # Create Info.plist
 $(CONTENTS_DIR)/Info.plist: Info.plist | $(APP_BUNDLE)
 	@echo "Copying Info.plist..."
-	@sed -e 's/<string>Anthropic-Classic<\/string>/<string>$(APP_NAME)<\/string>/' \
-	     -e '/LSMinimumSystemVersion/{ n; s/<string>[^<]*<\/string>/<string>$(MIN_OS_VERSION)<\/string>/; }' \
-	     -e '/CFBundleShortVersionString/{ n; s/<string>[^<]*<\/string>/<string>$(VERSION)<\/string>/; }' \
-	     -e '/CFBundleVersion/{ n; s/<string>[^<]*<\/string>/<string>$(BUILD_NUMBER)<\/string>/; }' \
-	     $< > $@
+	@cp $< $@.tmp
+	@sed -i '' 's/<string>Anthropic-Classic<\/string>/<string>$(APP_NAME)<\/string>/' $@.tmp
+	@sed -i '' '/LSMinimumSystemVersion/{' -e 'n' -e 's/<string>[^<]*<\/string>/<string>$(MIN_OS_VERSION)<\/string>/' -e '}' $@.tmp
+	@sed -i '' '/CFBundleShortVersionString/{' -e 'n' -e 's/<string>[^<]*<\/string>/<string>$(VERSION)<\/string>/' -e '}' $@.tmp
+	@sed -i '' '/CFBundleVersion/{' -e 'n' -e 's/<string>[^<]*<\/string>/<string>$(BUILD_NUMBER)<\/string>/' -e '}' $@.tmp
+	@mv $@.tmp $@
+
+# Create PkgInfo
+$(CONTENTS_DIR)/PkgInfo: | $(APP_BUNDLE)
+	@echo "Creating PkgInfo..."
+	@echo -n "APPL????" > $@
 
 # Build app
-app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist
+app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist $(CONTENTS_DIR)/PkgInfo
 	@echo ""
 	@echo "=========================================="
 	@echo "✓ Build successful!"
