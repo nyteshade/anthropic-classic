@@ -353,7 +353,6 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 $(CONTENTS_DIR)/Info.plist: Info.plist | $(APP_BUNDLE)
 	@echo "Copying Info.plist..."
 	@perl -pe 'BEGIN{undef $$/;} \
-	           s/<string>Anthropic-Classic<\/string>/<string>$(APP_NAME)<\/string>/; \
 	           s/(<key>LSMinimumSystemVersion<\/key>\s*<string>)[^<]*(<\/string>)/$$1$(MIN_OS_VERSION)$$2/s; \
 	           s/(<key>CFBundleShortVersionString<\/key>\s*<string>)[^<]*(<\/string>)/$$1$(VERSION)$$2/s; \
 	           s/(<key>CFBundleVersion<\/key>\s*<string>)[^<]*(<\/string>)/$$1$(BUILD_NUMBER)$$2/s' \
@@ -364,13 +363,24 @@ $(CONTENTS_DIR)/PkgInfo: | $(APP_BUNDLE)
 	@echo "Creating PkgInfo..."
 	@echo -n "APPL????" > $@
 
+# Copy icon file
+$(RESOURCES_DIR)/ClaudeClassic.icns: ClaudeClassic.icns | $(APP_BUNDLE)
+	@echo "Copying icon..."
+	@cp $< $@
+
 # Build app
-app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist $(CONTENTS_DIR)/PkgInfo
+app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist $(CONTENTS_DIR)/PkgInfo $(RESOURCES_DIR)/ClaudeClassic.icns
 	@echo ""
 	@echo "=========================================="
 	@echo "✓ Build successful!"
 	@echo "=========================================="
 	@echo "Application: $(APP_BUNDLE)"
+	@echo ""
+	@echo "Bundle structure:"
+	@ls -la $(MACOS_DIR)/
+	@echo ""
+	@echo "Info.plist executable name:"
+	@grep -A1 CFBundleExecutable $(CONTENTS_DIR)/Info.plist | tail -1
 	@echo ""
 
 # Run the app
