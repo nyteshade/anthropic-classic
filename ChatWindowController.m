@@ -10,6 +10,7 @@
 #import "ConversationManager.h"
 #import "ThemedView.h"
 #import "NESizingHelpers.h"
+#import "SAFEArc.h"
 
 #import "NSView+Essentials.h"
 #import "NSString+TextMeasure.h"
@@ -33,6 +34,21 @@
                            object:nil];
   }
   return self;
+}
+
+- (void)showWindow:(id)sender {
+  NSWindow *window;
+
+  window = [self window];
+  if (!window) {
+    NSLog(@"ERROR: ChatWindowController showWindow called but window is nil!");
+    return;
+  }
+
+  NSLog(@"ChatWindowController showWindow: centering and showing window");
+  [window center];
+  [window makeKeyAndOrderFront:sender];
+  NSLog(@"ChatWindowController showWindow: window should be visible now");
 }
 
 - (void)dealloc {
@@ -68,6 +84,7 @@
 }
 
 - (void)createWindow {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   // Create window - Tiger compatible with better default size
   NSRect frame = NSMakeRect(100, 100, 900, 700);
   NSUInteger styleMask = NSTitledWindowMask | NSClosableWindowMask | 
@@ -261,13 +278,15 @@
   
   // Apply initial theme
   [self updateTheme];
-  
+
   [window makeFirstResponder:messageField];
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 // Toolbar removed - controls integrated into window UI
 
 - (void)createConversationDrawer {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   NSWindow *window = [self window];
   
   // Create drawer
@@ -338,9 +357,11 @@
   [drawerContent addSubview:deleteButton];
   
   [conversationDrawer setContentView:drawerContent];
-  
+
+
   // Open drawer by default
   [conversationDrawer open];
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 - (void)textDidChange:(NSNotification *)notification {

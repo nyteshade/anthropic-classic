@@ -42,3 +42,10 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Old backup files
+*.old
+
+# Build artifacts
+build/
+*.o

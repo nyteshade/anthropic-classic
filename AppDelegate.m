@@ -7,6 +7,7 @@
 #import "ChatWindowController.h"
 #import "ThemeColors.h"
 #import "NSObject+Associations.h"
+#import "SAFEArc.h"
 
 @implementation AppDelegate
 
@@ -96,9 +97,11 @@
 }
 
 - (void)showPreferencesWindow {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   NSLog(@"showPreferencesWindow called, preferencesWindow=%@", preferencesWindow);
   if (preferencesWindow) {
     [preferencesWindow makeKeyAndOrderFront:nil];
+    SAFE_ARC_AUTORELEASE_POOL_POP();
     return;
   }
   
@@ -268,8 +271,9 @@
   
   NSLog(@"Created preferences window: %@", preferencesWindow);
   NSLog(@"Content view: %@", contentView);
-  
+
   [preferencesWindow makeKeyAndOrderFront:nil];
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
@@ -277,10 +281,11 @@
 }
 
 - (void)setupMenus {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   NSLog(@"Setting up menus, self=%@", self);
   // Clear any existing menu first to prevent duplication
   [NSApp setMainMenu:nil];
-  
+
   NSMenu *mainMenu = [[[NSMenu alloc] init] autorelease];
   NSMenuItem *menuItem;
   NSMenu *submenu;
@@ -477,16 +482,19 @@
         keyEquivalent:@"?"];
   
   [mainMenu setSubmenu:submenu forItem:menuItem];
-  
+
   [NSApp setMainMenu:mainMenu];
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 - (void)showAbout:(id)sender {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   NSAlert *alert = [[[NSAlert alloc] init] autorelease];
   [alert setMessageText:@"ClaudeChat"];
   [alert setInformativeText:@"A Mac OS X Tiger-compatible Claude AI chat client.\n\nVersion 1.0\n\nDesigned to work on Mac OS X 10.4 and later."];
   [alert addButtonWithTitle:@"OK"];
   [alert runModal];
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 - (void)showPreferences:(id)sender {
@@ -501,11 +509,13 @@
 }
 
 - (void)showHelp:(id)sender {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   NSAlert *alert = [[[NSAlert alloc] init] autorelease];
   [alert setMessageText:@"ClaudeChat Help"];
   [alert setInformativeText:@"To use ClaudeChat:\n\n1. Set your Claude API key in Preferences (Cmd+,)\n2. Type your message in the text field\n3. Press Enter or click Send\n4. Claude's response will appear in the chat\n\nKeyboard shortcuts:\n- Cmd+C: Copy\n- Cmd+V: Paste\n- Cmd+A: Select All\n- Cmd+N: New Conversation"];
   [alert addButtonWithTitle:@"OK"];
   [alert runModal];
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 - (NSString *)selectedModel {
@@ -532,6 +542,7 @@
 }
 
 - (void)addDefaultModelsToMenu {
+  SAFE_ARC_AUTORELEASE_POOL_PUSH();
   // Clear existing items
   while ([modelsMenu numberOfItems] > 0) {
     [modelsMenu removeItemAtIndex:0];
@@ -613,10 +624,10 @@
       [item setState:NSOnState];
     }
   }
-	
+
   [modelsMenu addItem:[NSMenuItem separatorItem]];
-  
-  
+
+  SAFE_ARC_AUTORELEASE_POOL_POP();
 }
 
 - (void)selectModel:(id)sender {

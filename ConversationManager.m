@@ -1,9 +1,21 @@
+////////////////////////////////////////////////////////////////////////////////
+// ConversationManager.m
+// ClaudeChat
 //
-//  ConversationManager.m
-//  ClaudeChat
+// Implementation of conversation management with optimized caching and
+// background persistence for scalability.
 //
+// Compatibility: Mac OS X 10.4 Tiger and later
+// Copyright (c) 2024 Nyteshade. All rights reserved.
+////////////////////////////////////////////////////////////////////////////////
 
 #import "ConversationManager.h"
+
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Conversation Implementation
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
 
 @implementation Conversation
 
@@ -13,200 +25,478 @@ NEMProperty(NSDate*, lastModified, setLastModified);
 NEMProperty(NSMutableArray*, messages, setMessages);
 NEMProperty(NSAttributedString*, displayContent, setDisplayContent);
 
-- (id)initWithTitle:(NSString *)aTitle {
-    self = [super init];
-    if (self) {
-        // Generate unique ID
-        _conversationId = [[NSString stringWithFormat:@"conv_%d_%d", 
-                          (int)[[NSDate date] timeIntervalSince1970], 
-                          arc4random()] retain];
-        _title = [aTitle retain];
-        _lastModified = [[NSDate date] retain];
-        _messages = [[NSMutableArray alloc] init];
-        _displayContent = nil;
-    }
-    return self;
-}
 
-- (void)dealloc {
-    [_conversationId release];
-    [_title release];
-    [_lastModified release];
-    [_messages release];
-    [_displayContent release];
-    [super dealloc];
-}
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Lifecycle
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
 
-- (void)addMessage:(NSDictionary *)message {
-    [_messages addObject:message];
-    [_lastModified release];
+- (id)initWithTitle:(NSString *)aTitle
+{
+  self = [super init];
+
+  if (self)
+  {
+    // Generate unique ID using timestamp and random number
+    _conversationId = [[NSString stringWithFormat:@"conv_%d_%d",
+                       (int)[[NSDate date] timeIntervalSince1970],
+                       arc4random()] retain];
+
+    _title = [aTitle retain];
     _lastModified = [[NSDate date] retain];
+    _messages = [[NSMutableArray alloc] init];
+    _displayContent = nil;
+  }
+
+  return self;
 }
 
-- (NSString *)summary {
-    if ([_messages count] > 0) {
-        NSDictionary *firstUserMessage = nil;
-        int i;
-        for (i = 0; i < [_messages count]; i++) {
-            NSDictionary *msg = [_messages objectAtIndex:i];
-            if ([[msg objectForKey:@"role"] isEqualToString:@"user"]) {
-                firstUserMessage = msg;
-                break;
-            }
-        }
-        if (firstUserMessage) {
-            NSString *content = [firstUserMessage objectForKey:@"content"];
-            if ([content length] > 50) {
-                return [[content substringToIndex:50] stringByAppendingString:@"..."];
-            }
-            return content;
-        }
+
+- (void)dealloc
+{
+  [_conversationId release];
+  [_title release];
+  [_lastModified release];
+  [_messages release];
+  [_displayContent release];
+
+  [super dealloc];
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Message Management
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
+- (void)addMessage:(NSDictionary *)message
+{
+  [_messages addObject:message];
+
+  // Update modification time
+  [_lastModified release];
+  _lastModified = [[NSDate date] retain];
+
+  // Invalidate cached display content
+  [_displayContent release];
+  _displayContent = nil;
+}
+
+
+- (NSString *)summary
+{
+  NSDictionary *firstUserMessage = nil;
+  int i;
+
+  // Find first user message for summary
+  if ([_messages count] > 0)
+  {
+    for (i = 0; i < [_messages count]; i++)
+    {
+      NSDictionary *msg = [_messages objectAtIndex:i];
+
+      if ([[msg objectForKey:@"role"] isEqualToString:@"user"])
+      {
+        firstUserMessage = msg;
+        break;
+      }
     }
-    return _title;
+
+    if (firstUserMessage)
+    {
+      NSString *content = [firstUserMessage objectForKey:@"content"];
+
+      // Truncate long messages
+      if ([content length] > 50)
+      {
+        return [[content substringToIndex:50] stringByAppendingString:@"..."];
+      }
+
+      return content;
+    }
+  }
+
+  // Fallback to title if no messages
+  return _title;
 }
 
 @end
+
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - ConversationManager Implementation
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
 
 @implementation ConversationManager
 
 static ConversationManager *sharedInstance = nil;
 
-+ (ConversationManager *)sharedManager {
-    if (sharedInstance == nil) {
-        sharedInstance = [[ConversationManager alloc] init];
-    }
-    return sharedInstance;
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Singleton
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
++ (ConversationManager *)sharedManager
+{
+  if (sharedInstance == nil)
+  {
+    sharedInstance = [[ConversationManager alloc] init];
+  }
+
+  return sharedInstance;
 }
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        conversations = [[NSMutableArray alloc] init];
-        
-        // Set up storage directory
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, 
-                                                             NSUserDomainMask, YES);
-        NSString *appSupport = [paths objectAtIndex:0];
-        storageDirectory = [[appSupport stringByAppendingPathComponent:@"ClaudeChat"] retain];
-        
-        // Create directory if needed
-        NSFileManager *fm = [NSFileManager defaultManager];
-        BOOL isDir;
-        if (![fm fileExistsAtPath:storageDirectory isDirectory:&isDir]) {
-            [fm createDirectoryAtPath:storageDirectory attributes:[NSDictionary dictionary]];
-        }
-        
-        // Load existing conversations
-        [self loadConversations];
-        
-        // Create initial conversation if none exist
-        if ([conversations count] == 0) {
-            [self createNewConversation];
-        } else {
-            currentConversation = [[conversations objectAtIndex:0] retain];
-        }
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Lifecycle
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
+- (id)init
+{
+  NSArray *paths;
+  NSString *appSupport;
+  NSFileManager *fm;
+  BOOL isDir;
+
+  self = [super init];
+
+  if (self)
+  {
+    // Initialize conversation storage
+    conversations = [[NSMutableArray alloc] init];
+
+    // Initialize cache
+    cachedSortedConversations = nil;
+    sortCacheValid = NO;
+
+    // Set up storage directory
+    paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                 NSUserDomainMask, YES);
+    appSupport = [paths objectAtIndex:0];
+    storageDirectory = [[appSupport stringByAppendingPathComponent:@"ClaudeChat"] retain];
+
+    // Create directory if needed
+    fm = [NSFileManager defaultManager];
+    if (![fm fileExistsAtPath:storageDirectory isDirectory:&isDir])
+    {
+      [fm createDirectoryAtPath:storageDirectory
+                     attributes:[NSDictionary dictionary]];
     }
-    return self;
+
+    // Load existing conversations from disk
+    [self loadConversations];
+
+    // Ensure we always have at least one conversation
+    if ([conversations count] == 0)
+    {
+      [self createNewConversation];
+    }
+    else
+    {
+      currentConversation = [[conversations objectAtIndex:0] retain];
+    }
+  }
+
+  return self;
 }
 
-- (void)dealloc {
-    [conversations release];
+
+- (void)dealloc
+{
+  [conversations release];
+  [currentConversation release];
+  [storageDirectory release];
+  [cachedSortedConversations release];
+
+  [super dealloc];
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Conversation Access
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
+- (NSArray *)allConversations
+{
+  NSSortDescriptor *sortDesc;
+
+  // Return cached result if valid
+  if (sortCacheValid && cachedSortedConversations)
+  {
+    return cachedSortedConversations;
+  }
+
+  // Sort conversations by last modified date (newest first)
+  sortDesc = [[[NSSortDescriptor alloc]
+              initWithKey:@"lastModified"
+              ascending:NO] autorelease];
+
+  [cachedSortedConversations release];
+  cachedSortedConversations = [[conversations sortedArrayUsingDescriptors:
+                               [NSArray arrayWithObject:sortDesc]] retain];
+
+  sortCacheValid = YES;
+
+  return cachedSortedConversations;
+}
+
+
+- (Conversation *)currentConversation
+{
+  return currentConversation;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Conversation Management
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
+- (Conversation *)createNewConversation
+{
+  NSString *title;
+  Conversation *newConv;
+
+  // Generate default title
+  title = [NSString stringWithFormat:@"Chat %lu",
+          (unsigned long)([conversations count] + 1)];
+
+  newConv = [[[Conversation alloc] initWithTitle:title] autorelease];
+  [conversations addObject:newConv];
+
+  // Invalidate sort cache
+  [self invalidateSortCache];
+
+  // Select as current conversation
+  [self selectConversation:newConv];
+
+  return newConv;
+}
+
+
+- (void)selectConversation:(Conversation *)conversation
+{
+  if (currentConversation != conversation)
+  {
+    // Save current before switching
+    [self saveCurrentConversationInBackground];
+
+    // Switch to new conversation
     [currentConversation release];
-    [storageDirectory release];
-    [super dealloc];
+    currentConversation = [conversation retain];
+  }
 }
 
-- (NSArray *)allConversations {
-    // Sort by last modified date
-    NSSortDescriptor *sortDesc = [[[NSSortDescriptor alloc] 
-                                   initWithKey:@"lastModified" 
-                                   ascending:NO] autorelease];
-    return [conversations sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDesc]];
-}
 
-- (Conversation *)currentConversation {
-    return currentConversation;
-}
+- (void)deleteConversation:(Conversation *)conversation
+{
+  NSString *filename;
+  NSString *path;
 
-- (Conversation *)createNewConversation {
-    NSString *title = [NSString stringWithFormat:@"Chat %lu", (unsigned long)([conversations count] + 1)];
-    Conversation *newConv = [[[Conversation alloc] initWithTitle:title] autorelease];
-    [conversations addObject:newConv];
-    [self selectConversation:newConv];
-    return newConv;
-}
+  // Build file path
+  filename = [[conversation conversationId] stringByAppendingPathExtension:@"plist"];
+  path = [storageDirectory stringByAppendingPathComponent:filename];
 
-- (void)selectConversation:(Conversation *)conversation {
-    if (currentConversation != conversation) {
-        [self saveCurrentConversation];
-        [currentConversation release];
-        currentConversation = [conversation retain];
+  // Delete from disk
+  [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+
+  // Handle current conversation
+  if (currentConversation == conversation)
+  {
+    [currentConversation release];
+    currentConversation = nil;
+  }
+
+  // Remove from array
+  [conversations removeObject:conversation];
+
+  // Invalidate cache
+  [self invalidateSortCache];
+
+  // Ensure we have a current conversation
+  if (currentConversation == nil)
+  {
+    if ([conversations count] > 0)
+    {
+      currentConversation = [[conversations objectAtIndex:0] retain];
     }
+    else
+    {
+      // Create new conversation when all are deleted
+      [self createNewConversation];
+    }
+  }
 }
 
-- (void)saveCurrentConversation {
-    if (!currentConversation) return;
-    
-    NSString *filename = [[currentConversation conversationId] stringByAppendingPathExtension:@"plist"];
-    NSString *path = [storageDirectory stringByAppendingPathComponent:filename];
-    
-    NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                          [currentConversation conversationId], @"id",
-                          [currentConversation title], @"title",
-                          [currentConversation lastModified], @"lastModified",
-                          [currentConversation messages], @"messages",
-                          nil];
-    
-    [data writeToFile:path atomically:YES];
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Persistence
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
+- (void)saveCurrentConversation
+{
+  NSString *filename;
+  NSString *path;
+  NSDictionary *data;
+
+  if (!currentConversation)
+  {
+    return;
+  }
+
+  // Build file path
+  filename = [[currentConversation conversationId]
+             stringByAppendingPathExtension:@"plist"];
+  path = [storageDirectory stringByAppendingPathComponent:filename];
+
+  // Create data dictionary
+  data = [NSDictionary dictionaryWithObjectsAndKeys:
+         [currentConversation conversationId], @"id",
+         [currentConversation title], @"title",
+         [currentConversation lastModified], @"lastModified",
+         [currentConversation messages], @"messages",
+         nil];
+
+  // Write to disk
+  [data writeToFile:path atomically:YES];
 }
 
-- (void)loadConversations {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSArray *files = [fm directoryContentsAtPath:storageDirectory];
-    
-    int i;
-    for (i = 0; i < [files count]; i++) {
-        NSString *file = [files objectAtIndex:i];
-        if ([[file pathExtension] isEqualToString:@"plist"]) {
-            NSString *path = [storageDirectory stringByAppendingPathComponent:file];
-            NSDictionary *data = [NSDictionary dictionaryWithContentsOfFile:path];
-            
-            if (data) {
-                Conversation *conv = [[[Conversation alloc] init] autorelease];
-                [conv setConversationId:[data objectForKey:@"id"]];
-                [conv setTitle:[data objectForKey:@"title"]];
-                [conv setLastModified:[data objectForKey:@"lastModified"]];
-                [conv setMessages:[NSMutableArray arrayWithArray:[data objectForKey:@"messages"]]];
-                [conversations addObject:conv];
-            }
-        }
-    }
+
+- (void)saveCurrentConversationInBackground
+{
+  Conversation *conv;
+
+  if (!currentConversation)
+  {
+    return;
+  }
+
+  // Retain conversation for background operation
+  conv = [currentConversation retain];
+
+  // Perform save on background thread
+  [self performSelectorInBackground:@selector(saveConversationToFile:)
+                         withObject:conv];
 }
 
-- (void)deleteConversation:(Conversation *)conversation {
-    NSString *filename = [[conversation conversationId] stringByAppendingPathExtension:@"plist"];
-    NSString *path = [storageDirectory stringByAppendingPathComponent:filename];
-    
-    [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-    
-    // Handle current conversation first before removing from array
-    if (currentConversation == conversation) {
-        [currentConversation release];
-        currentConversation = nil;
+
+- (void)saveConversationToFile:(Conversation *)conversation
+{
+  NSAutoreleasePool *pool;
+  NSString *filename;
+  NSString *path;
+  NSDictionary *data;
+
+  pool = [[NSAutoreleasePool alloc] init];
+
+  // Build file path
+  filename = [[conversation conversationId]
+             stringByAppendingPathExtension:@"plist"];
+  path = [storageDirectory stringByAppendingPathComponent:filename];
+
+  // Create data dictionary
+  data = [NSDictionary dictionaryWithObjectsAndKeys:
+         [conversation conversationId], @"id",
+         [conversation title], @"title",
+         [conversation lastModified], @"lastModified",
+         [conversation messages], @"messages",
+         nil];
+
+  // Write to disk
+  [data writeToFile:path atomically:YES];
+
+  // Release retained conversation
+  [conversation release];
+
+  [pool release];
+}
+
+
+- (void)loadConversations
+{
+  NSFileManager *fm;
+  NSArray *files;
+  NSMutableArray *plistFiles;
+  NSSortDescriptor *sortDesc;
+  NSUInteger loadLimit;
+  int i;
+
+  fm = [NSFileManager defaultManager];
+  files = [fm directoryContentsAtPath:storageDirectory];
+  plistFiles = [NSMutableArray array];
+
+  // Collect plist files with modification dates
+  for (i = 0; i < [files count]; i++)
+  {
+    NSString *file = [files objectAtIndex:i];
+
+    if ([[file pathExtension] isEqualToString:@"plist"])
+    {
+      NSString *path = [storageDirectory stringByAppendingPathComponent:file];
+      NSDictionary *attrs = [fm fileAttributesAtPath:path traverseLink:YES];
+      NSDictionary *fileInfo;
+
+      fileInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                 path, @"path",
+                 [attrs fileModificationDate], @"modified",
+                 nil];
+
+      [plistFiles addObject:fileInfo];
     }
-    
-    [conversations removeObject:conversation];
-    
-    // Now select or create new conversation
-    if (currentConversation == nil) {
-        if ([conversations count] > 0) {
-            currentConversation = [[conversations objectAtIndex:0] retain];
-        } else {
-            // Create new conversation when all are deleted
-            // createNewConversation already adds it to the array and selects it
-            [self createNewConversation];
-        }
+  }
+
+  // Sort by modification date (newest first)
+  sortDesc = [NSSortDescriptor sortDescriptorWithKey:@"modified"
+                                          ascending:NO];
+  [plistFiles sortUsingDescriptors:[NSArray arrayWithObject:sortDesc]];
+
+  // Limit number of conversations loaded into memory
+  loadLimit = [plistFiles count];
+  if (loadLimit > MAX_CONVERSATIONS_IN_MEMORY)
+  {
+    loadLimit = MAX_CONVERSATIONS_IN_MEMORY;
+  }
+
+  // Load conversations from files
+  for (i = 0; i < loadLimit; i++)
+  {
+    NSString *path = [[plistFiles objectAtIndex:i] objectForKey:@"path"];
+    NSDictionary *data = [NSDictionary dictionaryWithContentsOfFile:path];
+
+    if (data)
+    {
+      Conversation *conv = [[[Conversation alloc] init] autorelease];
+
+      [conv setConversationId:[data objectForKey:@"id"]];
+      [conv setTitle:[data objectForKey:@"title"]];
+      [conv setLastModified:[data objectForKey:@"lastModified"]];
+      [conv setMessages:[NSMutableArray arrayWithArray:
+                        [data objectForKey:@"messages"]]];
+
+      [conversations addObject:conv];
     }
+  }
+
+  // Invalidate cache after loading
+  [self invalidateSortCache];
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Cache Management
+// MARK: -
+////////////////////////////////////////////////////////////////////////////////
+
+- (void)invalidateSortCache
+{
+  [cachedSortedConversations release];
+  cachedSortedConversations = nil;
+  sortCacheValid = NO;
 }
 
 @end

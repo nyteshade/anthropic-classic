@@ -1,6 +1,8 @@
 //
-//  ClaudeAPIManager_Tiger.m
+//  ClaudeAPIManager.m
 //  ClaudeChat
+//
+//  Compatible with Mac OS X 10.4 Tiger and later
 //
 
 #import "ClaudeAPIManager.h"

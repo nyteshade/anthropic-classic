@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "TigerCompat.h"
 
 @interface NSString (TextMeasure)
 
