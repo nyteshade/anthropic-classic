@@ -349,10 +349,10 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 # Create Info.plist
 $(CONTENTS_DIR)/Info.plist: Info.plist | $(APP_BUNDLE)
 	@echo "Copying Info.plist..."
-	@sed -e 's/\(CFBundleExecutable.*\)<string>.*<\/string>/\1<string>$(APP_NAME)<\/string>/' \
-	     -e 's/\(LSMinimumSystemVersion.*\)<string>.*<\/string>/\1<string>$(MIN_OS_VERSION)<\/string>/' \
-	     -e 's/\(CFBundleShortVersionString.*\)<string>.*<\/string>/\1<string>$(VERSION)<\/string>/' \
-	     -e 's/\(CFBundleVersion.*\)<string>.*<\/string>/\1<string>$(BUILD_NUMBER)<\/string>/' \
+	@sed -e 's/<string>Anthropic-Classic<\/string>/<string>$(APP_NAME)<\/string>/' \
+	     -e '/LSMinimumSystemVersion/{ n; s/<string>[^<]*<\/string>/<string>$(MIN_OS_VERSION)<\/string>/; }' \
+	     -e '/CFBundleShortVersionString/{ n; s/<string>[^<]*<\/string>/<string>$(VERSION)<\/string>/; }' \
+	     -e '/CFBundleVersion/{ n; s/<string>[^<]*<\/string>/<string>$(BUILD_NUMBER)<\/string>/; }' \
 	     $< > $@
 
 # Build app
