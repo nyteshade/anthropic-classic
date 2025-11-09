@@ -100,17 +100,27 @@ endif
 # MARK: - Compiler Configuration
 ################################################################################
 
-# Detect available GCC compiler (try gcc-apple-4.2 first, then gcc-4.2)
-GCC_APPLE := $(shell which gcc-apple-4.2 2>/dev/null)
-GCC_STANDARD := $(shell which gcc-4.2 2>/dev/null)
+# Detect available GCC compiler
+# Try in order: gcc-apple-4.2, gcc-4.2, gcc-4.0, gcc
+GCC_APPLE_42 := $(shell which gcc-apple-4.2 2>/dev/null)
+GCC_42 := $(shell which gcc-4.2 2>/dev/null)
+GCC_40 := $(shell which gcc-4.0 2>/dev/null)
 
-ifneq ($(GCC_APPLE),)
+ifneq ($(GCC_APPLE_42),)
   GCC_COMPILER = gcc-apple-4.2
+  GCC_VERSION = 4.2
 else
-  ifneq ($(GCC_STANDARD),)
+  ifneq ($(GCC_42),)
     GCC_COMPILER = gcc-4.2
+    GCC_VERSION = 4.2
   else
-    GCC_COMPILER = gcc
+    ifneq ($(GCC_40),)
+      GCC_COMPILER = gcc-4.0
+      GCC_VERSION = 4.0
+    else
+      GCC_COMPILER = gcc
+      GCC_VERSION = unknown
+    endif
   endif
 endif
 
@@ -153,8 +163,14 @@ endif
 # Base compiler flags
 # NOTE: We use manual reference counting (MRC) via SAFEArc.h for compatibility
 #       ARC was introduced in OS X 10.7 Lion, so no ARC flags for older systems
-CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS)
-OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
+# NOTE: gcc-4.0 doesn't support -std=c99, use -std=gnu99 or omit
+ifeq ($(GCC_VERSION),4.0)
+  CFLAGS = -Wall -O2 $(ARCH_FLAGS)
+  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
+else
+  CFLAGS = -Wall -O2 -std=c99 $(ARCH_FLAGS)
+  OBJCFLAGS = -Wall -O2 -ObjC $(ARCH_FLAGS)
+endif
 
 # SDK flags
 # Note: -mmacosx-version-min not supported on Tiger's gcc-4.2
@@ -270,12 +286,8 @@ info:
 	@echo "Min OS:        $(MIN_OS_VERSION)"
 	@echo "OpenSSL:       $(NEEDS_OPENSSL)"
 	@echo "Compiler:      $(CC)"
-ifneq ($(GCC_APPLE),)
-	@echo "GCC detected:  gcc-apple-4.2"
-else
-  ifneq ($(GCC_STANDARD),)
-	@echo "GCC detected:  gcc-4.2"
-  endif
+ifneq ($(GCC_VERSION),unknown)
+	@echo "GCC Version:   $(GCC_VERSION)"
 endif
 	@echo "=========================================="
 	@echo ""
