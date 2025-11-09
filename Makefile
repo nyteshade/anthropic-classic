@@ -186,16 +186,34 @@ FRAMEWORKS = -framework Cocoa -framework Foundation
 
 # OpenSSL configuration (for early platforms)
 ifeq ($(NEEDS_OPENSSL),yes)
-  OPENSSL_CFLAGS = -I/opt/local/include
-  OPENSSL_LDFLAGS = -L/opt/local/lib -lssl -lcrypto
+  # Check multiple possible OpenSSL locations
+  # Priority: /usr/local (Homebrew/manual), /opt/local (MacPorts), /opt/homebrew (M1 Homebrew)
 
-  # Check if OpenSSL is available
-  OPENSSL_CHECK := $(shell test -f /opt/local/include/openssl/ssl.h && echo "yes" || echo "no")
-  ifneq ($(OPENSSL_CHECK),yes)
+  OPENSSL_PREFIX :=
+
+  ifeq ($(shell test -f /usr/local/include/openssl/ssl.h && echo yes),yes)
+    OPENSSL_PREFIX = /usr/local
+  else
+    ifeq ($(shell test -f /opt/local/include/openssl/ssl.h && echo yes),yes)
+      OPENSSL_PREFIX = /opt/local
+    else
+      ifeq ($(shell test -f /opt/homebrew/include/openssl/ssl.h && echo yes),yes)
+        OPENSSL_PREFIX = /opt/homebrew
+      endif
+    endif
+  endif
+
+  ifneq ($(OPENSSL_PREFIX),)
+    OPENSSL_CFLAGS = -I$(OPENSSL_PREFIX)/include
+    OPENSSL_LDFLAGS = -L$(OPENSSL_PREFIX)/lib -lssl -lcrypto
+  else
+    OPENSSL_CFLAGS =
+    OPENSSL_LDFLAGS =
     $(warning )
-    $(warning WARNING: MacPorts OpenSSL not found!)
-    $(warning For OS X $(OS_MAJOR).$(OS_MINOR), you need MacPorts OpenSSL.)
-    $(warning Install with: sudo port install openssl)
+    $(warning WARNING: OpenSSL not found!)
+    $(warning For OS X $(OS_MAJOR).$(OS_MINOR), you need OpenSSL.)
+    $(warning Install with: sudo port install openssl   OR   brew install openssl)
+    $(warning Common locations: /usr/local, /opt/local, /opt/homebrew)
     $(warning )
   endif
 else
@@ -291,7 +309,11 @@ info:
 	@echo "OS Version:    $(OS_VERSION)"
 	@echo "Architecture:  $(ARCH)"
 	@echo "Min OS:        $(MIN_OS_VERSION)"
+ifeq ($(NEEDS_OPENSSL),yes)
+	@echo "OpenSSL:       $(NEEDS_OPENSSL) ($(OPENSSL_PREFIX))"
+else
 	@echo "OpenSSL:       $(NEEDS_OPENSSL)"
+endif
 	@echo "Compiler:      $(CC)"
 ifneq ($(GCC_VERSION),unknown)
 	@echo "GCC Version:   $(GCC_VERSION)"
