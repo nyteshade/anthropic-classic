@@ -215,10 +215,24 @@ void LayoutFormRow(NSView *container,
   bGap = 12.0f;           // gap between field and trailing button
   minFieldWidth = 80.0f;
 
-  // Initialize frames
-  lF = label ? [label frame] : NSZeroRect;
-  fF = field ? [field frame] : NSZeroRect;
-  bF = button ? [button frame] : NSZeroRect;
+  // Initialize frames to zero
+  // Note: Can't use ternary operator with structs on Tiger's gcc-4.0
+  lF = NSZeroRect;
+  fF = NSZeroRect;
+  bF = NSZeroRect;
+  
+  if (label)
+  {
+    lF = [label frame];
+  }
+  if (field)
+  {
+    fF = [field frame];
+  }
+  if (button)
+  {
+    bF = [button frame];
+  }
 
   // 1) Natural sizes
   if (label && [label isKindOfClass:[NSControl class]])
