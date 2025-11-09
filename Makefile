@@ -352,12 +352,12 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 # Create Info.plist
 $(CONTENTS_DIR)/Info.plist: Info.plist | $(APP_BUNDLE)
 	@echo "Copying Info.plist..."
-	@cp $< $@.tmp
-	@sed -i '' 's/<string>Anthropic-Classic<\/string>/<string>$(APP_NAME)<\/string>/' $@.tmp
-	@sed -i '' '/LSMinimumSystemVersion/{' -e 'n' -e 's/<string>[^<]*<\/string>/<string>$(MIN_OS_VERSION)<\/string>/' -e '}' $@.tmp
-	@sed -i '' '/CFBundleShortVersionString/{' -e 'n' -e 's/<string>[^<]*<\/string>/<string>$(VERSION)<\/string>/' -e '}' $@.tmp
-	@sed -i '' '/CFBundleVersion/{' -e 'n' -e 's/<string>[^<]*<\/string>/<string>$(BUILD_NUMBER)<\/string>/' -e '}' $@.tmp
-	@mv $@.tmp $@
+	@perl -pe 'BEGIN{undef $$/;} \
+	           s/<string>Anthropic-Classic<\/string>/<string>$(APP_NAME)<\/string>/; \
+	           s/(<key>LSMinimumSystemVersion<\/key>\s*<string>)[^<]*(<\/string>)/$$1$(MIN_OS_VERSION)$$2/s; \
+	           s/(<key>CFBundleShortVersionString<\/key>\s*<string>)[^<]*(<\/string>)/$$1$(VERSION)$$2/s; \
+	           s/(<key>CFBundleVersion<\/key>\s*<string>)[^<]*(<\/string>)/$$1$(BUILD_NUMBER)$$2/s' \
+	    $< > $@
 
 # Create PkgInfo
 $(CONTENTS_DIR)/PkgInfo: | $(APP_BUNDLE)
