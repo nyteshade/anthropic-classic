@@ -206,19 +206,20 @@ C_BASENAMES := $(notdir $(ALL_C_FILES))
 M_SOURCES := $(foreach src,$(M_BASENAMES),$(call find-source,$(src)))
 C_SOURCES := $(foreach src,$(C_BASENAMES),$(call find-source,$(src)))
 
-# For early platforms, prefer _Tiger or _OpenSSL variants
+# For early platforms, prefer _OpenSSL and _Tiger variants where they exist
+# Note: ClaudeAPIManager.m and ThemeColors.m are already Tiger-compatible via
+#       conditional compilation, so no _Tiger variants are needed
 ifeq ($(NEEDS_OPENSSL),yes)
-  # Use Tiger-specific versions if available
-  M_SOURCES := $(subst ClaudeAPIManager.m,ClaudeAPIManager_Tiger.m,$(M_SOURCES))
+  # Use OpenSSL version for HTTPS client (required for Tiger-Mountain Lion)
   M_SOURCES := $(subst HTTPSClient.m,HTTPSClient_OpenSSL.m,$(M_SOURCES))
-  M_SOURCES := $(subst ThemeColors.m,ThemeColors_Tiger.m,$(M_SOURCES))
-  M_SOURCES := $(subst NetworkManager.m,NetworkManager_Tiger.m,$(M_SOURCES))
-
-  # Remove standard versions to avoid duplicates
-  M_SOURCES := $(filter-out %/ClaudeAPIManager.m,$(M_SOURCES))
   M_SOURCES := $(filter-out %/HTTPSClient.m,$(M_SOURCES))
-  M_SOURCES := $(filter-out %/ThemeColors.m,$(M_SOURCES))
+
+  # Use Tiger-specific NetworkManager if it exists
+  M_SOURCES := $(subst NetworkManager.m,NetworkManager_Tiger.m,$(M_SOURCES))
   M_SOURCES := $(filter-out %/NetworkManager.m,$(M_SOURCES))
+
+  # ClaudeAPIManager.m works on all platforms (no substitution needed)
+  # ThemeColors.m works on all platforms with conditional compilation (no substitution needed)
 endif
 
 # Generate object file names
