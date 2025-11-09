@@ -363,10 +363,10 @@ $(CONTENTS_DIR)/PkgInfo: | $(APP_BUNDLE)
 	@echo "Creating PkgInfo..."
 	@echo -n "APPL????" > $@
 
-# Copy icon file
-$(RESOURCES_DIR)/ClaudeClassic.icns: ClaudeClassic.icns | $(APP_BUNDLE)
-	@echo "Copying icon..."
-	@cp $< $@
+# Extract icon file from zip to preserve attributes
+$(RESOURCES_DIR)/ClaudeClassic.icns: ClaudeClassic.icns.zip | $(APP_BUNDLE)
+	@echo "Extracting icon from zip..."
+	@unzip -o ClaudeClassic.icns.zip -d $(RESOURCES_DIR)
 
 # Build app
 app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist $(CONTENTS_DIR)/PkgInfo $(RESOURCES_DIR)/ClaudeClassic.icns
