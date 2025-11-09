@@ -23,7 +23,7 @@
 
 APP_NAME = ClaudeChat
 BUNDLE_ID = com.nyteshade.anthropic-classic
-VERSION = 1.1.0
+VERSION = 1.2
 BUILD_NUMBER = 1
 
 
@@ -406,6 +406,8 @@ $(CONTENTS_DIR)/PkgInfo: | $(APP_BUNDLE)
 $(RESOURCES_DIR)/ClaudeClassic.icns: ClaudeClassic.icns.zip | $(APP_BUNDLE)
 	@echo "Extracting icon from zip..."
 	@unzip -o ClaudeClassic.icns.zip -d $(RESOURCES_DIR)
+	@touch $(RESOURCES_DIR)/ClaudeClassic.icns
+	@touch $(APP_BUNDLE)
 
 # Build app
 app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist $(CONTENTS_DIR)/PkgInfo $(RESOURCES_DIR)/ClaudeClassic.icns

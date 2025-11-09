@@ -289,10 +289,10 @@
   NSMenu *mainMenu = [[[NSMenu alloc] init] autorelease];
   NSMenuItem *menuItem;
   NSMenu *submenu;
-  
-  // Application menu
+
+  // Application menu (will be renamed to app name automatically by system)
   menuItem = [mainMenu addItemWithTitle:@"" action:nil keyEquivalent:@""];
-  submenu = [[[NSMenu alloc] initWithTitle:@"ClaudeChat"] autorelease];
+  submenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];  // Empty title, system fills it in
   
   NSMenuItem *aboutItem = [submenu addItemWithTitle:@"About ClaudeChat" 
                          action:@selector(showAbout:) 
