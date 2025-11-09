@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>ClaudeChat</string>
 	<key>CFBundleIconFile</key>
-	<string>ClaudeClassic</string>
+	<string>ClaudeClassic.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.nyteshade.anthropic-classic</string>
 	<key>CFBundleInfoDictionaryVersion</key>

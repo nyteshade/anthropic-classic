@@ -290,9 +290,10 @@
   NSMenuItem *menuItem;
   NSMenu *submenu;
 
-  // Application menu (will be renamed to app name automatically by system)
+  // Application menu (macOS will automatically rename to app name)
+  // The submenu title doesn't matter, but we provide app name as placeholder
   menuItem = [mainMenu addItemWithTitle:@"" action:nil keyEquivalent:@""];
-  submenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];  // Empty title, system fills it in
+  submenu = [[[NSMenu alloc] initWithTitle:NSProcessInfo.processInfo.processName] autorelease];
   
   NSMenuItem *aboutItem = [submenu addItemWithTitle:@"About ClaudeChat" 
                          action:@selector(showAbout:) 
