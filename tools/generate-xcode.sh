@@ -205,31 +205,43 @@ case $PLATFORM in
     SDK_VERSION="10.4"
     COMPILER="com.apple.compilers.gcc.4_2"
     ARCHS="ppc i386"
+    XCODE_VERSION="Xcode 2.5"
+    OBJECT_VERSION="42"
     ;;
   leopard)
     SDK_VERSION="10.5"
     COMPILER="com.apple.compilers.gcc.4_2"
     ARCHS="i386 x86_64"
+    XCODE_VERSION="Xcode 3.1"
+    OBJECT_VERSION="45"
     ;;
   snow)
     SDK_VERSION="10.6"
     COMPILER="com.apple.compilers.gcc.4_2"
     ARCHS="i386 x86_64"
+    XCODE_VERSION="Xcode 3.2"
+    OBJECT_VERSION="46"
     ;;
   lion)
     SDK_VERSION="10.7"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
+    XCODE_VERSION="Xcode 3.2"
+    OBJECT_VERSION="46"
     ;;
   mountain)
     SDK_VERSION="10.8"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
+    XCODE_VERSION="Xcode 3.2"
+    OBJECT_VERSION="46"
     ;;
   modern)
     SDK_VERSION="10.9"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
+    XCODE_VERSION="Xcode 3.2"
+    OBJECT_VERSION="46"
     ;;
 esac
 
@@ -254,7 +266,7 @@ cat > "$PBXPROJ" << EOF
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = ${OBJECT_VERSION};
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -343,11 +355,8 @@ ${file_refs}
 /* Begin PBXProject section */
 		${PROJECT_UUID} /* Project object */ = {
 			isa = PBXProject;
-			attributes = {
-				LastUpgradeCheck = 0460;
-			};
 			buildConfigurationList = ${BUILDCONFIG_LIST_UUID} /* Build configuration list for PBXProject "${PROJECT_NAME}" */;
-			compatibilityVersion = \"Xcode 3.2\";
+			compatibilityVersion = \"${XCODE_VERSION}\";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (

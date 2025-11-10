@@ -27,12 +27,14 @@ make xcode
 
 ## Available Platforms
 
-- `tiger` - Mac OS X 10.4 Tiger (PowerPC/Intel)
-- `leopard` - Mac OS X 10.5 Leopard (PowerPC/Intel)
-- `snow` - Mac OS X 10.6 Snow Leopard
-- `lion` - Mac OS X 10.7 Lion
-- `mountain` - Mac OS X 10.8 Mountain Lion
-- `modern` - Mac OS X 10.9+ / macOS
+- `tiger` - Mac OS X 10.4 Tiger (PowerPC/Intel) - Xcode 2.5 compatible
+- `leopard` - Mac OS X 10.5 Leopard (PowerPC/Intel) - Xcode 3.1 compatible
+- `snow` - Mac OS X 10.6 Snow Leopard - Xcode 3.2+ compatible
+- `lion` - Mac OS X 10.7 Lion - Xcode 3.2+ compatible
+- `mountain` - Mac OS X 10.8 Mountain Lion - Xcode 3.2+ compatible
+- `modern` - Mac OS X 10.9+ / macOS - Xcode 3.2+ compatible
+
+**Note**: Each platform generates a project file compatible with the Xcode version typically used on that OS version. Tiger and Leopard use older project formats (objectVersion 42/45) for compatibility with Xcode 2.5 and 3.1.
 
 ## Debugging Tips
 
