@@ -291,10 +291,9 @@
   NSMenu *submenu;
 
   // Application menu (macOS will automatically rename to app name)
-  // The submenu title doesn't matter, but we provide app name as placeholder
   menuItem = [mainMenu addItemWithTitle:@"" action:nil keyEquivalent:@""];
-  submenu = [[[NSMenu alloc] initWithTitle:NSProcessInfo.processInfo.processName] autorelease];
-  
+  submenu = [[[NSMenu alloc] initWithTitle:@"Apple"] autorelease];
+
   NSMenuItem *aboutItem = [submenu addItemWithTitle:@"About ClaudeChat" 
                          action:@selector(showAbout:) 
                     keyEquivalent:@""];
@@ -331,7 +330,11 @@
         keyEquivalent:@"q"];
   
   [mainMenu setSubmenu:submenu forItem:menuItem];
-  
+
+  // IMPORTANT: On Leopard/Tiger, must explicitly set the Apple menu
+  // Modern macOS does this automatically, but older versions need this call
+  [NSApp setAppleMenu:submenu];
+
   // File menu
   menuItem = [mainMenu addItemWithTitle:@"File" action:nil keyEquivalent:@""];
   submenu = [[[NSMenu alloc] initWithTitle:@"File"] autorelease];

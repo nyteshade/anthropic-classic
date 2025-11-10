@@ -11,11 +11,15 @@ int main(int argc, char *argv[]) {
     SAFE_ARC_AUTORELEASE_POOL_PUSH();
 
     NSApplication *application = [NSApplication sharedApplication];
-    AppDelegate *appDelegate = SAFE_ARC_AUTORELEASE([[AppDelegate alloc] init]);
+    // Don't autorelease - NSApplication doesn't retain its delegate on Leopard/Tiger
+    // The delegate must live for the entire application lifetime
+    AppDelegate *appDelegate = [[AppDelegate alloc] init];
 
     [application setDelegate:appDelegate];
     [application run];
 
+    // Cleanup only happens after app quits
+    SAFE_ARC_RELEASE(appDelegate);
     SAFE_ARC_AUTORELEASE_POOL_POP();
 
     return 0;
