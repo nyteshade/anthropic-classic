@@ -145,6 +145,9 @@ PRODUCT_REF_UUID=$(generate_uuid)
 
 echo "Generating project structure..."
 
+# Use a variable for quote character to avoid escaping issues
+Q='"'
+
 file_refs=""
 source_file_refs=""
 header_file_refs=""
@@ -158,7 +161,7 @@ while IFS= read -r file; do
   build_uuid=$(generate_uuid)
 
   file_refs="${file_refs}
-		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ${file}; sourceTree = \"<group>\"; };"
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ${file}; sourceTree = ${Q}<group>${Q}; };"
 
   build_file_refs="${build_file_refs}
 		${build_uuid} /* ${file} in Sources */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
@@ -176,7 +179,7 @@ while IFS= read -r file; do
   build_uuid=$(generate_uuid)
 
   file_refs="${file_refs}
-		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ${file}; sourceTree = \"<group>\"; };"
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ${file}; sourceTree = ${Q}<group>${Q}; };"
 
   build_file_refs="${build_file_refs}
 		${build_uuid} /* ${file} in Sources */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
@@ -193,7 +196,7 @@ while IFS= read -r file; do
   file_uuid=$(generate_uuid)
 
   file_refs="${file_refs}
-		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ${file}; sourceTree = \"<group>\"; };"
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ${file}; sourceTree = ${Q}<group>${Q}; };"
 
   header_file_refs="${header_file_refs}
 				${file_uuid} /* ${file} */,"
@@ -202,7 +205,7 @@ done <<< "$H_FILES"
 # Info.plist reference
 INFOPLIST_UUID=$(generate_uuid)
 file_refs="${file_refs}
-		${INFOPLIST_UUID} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = \"<group>\"; };"
+		${INFOPLIST_UUID} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = ${Q}<group>${Q}; };"
 
 ################################################################################
 # MARK: - Set Platform-Specific Build Settings
@@ -319,7 +322,7 @@ ${file_refs}
 				${RESOURCES_GROUP_UUID} /* Resources */,
 				${PRODUCTS_GROUP_UUID} /* Products */,
 			);
-			sourceTree = \"<group>\";
+			sourceTree = ${Q}<group>${Q};
 		};
 		${PRODUCTS_GROUP_UUID} /* Products */ = {
 			isa = PBXGroup;
@@ -327,21 +330,21 @@ ${file_refs}
 				${PRODUCT_REF_UUID} /* ${APP_NAME}.app */,
 			);
 			name = Products;
-			sourceTree = \"<group>\";
+			sourceTree = ${Q}<group>${Q};
 		};
 		${SOURCES_GROUP_UUID} /* Sources */ = {
 			isa = PBXGroup;
 			children = (${source_file_refs}
 			);
 			name = Sources;
-			sourceTree = \"<group>\";
+			sourceTree = ${Q}<group>${Q};
 		};
 		${HEADERS_GROUP_UUID} /* Headers */ = {
 			isa = PBXGroup;
 			children = (${header_file_refs}
 			);
 			name = Headers;
-			sourceTree = \"<group>\";
+			sourceTree = ${Q}<group>${Q};
 		};
 		${RESOURCES_GROUP_UUID} /* Resources */ = {
 			isa = PBXGroup;
@@ -349,7 +352,7 @@ ${file_refs}
 				${INFOPLIST_UUID} /* Info.plist */,
 			);
 			name = Resources;
-			sourceTree = \"<group>\";
+			sourceTree = ${Q}<group>${Q};
 		};
 /* End PBXGroup section */
 

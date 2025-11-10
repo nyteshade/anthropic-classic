@@ -23,7 +23,7 @@
 
 APP_NAME = ClaudeChat
 BUNDLE_ID = com.nyteshade.anthropic-classic
-VERSION = 1.3.6
+VERSION = 1.3.7
 BUILD_NUMBER = 1
 
 
