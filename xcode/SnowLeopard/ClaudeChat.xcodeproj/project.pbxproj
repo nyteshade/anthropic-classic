@@ -7,73 +7,73 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		70AFCB3ED81242DFAC57BF12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6348B314E77F4E0086E47260 /* main.m */; };
-		BD3DC48DD046421790A79566 /* NEPadding.m in Sources */ = {isa = PBXBuildFile; fileRef = ED361E537CC24DE481301076 /* NEPadding.m */; };
-		FF25611522E34716BC608E9A /* NSView+Essentials.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA184DC0553491A9F97635F /* NSView+Essentials.m */; };
-		2FA1456753C143E3BA338B4E /* NSObject+Associations.m in Sources */ = {isa = PBXBuildFile; fileRef = FBD7AB3B22674FA59AEAB74F /* NSObject+Associations.m */; };
-		AF211DBC4AF5498F9A257A38 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C581D364A698461EA85EB0D1 /* AppDelegate.m */; };
-		F5DA7E8898D9428A8394DF55 /* ChatWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 56A81BFDD1FC458E80B93381 /* ChatWindowController.m */; };
-		34353DF2A7504D83892A10C7 /* ClaudeAPIManager_Tiger.m in Sources */ = {isa = PBXBuildFile; fileRef = BD8208A930454FE999055723 /* ClaudeAPIManager_Tiger.m */; };
-		43A40E14483A4D0B9B575529 /* NetworkManager_Tiger.m in Sources */ = {isa = PBXBuildFile; fileRef = EA76212AED214D11B7619E4D /* NetworkManager_Tiger.m */; };
-		0493E7A39448424B8FB062DF /* HTTPSClient_OpenSSL.m in Sources */ = {isa = PBXBuildFile; fileRef = 7295C30E480B4EBE94ADE606 /* HTTPSClient_OpenSSL.m */; };
-		03FE0E4C2479484DBED1F11B /* ThemeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FFB9CCE1C40F42D894F8C62E /* ThemeColors.m */; };
-		385E6DE7728C4FFDA2EE9CAB /* ThemedView.m in Sources */ = {isa = PBXBuildFile; fileRef = D9584BA569E2401D87F7AD32 /* ThemedView.m */; };
-		F475E1C9163A4DC8A262177F /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 67F2494D62D74FB28E88D24E /* ConversationManager.m */; };
-		06FB7C92E4A34F11B61DAF32 /* CodeBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = A23BAA680F6D4A48AC447F17 /* CodeBlockView.m */; };
-		7EC4BF0BF8DB4883A9E48978 /* SystemInfoCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = 88D54579094E4DB58EEE862C /* SystemInfoCollector.m */; };
-		C06618EC706A4D4E881D298E /* NEDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C93114F613E43CE8E6F2177 /* NEDrawer.m */; };
-		F55D57F66AAD4786B06410E1 /* NSString+TextMeasure.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A89EE439D0B4B1BBDBE2D6B /* NSString+TextMeasure.m */; };
-		AD09CDF5BF644952924FD4D8 /* NESizingHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 3568F34D205441E49152AD20 /* NESizingHelpers.m */; };
-		43CECC24D88F4FB8A2464ECA /* yyjson.c in Sources */ = {isa = PBXBuildFile; fileRef = 6ABA5CC9B7A342B69614CB91 /* yyjson.c */; };
-		A47438DD57F044E4B86EF42B /* ClaudeClassic.icns in Sources */ = {isa = PBXBuildFile; fileRef = 1AA0C36D1D95442188DDA34B /* ClaudeClassic.icns */; };
-		76FE705E284B4CDE9B210861 /* Info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 7D0BDA2D876840159C26A3AD /* Info.plist */; };
+		95A8F0F278634A789D63DBEF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 316F0AB26B2A4A5D84F3A80F /* main.m */; };
+		02DABCBAC9F64DE1B935D5A6 /* NEPadding.m in Sources */ = {isa = PBXBuildFile; fileRef = 83B71AEBEE9E47AC9F658C89 /* NEPadding.m */; };
+		E4944010BBA94EA7879312E0 /* NSView+Essentials.m in Sources */ = {isa = PBXBuildFile; fileRef = E65F86EB5A29466F9B216225 /* NSView+Essentials.m */; };
+		B33E149DE6E54C41B75ED30A /* NSObject+Associations.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE330572887424EA6737080 /* NSObject+Associations.m */; };
+		174B5AD92AB6429D9ACD1B0C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A530F995114427A9128698 /* AppDelegate.m */; };
+		AAF8509999714B048FF96773 /* ChatWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B69CCA39539475397C37228 /* ChatWindowController.m */; };
+		5C28EC33C0BD4B598D9DE035 /* ClaudeAPIManager_Tiger.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C453B17CBF4D77AC1B6372 /* ClaudeAPIManager_Tiger.m */; };
+		0C4DF6A0FA05492FA459280F /* NetworkManager_Tiger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E0E2F9B6AE840139A426885 /* NetworkManager_Tiger.m */; };
+		87D37365F0EB49A1BEF4A979 /* HTTPSClient_OpenSSL.m in Sources */ = {isa = PBXBuildFile; fileRef = E978A01998E642F599F97042 /* HTTPSClient_OpenSSL.m */; };
+		9C7B82D3E07747FE913DDC04 /* ThemeColors.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D6F55F4D24F4A6FBEE7108D /* ThemeColors.m */; };
+		969C1CA1F32A4743A61115AB /* ThemedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 61C3770523AD4AA4B43BFEFF /* ThemedView.m */; };
+		BC4EE91CFC754DFFACC3C5BD /* ConversationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E23748E1B644AAAC6A620D /* ConversationManager.m */; };
+		2743CFBB8F364F68857C4E47 /* CodeBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = EBCA66A75D0F4C95900275F6 /* CodeBlockView.m */; };
+		87E972E7D6144EEA962AF416 /* SystemInfoCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = FBF53B6EC57F4D1F9007048B /* SystemInfoCollector.m */; };
+		ACC224FA859D45C69BBE3AB5 /* NEDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D847C733D234B8BB21C17EF /* NEDrawer.m */; };
+		AED31E04D4504BF8AF05AAA1 /* NSString+TextMeasure.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FB7F4CB25E346BDBFBD9365 /* NSString+TextMeasure.m */; };
+		CDA129CE3F4744E6A884ECA3 /* NESizingHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = B8BD9CABA8B3495889EB4F71 /* NESizingHelpers.m */; };
+		4EA2F547F846460D9C66BB33 /* yyjson.c in Sources */ = {isa = PBXBuildFile; fileRef = BE2D708C3C694F808B338399 /* yyjson.c */; };
+		CB08C28A129749E8989F08F6 /* ClaudeClassic.icns in Sources */ = {isa = PBXBuildFile; fileRef = 8C2A83A0180747249932982D /* ClaudeClassic.icns */; };
+		640B75A54C0B488593CEE8AA /* Info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 51A997C1FC1B4F17808F09EF /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6348B314E77F4E0086E47260 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../main.m; sourceTree = "<group>"; };
-		ED361E537CC24DE481301076 /* NEPadding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NEPadding.m; path = ../../NEPadding.m; sourceTree = "<group>"; };
-		4AA184DC0553491A9F97635F /* NSView+Essentials.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSView+Essentials.m; path = ../../NSView+Essentials.m; sourceTree = "<group>"; };
-		FBD7AB3B22674FA59AEAB74F /* NSObject+Associations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSObject+Associations.m; path = ../../NSObject+Associations.m; sourceTree = "<group>"; };
-		C581D364A698461EA85EB0D1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../AppDelegate.m; sourceTree = "<group>"; };
-		56A81BFDD1FC458E80B93381 /* ChatWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ChatWindowController.m; path = ../../ChatWindowController.m; sourceTree = "<group>"; };
-		BD8208A930454FE999055723 /* ClaudeAPIManager_Tiger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClaudeAPIManager_Tiger.m; path = ../../ClaudeAPIManager_Tiger.m; sourceTree = "<group>"; };
-		EA76212AED214D11B7619E4D /* NetworkManager_Tiger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NetworkManager_Tiger.m; path = ../../NetworkManager_Tiger.m; sourceTree = "<group>"; };
-		7295C30E480B4EBE94ADE606 /* HTTPSClient_OpenSSL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HTTPSClient_OpenSSL.m; path = ../../HTTPSClient_OpenSSL.m; sourceTree = "<group>"; };
-		FFB9CCE1C40F42D894F8C62E /* ThemeColors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThemeColors.m; path = ../../ThemeColors.m; sourceTree = "<group>"; };
-		D9584BA569E2401D87F7AD32 /* ThemedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThemedView.m; path = ../../ThemedView.m; sourceTree = "<group>"; };
-		67F2494D62D74FB28E88D24E /* ConversationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ConversationManager.m; path = ../../ConversationManager.m; sourceTree = "<group>"; };
-		A23BAA680F6D4A48AC447F17 /* CodeBlockView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CodeBlockView.m; path = ../../CodeBlockView.m; sourceTree = "<group>"; };
-		88D54579094E4DB58EEE862C /* SystemInfoCollector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SystemInfoCollector.m; path = ../../SystemInfoCollector.m; sourceTree = "<group>"; };
-		1C93114F613E43CE8E6F2177 /* NEDrawer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NEDrawer.m; path = ../../NEDrawer.m; sourceTree = "<group>"; };
-		5A89EE439D0B4B1BBDBE2D6B /* NSString+TextMeasure.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSString+TextMeasure.m; path = ../../NSString+TextMeasure.m; sourceTree = "<group>"; };
-		3568F34D205441E49152AD20 /* NESizingHelpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NESizingHelpers.m; path = ../../NESizingHelpers.m; sourceTree = "<group>"; };
-		6ABA5CC9B7A342B69614CB91 /* yyjson.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = yyjson.c; path = ../../yyjson.c; sourceTree = "<group>"; };
-		3A8A4B7770714D6E8E4317C0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../AppDelegate.h; sourceTree = "<group>"; };
-		14728F1B3E21440EBF076432 /* ChatWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChatWindowController.h; path = ../../ChatWindowController.h; sourceTree = "<group>"; };
-		44FAED436AD24C4D933ACD2D /* ClaudeAPIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClaudeAPIManager.h; path = ../../ClaudeAPIManager.h; sourceTree = "<group>"; };
-		FDCF1EBEBE624DCB85AE9E2D /* ConversationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationManager.h; path = ../../ConversationManager.h; sourceTree = "<group>"; };
-		D8C826F049B4423F962FCAA9 /* CodeBlockView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CodeBlockView.h; path = ../../CodeBlockView.h; sourceTree = "<group>"; };
-		4DB9CF961E0B48F59ABA7E69 /* HTTPSClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HTTPSClient.h; path = ../../HTTPSClient.h; sourceTree = "<group>"; };
-		98DC8BD3BE374FA88848FB6C /* NEDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NEDrawer.h; path = ../../NEDrawer.h; sourceTree = "<group>"; };
-		43A464F276D7416E8CA332E6 /* NEPadding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NEPadding.h; path = ../../NEPadding.h; sourceTree = "<group>"; };
-		0504C97D13154BCC9F662FB2 /* NESizingHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NESizingHelpers.h; path = ../../NESizingHelpers.h; sourceTree = "<group>"; };
-		0D8CC521DD2B464F8942ACBF /* NSView+Essentials.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSView+Essentials.h; path = ../../NSView+Essentials.h; sourceTree = "<group>"; };
-		66B1B2DE22CF418D99A549B2 /* NSObject+Associations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSObject+Associations.h; path = ../../NSObject+Associations.h; sourceTree = "<group>"; };
-		912B47F9CD2A42279E3EBDD6 /* NSString+TextMeasure.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSString+TextMeasure.h; path = ../../NSString+TextMeasure.h; sourceTree = "<group>"; };
-		CEF3B44622554BAA91385628 /* ThemeColors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThemeColors.h; path = ../../ThemeColors.h; sourceTree = "<group>"; };
-		B52B883E6295412FBDFA9572 /* SAFEArc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SAFEArc.h; path = ../../SAFEArc.h; sourceTree = "<group>"; };
-		4C96FA6335E14A34B730F7D7 /* SystemInfoCollector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SystemInfoCollector.h; path = ../../SystemInfoCollector.h; sourceTree = "<group>"; };
-		5830DC53599C4A6A89225ADA /* NetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkManager.h; path = ../../NetworkManager.h; sourceTree = "<group>"; };
-		B96885B10DB64F0C978074C9 /* TigerCompat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TigerCompat.h; path = ../../TigerCompat.h; sourceTree = "<group>"; };
-		1F4B2819CE6747A690290922 /* ThemedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThemedView.h; path = ../../ThemedView.h; sourceTree = "<group>"; };
-		66A7A2CC2AAA4CA0A196EC76 /* yyjson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = yyjson.h; path = ../../yyjson.h; sourceTree = "<group>"; };
-		1AA0C36D1D95442188DDA34B /* ClaudeClassic.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = ClaudeClassic.icns; path = ../../ClaudeClassic.icns; sourceTree = "<group>"; };
-		7D0BDA2D876840159C26A3AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../Info.plist; sourceTree = "<group>"; };
-		842ED8AD1E8046A8AA2C3642 /* ClaudeChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClaudeChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		316F0AB26B2A4A5D84F3A80F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../main.m; sourceTree = "<group>"; };
+		83B71AEBEE9E47AC9F658C89 /* NEPadding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NEPadding.m; path = ../../NEPadding.m; sourceTree = "<group>"; };
+		E65F86EB5A29466F9B216225 /* NSView+Essentials.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSView+Essentials.m; path = ../../NSView+Essentials.m; sourceTree = "<group>"; };
+		7FE330572887424EA6737080 /* NSObject+Associations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSObject+Associations.m; path = ../../NSObject+Associations.m; sourceTree = "<group>"; };
+		C3A530F995114427A9128698 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../../AppDelegate.m; sourceTree = "<group>"; };
+		7B69CCA39539475397C37228 /* ChatWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ChatWindowController.m; path = ../../ChatWindowController.m; sourceTree = "<group>"; };
+		E8C453B17CBF4D77AC1B6372 /* ClaudeAPIManager_Tiger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClaudeAPIManager_Tiger.m; path = ../../ClaudeAPIManager_Tiger.m; sourceTree = "<group>"; };
+		7E0E2F9B6AE840139A426885 /* NetworkManager_Tiger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NetworkManager_Tiger.m; path = ../../NetworkManager_Tiger.m; sourceTree = "<group>"; };
+		E978A01998E642F599F97042 /* HTTPSClient_OpenSSL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HTTPSClient_OpenSSL.m; path = ../../HTTPSClient_OpenSSL.m; sourceTree = "<group>"; };
+		9D6F55F4D24F4A6FBEE7108D /* ThemeColors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThemeColors.m; path = ../../ThemeColors.m; sourceTree = "<group>"; };
+		61C3770523AD4AA4B43BFEFF /* ThemedView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ThemedView.m; path = ../../ThemedView.m; sourceTree = "<group>"; };
+		E4E23748E1B644AAAC6A620D /* ConversationManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ConversationManager.m; path = ../../ConversationManager.m; sourceTree = "<group>"; };
+		EBCA66A75D0F4C95900275F6 /* CodeBlockView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CodeBlockView.m; path = ../../CodeBlockView.m; sourceTree = "<group>"; };
+		FBF53B6EC57F4D1F9007048B /* SystemInfoCollector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SystemInfoCollector.m; path = ../../SystemInfoCollector.m; sourceTree = "<group>"; };
+		7D847C733D234B8BB21C17EF /* NEDrawer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NEDrawer.m; path = ../../NEDrawer.m; sourceTree = "<group>"; };
+		9FB7F4CB25E346BDBFBD9365 /* NSString+TextMeasure.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NSString+TextMeasure.m; path = ../../NSString+TextMeasure.m; sourceTree = "<group>"; };
+		B8BD9CABA8B3495889EB4F71 /* NESizingHelpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NESizingHelpers.m; path = ../../NESizingHelpers.m; sourceTree = "<group>"; };
+		BE2D708C3C694F808B338399 /* yyjson.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = yyjson.c; path = ../../yyjson.c; sourceTree = "<group>"; };
+		E3C87F3E2EF248E68568E55A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../../AppDelegate.h; sourceTree = "<group>"; };
+		D3D6279B9EAD4675BB2DB85D /* ChatWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChatWindowController.h; path = ../../ChatWindowController.h; sourceTree = "<group>"; };
+		619CDE0AEFAD4A829CA8776D /* ClaudeAPIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClaudeAPIManager.h; path = ../../ClaudeAPIManager.h; sourceTree = "<group>"; };
+		CC8B9122A0174E8D8E6975E4 /* ConversationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConversationManager.h; path = ../../ConversationManager.h; sourceTree = "<group>"; };
+		D35E1EB063A642EDACD7784E /* CodeBlockView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CodeBlockView.h; path = ../../CodeBlockView.h; sourceTree = "<group>"; };
+		3179A61E6E4A4C7FAB2FE4EC /* HTTPSClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HTTPSClient.h; path = ../../HTTPSClient.h; sourceTree = "<group>"; };
+		35CE0E2A4A1947B9BB0E19D2 /* NEDrawer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NEDrawer.h; path = ../../NEDrawer.h; sourceTree = "<group>"; };
+		074F269B147146D68E60E098 /* NEPadding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NEPadding.h; path = ../../NEPadding.h; sourceTree = "<group>"; };
+		9F31C44D53754D90AFD11F8E /* NESizingHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NESizingHelpers.h; path = ../../NESizingHelpers.h; sourceTree = "<group>"; };
+		0EF85D94508E4B86B4B9C4BD /* NSView+Essentials.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSView+Essentials.h; path = ../../NSView+Essentials.h; sourceTree = "<group>"; };
+		8FE3BAC9A3B545BDA819438A /* NSObject+Associations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSObject+Associations.h; path = ../../NSObject+Associations.h; sourceTree = "<group>"; };
+		0668CF8FA6204B1AA83F0683 /* NSString+TextMeasure.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NSString+TextMeasure.h; path = ../../NSString+TextMeasure.h; sourceTree = "<group>"; };
+		CD5E10B5B42C43DAB4E1EFAE /* ThemeColors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThemeColors.h; path = ../../ThemeColors.h; sourceTree = "<group>"; };
+		04399FB2BE184948B9658215 /* SAFEArc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SAFEArc.h; path = ../../SAFEArc.h; sourceTree = "<group>"; };
+		CDB4F4822A824D808EAE4C8D /* SystemInfoCollector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SystemInfoCollector.h; path = ../../SystemInfoCollector.h; sourceTree = "<group>"; };
+		3231F28EDA08412BAC30FE7B /* NetworkManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkManager.h; path = ../../NetworkManager.h; sourceTree = "<group>"; };
+		5D8F9AEBC32E43CFBEBC01E9 /* TigerCompat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TigerCompat.h; path = ../../TigerCompat.h; sourceTree = "<group>"; };
+		361609E46E55473A9F9212E4 /* ThemedView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ThemedView.h; path = ../../ThemedView.h; sourceTree = "<group>"; };
+		7C64F05385EA4720BDF8E7B6 /* yyjson.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = yyjson.h; path = ../../yyjson.h; sourceTree = "<group>"; };
+		8C2A83A0180747249932982D /* ClaudeClassic.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = ClaudeClassic.icns; path = ../../ClaudeClassic.icns; sourceTree = "<group>"; };
+		51A997C1FC1B4F17808F09EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../Info.plist; sourceTree = "<group>"; };
+		B506B6A6D3524363A4B22EE7 /* ClaudeChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClaudeChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		E51FC712B34D4BF2BEAD0AFE /* Frameworks */ = {
+		18E40799B8964CB7902F10D7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -83,64 +83,64 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1ACCAA1FFD56472E98B0A5AC = {
+		045710A0D2D74B85B34E63BE = {
 			isa = PBXGroup;
 			children = (
-				664E37F4722F44AFB3A4F705 /* Source */,
-				2D76D33477C1463689ED80F7 /* Products */,
+				EEED34069C3343D7B08B3FB5 /* Source */,
+				AB433BADDC9F415B9C629B90 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		664E37F4722F44AFB3A4F705 /* Source */ = {
+		EEED34069C3343D7B08B3FB5 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				6348B314E77F4E0086E47260 /* main.m */,
-				ED361E537CC24DE481301076 /* NEPadding.m */,
-				4AA184DC0553491A9F97635F /* NSView+Essentials.m */,
-				FBD7AB3B22674FA59AEAB74F /* NSObject+Associations.m */,
-				C581D364A698461EA85EB0D1 /* AppDelegate.m */,
-				56A81BFDD1FC458E80B93381 /* ChatWindowController.m */,
-				BD8208A930454FE999055723 /* ClaudeAPIManager_Tiger.m */,
-				EA76212AED214D11B7619E4D /* NetworkManager_Tiger.m */,
-				7295C30E480B4EBE94ADE606 /* HTTPSClient_OpenSSL.m */,
-				FFB9CCE1C40F42D894F8C62E /* ThemeColors.m */,
-				D9584BA569E2401D87F7AD32 /* ThemedView.m */,
-				67F2494D62D74FB28E88D24E /* ConversationManager.m */,
-				A23BAA680F6D4A48AC447F17 /* CodeBlockView.m */,
-				88D54579094E4DB58EEE862C /* SystemInfoCollector.m */,
-				1C93114F613E43CE8E6F2177 /* NEDrawer.m */,
-				5A89EE439D0B4B1BBDBE2D6B /* NSString+TextMeasure.m */,
-				3568F34D205441E49152AD20 /* NESizingHelpers.m */,
-				6ABA5CC9B7A342B69614CB91 /* yyjson.c */,
-				3A8A4B7770714D6E8E4317C0 /* AppDelegate.h */,
-				14728F1B3E21440EBF076432 /* ChatWindowController.h */,
-				44FAED436AD24C4D933ACD2D /* ClaudeAPIManager.h */,
-				FDCF1EBEBE624DCB85AE9E2D /* ConversationManager.h */,
-				D8C826F049B4423F962FCAA9 /* CodeBlockView.h */,
-				4DB9CF961E0B48F59ABA7E69 /* HTTPSClient.h */,
-				98DC8BD3BE374FA88848FB6C /* NEDrawer.h */,
-				43A464F276D7416E8CA332E6 /* NEPadding.h */,
-				0504C97D13154BCC9F662FB2 /* NESizingHelpers.h */,
-				0D8CC521DD2B464F8942ACBF /* NSView+Essentials.h */,
-				66B1B2DE22CF418D99A549B2 /* NSObject+Associations.h */,
-				912B47F9CD2A42279E3EBDD6 /* NSString+TextMeasure.h */,
-				CEF3B44622554BAA91385628 /* ThemeColors.h */,
-				B52B883E6295412FBDFA9572 /* SAFEArc.h */,
-				4C96FA6335E14A34B730F7D7 /* SystemInfoCollector.h */,
-				5830DC53599C4A6A89225ADA /* NetworkManager.h */,
-				B96885B10DB64F0C978074C9 /* TigerCompat.h */,
-				1F4B2819CE6747A690290922 /* ThemedView.h */,
-				66A7A2CC2AAA4CA0A196EC76 /* yyjson.h */,
-				1AA0C36D1D95442188DDA34B /* ClaudeClassic.icns */,
-				7D0BDA2D876840159C26A3AD /* Info.plist */,
+				316F0AB26B2A4A5D84F3A80F /* main.m */,
+				83B71AEBEE9E47AC9F658C89 /* NEPadding.m */,
+				E65F86EB5A29466F9B216225 /* NSView+Essentials.m */,
+				7FE330572887424EA6737080 /* NSObject+Associations.m */,
+				C3A530F995114427A9128698 /* AppDelegate.m */,
+				7B69CCA39539475397C37228 /* ChatWindowController.m */,
+				E8C453B17CBF4D77AC1B6372 /* ClaudeAPIManager_Tiger.m */,
+				7E0E2F9B6AE840139A426885 /* NetworkManager_Tiger.m */,
+				E978A01998E642F599F97042 /* HTTPSClient_OpenSSL.m */,
+				9D6F55F4D24F4A6FBEE7108D /* ThemeColors.m */,
+				61C3770523AD4AA4B43BFEFF /* ThemedView.m */,
+				E4E23748E1B644AAAC6A620D /* ConversationManager.m */,
+				EBCA66A75D0F4C95900275F6 /* CodeBlockView.m */,
+				FBF53B6EC57F4D1F9007048B /* SystemInfoCollector.m */,
+				7D847C733D234B8BB21C17EF /* NEDrawer.m */,
+				9FB7F4CB25E346BDBFBD9365 /* NSString+TextMeasure.m */,
+				B8BD9CABA8B3495889EB4F71 /* NESizingHelpers.m */,
+				BE2D708C3C694F808B338399 /* yyjson.c */,
+				E3C87F3E2EF248E68568E55A /* AppDelegate.h */,
+				D3D6279B9EAD4675BB2DB85D /* ChatWindowController.h */,
+				619CDE0AEFAD4A829CA8776D /* ClaudeAPIManager.h */,
+				CC8B9122A0174E8D8E6975E4 /* ConversationManager.h */,
+				D35E1EB063A642EDACD7784E /* CodeBlockView.h */,
+				3179A61E6E4A4C7FAB2FE4EC /* HTTPSClient.h */,
+				35CE0E2A4A1947B9BB0E19D2 /* NEDrawer.h */,
+				074F269B147146D68E60E098 /* NEPadding.h */,
+				9F31C44D53754D90AFD11F8E /* NESizingHelpers.h */,
+				0EF85D94508E4B86B4B9C4BD /* NSView+Essentials.h */,
+				8FE3BAC9A3B545BDA819438A /* NSObject+Associations.h */,
+				0668CF8FA6204B1AA83F0683 /* NSString+TextMeasure.h */,
+				CD5E10B5B42C43DAB4E1EFAE /* ThemeColors.h */,
+				04399FB2BE184948B9658215 /* SAFEArc.h */,
+				CDB4F4822A824D808EAE4C8D /* SystemInfoCollector.h */,
+				3231F28EDA08412BAC30FE7B /* NetworkManager.h */,
+				5D8F9AEBC32E43CFBEBC01E9 /* TigerCompat.h */,
+				361609E46E55473A9F9212E4 /* ThemedView.h */,
+				7C64F05385EA4720BDF8E7B6 /* yyjson.h */,
+				8C2A83A0180747249932982D /* ClaudeClassic.icns */,
+				51A997C1FC1B4F17808F09EF /* Info.plist */,
 			);
 			name = Source;
 			sourceTree = "<group>";
 		};
-		2D76D33477C1463689ED80F7 /* Products */ = {
+		AB433BADDC9F415B9C629B90 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				842ED8AD1E8046A8AA2C3642 /* ClaudeChat.app */,
+				B506B6A6D3524363A4B22EE7 /* ClaudeChat.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -148,13 +148,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		39D008EDB6154FD4B4863115 /* ClaudeChat */ = {
+		F71994419F6A43C7B399770A /* ClaudeChat */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CE46C41BEA39429BAEB5D357 /* Build configuration list for PBXNativeTarget "ClaudeChat" */;
+			buildConfigurationList = B9A0E60B5A2241238AED988C /* Build configuration list for PBXNativeTarget "ClaudeChat" */;
 			buildPhases = (
-				92EE28690B884795AFBFFBE1 /* Sources */,
-				E51FC712B34D4BF2BEAD0AFE /* Frameworks */,
-				D4E932E75C144367B6B62898 /* Resources */,
+				6299740387214025A03E9CCF /* Sources */,
+				18E40799B8964CB7902F10D7 /* Frameworks */,
+				DB7B21A729014BBCA49704CB /* Resources */,
 			);
 			buildRules = (
 			);
@@ -162,76 +162,76 @@
 			);
 			name = ClaudeChat;
 			productName = ClaudeChat;
-			productReference = 842ED8AD1E8046A8AA2C3642 /* ClaudeChat.app */;
+			productReference = B506B6A6D3524363A4B22EE7 /* ClaudeChat.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		39D9B98460294A8A90794DE6 /* Project object */ = {
+		49F519C8DBBA49589FBD618C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1200;
 			};
-			buildConfigurationList = CE46C41BEA39429BAEB5D357 /* Build configuration list for PBXProject "ClaudeChat" */;
+			buildConfigurationList = B9A0E60B5A2241238AED988C /* Build configuration list for PBXProject "ClaudeChat" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = 1ACCAA1FFD56472E98B0A5AC;
-			productRefGroup = 2D76D33477C1463689ED80F7 /* Products */;
+			mainGroup = 045710A0D2D74B85B34E63BE;
+			productRefGroup = AB433BADDC9F415B9C629B90 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				39D008EDB6154FD4B4863115 /* ClaudeChat */,
+				F71994419F6A43C7B399770A /* ClaudeChat */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		D4E932E75C144367B6B62898 /* Resources */ = {
+		DB7B21A729014BBCA49704CB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A47438DD57F044E4B86EF42B /* Resource in Resources */,
-				76FE705E284B4CDE9B210861 /* Resource in Resources */,
+				CB08C28A129749E8989F08F6 /* Resource in Resources */,
+				640B75A54C0B488593CEE8AA /* Resource in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		92EE28690B884795AFBFFBE1 /* Sources */ = {
+		6299740387214025A03E9CCF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				70AFCB3ED81242DFAC57BF12 /* Source file */,
-				BD3DC48DD046421790A79566 /* Source file */,
-				FF25611522E34716BC608E9A /* Source file */,
-				2FA1456753C143E3BA338B4E /* Source file */,
-				AF211DBC4AF5498F9A257A38 /* Source file */,
-				F5DA7E8898D9428A8394DF55 /* Source file */,
-				34353DF2A7504D83892A10C7 /* Source file */,
-				43A40E14483A4D0B9B575529 /* Source file */,
-				0493E7A39448424B8FB062DF /* Source file */,
-				03FE0E4C2479484DBED1F11B /* Source file */,
-				385E6DE7728C4FFDA2EE9CAB /* Source file */,
-				F475E1C9163A4DC8A262177F /* Source file */,
-				06FB7C92E4A34F11B61DAF32 /* Source file */,
-				7EC4BF0BF8DB4883A9E48978 /* Source file */,
-				C06618EC706A4D4E881D298E /* Source file */,
-				F55D57F66AAD4786B06410E1 /* Source file */,
-				AD09CDF5BF644952924FD4D8 /* Source file */,
-				43CECC24D88F4FB8A2464ECA /* Source file */,
+				95A8F0F278634A789D63DBEF /* Source file */,
+				02DABCBAC9F64DE1B935D5A6 /* Source file */,
+				E4944010BBA94EA7879312E0 /* Source file */,
+				B33E149DE6E54C41B75ED30A /* Source file */,
+				174B5AD92AB6429D9ACD1B0C /* Source file */,
+				AAF8509999714B048FF96773 /* Source file */,
+				5C28EC33C0BD4B598D9DE035 /* Source file */,
+				0C4DF6A0FA05492FA459280F /* Source file */,
+				87D37365F0EB49A1BEF4A979 /* Source file */,
+				9C7B82D3E07747FE913DDC04 /* Source file */,
+				969C1CA1F32A4743A61115AB /* Source file */,
+				BC4EE91CFC754DFFACC3C5BD /* Source file */,
+				2743CFBB8F364F68857C4E47 /* Source file */,
+				87E972E7D6144EEA962AF416 /* Source file */,
+				ACC224FA859D45C69BBE3AB5 /* Source file */,
+				AED31E04D4504BF8AF05AAA1 /* Source file */,
+				CDA129CE3F4744E6A884ECA3 /* Source file */,
+				4EA2F547F846460D9C66BB33 /* Source file */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		9BE334DAFD2A41AAB6E7670F /* Debug */ = {
+		A5023DA367D24FE0865F77C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -244,7 +244,7 @@
 			};
 			name = Debug;
 		};
-		8CAD3744CEEF43A5A0FC564B /* Release */ = {
+		4CB4E522C3EE497D9D78FC8E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -260,16 +260,16 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CE46C41BEA39429BAEB5D357 /* Build configuration list for PBXNativeTarget "ClaudeChat" */ = {
+		B9A0E60B5A2241238AED988C /* Build configuration list for PBXNativeTarget "ClaudeChat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9BE334DAFD2A41AAB6E7670F /* Debug */,
-				8CAD3744CEEF43A5A0FC564B /* Release */,
+				A5023DA367D24FE0865F77C4 /* Debug */,
+				4CB4E522C3EE497D9D78FC8E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 39D9B98460294A8A90794DE6 /* Project object */;
+	rootObject = 49F519C8DBBA49589FBD618C /* Project object */;
 }
