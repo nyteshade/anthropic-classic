@@ -151,61 +151,58 @@ header_file_refs=""
 build_file_refs=""
 sources_build_refs=""
 
-# Helper to generate file reference
-gen_file_ref() {
-  local file="$1"
-  local filetype="$2"
-  local uuid=$(generate_uuid)
-
-  file_refs="${file_refs}
-		${uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = ${filetype}; path = ${file}; sourceTree = \"<group>\"; };"
-
-  echo "$uuid"
-}
-
-# Helper to generate build file reference
-gen_build_ref() {
-  local file_uuid="$1"
-  local uuid=$(generate_uuid)
-
-  build_file_refs="${build_file_refs}
-		${uuid} /* Build */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
-
-  echo "$uuid"
-}
-
 # Process source files
 while IFS= read -r file; do
   [ -z "$file" ] && continue
-  file_uuid=$(gen_file_ref "$file" "sourcecode.c.objc")
-  build_uuid=$(gen_build_ref "$file_uuid")
+  file_uuid=$(generate_uuid)
+  build_uuid=$(generate_uuid)
+
+  file_refs="${file_refs}
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ${file}; sourceTree = \"<group>\"; };"
+
+  build_file_refs="${build_file_refs}
+		${build_uuid} /* ${file} in Sources */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
+
   source_file_refs="${source_file_refs}
 				${file_uuid} /* ${file} */,"
   sources_build_refs="${sources_build_refs}
-				${build_uuid} /* ${file} */,"
+				${build_uuid} /* ${file} in Sources */,"
 done <<< "$M_FILES"
 
 # Process C files
 while IFS= read -r file; do
   [ -z "$file" ] && continue
-  file_uuid=$(gen_file_ref "$file" "sourcecode.c.c")
-  build_uuid=$(gen_build_ref "$file_uuid")
+  file_uuid=$(generate_uuid)
+  build_uuid=$(generate_uuid)
+
+  file_refs="${file_refs}
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ${file}; sourceTree = \"<group>\"; };"
+
+  build_file_refs="${build_file_refs}
+		${build_uuid} /* ${file} in Sources */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
+
   source_file_refs="${source_file_refs}
 				${file_uuid} /* ${file} */,"
   sources_build_refs="${sources_build_refs}
-				${build_uuid} /* ${file} */,"
+				${build_uuid} /* ${file} in Sources */,"
 done <<< "$C_FILES"
 
 # Process header files
 while IFS= read -r file; do
   [ -z "$file" ] && continue
-  file_uuid=$(gen_file_ref "$file" "sourcecode.c.h")
+  file_uuid=$(generate_uuid)
+
+  file_refs="${file_refs}
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ${file}; sourceTree = \"<group>\"; };"
+
   header_file_refs="${header_file_refs}
 				${file_uuid} /* ${file} */,"
 done <<< "$H_FILES"
 
 # Info.plist reference
-INFOPLIST_UUID=$(gen_file_ref "Info.plist" "text.plist.xml")
+INFOPLIST_UUID=$(generate_uuid)
+file_refs="${file_refs}
+		${INFOPLIST_UUID} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = \"<group>\"; };"
 
 ################################################################################
 # MARK: - Set Platform-Specific Build Settings
