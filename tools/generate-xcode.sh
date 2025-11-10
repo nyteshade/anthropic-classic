@@ -298,7 +298,6 @@ ${build_file_refs}
 /* Begin PBXFileReference section */
 ${file_refs}
 		${PRODUCT_REF_UUID} /* ${APP_NAME}.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ${APP_NAME}.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		${INFOPLIST_UUID} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = \"<group>\"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
