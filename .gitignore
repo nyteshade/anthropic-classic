@@ -49,3 +49,6 @@ fastlane/test_output
 # Build artifacts
 build/
 *.o
+
+# Generated Xcode projects (can be regenerated with make xcode or ./tools/generate-xcode.sh)
+xcode/*.xcodeproj/
