@@ -23,7 +23,7 @@
 
 APP_NAME = ClaudeChat
 BUNDLE_ID = com.nyteshade.anthropic-classic
-VERSION = 1.3
+VERSION = 1.3.1
 BUILD_NUMBER = 1
 
 
@@ -332,7 +332,7 @@ OBJECTS = $(M_OBJECTS) $(C_OBJECTS)
 # MARK: - Build Rules
 ################################################################################
 
-.PHONY: all clean run debug info xcode
+.PHONY: all clean run debug info xcode clean-xcode
 
 all: info app
 
@@ -449,6 +449,18 @@ debug: app
 xcode:
 	@echo "Generating Xcode project for $(PLATFORM)..."
 	@./tools/generate-xcode.sh $(PLATFORM)
+
+# Clean Xcode projects
+clean-xcode:
+	@echo "Removing all Xcode projects..."
+	@rm -rf xcode/*.xcodeproj
+	@rm -rf xcode/*/
+	@echo "Xcode projects removed."
+	@echo ""
+	@echo "To regenerate, run:"
+	@echo "  make xcode                      # For current platform ($(PLATFORM))"
+	@echo "  ./tools/generate-xcode.sh       # Auto-detect platform"
+	@echo "  ./tools/generate-xcode.sh tiger # For specific platform"
 
 # Show detected sources
 sources:
