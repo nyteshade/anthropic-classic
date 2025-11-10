@@ -256,6 +256,20 @@ else
   OTHER_LDFLAGS=""
 fi
 
+# ARC settings (only for Snow Leopard and later)
+# Tiger and Leopard (Xcode 2.5/3.1) don't recognize these settings
+case $PLATFORM in
+  tiger|leopard)
+    # Old Xcode - no ARC settings
+    ARC_SETTINGS=""
+    ;;
+  *)
+    # Xcode 3.2+ - explicitly disable ARC
+    ARC_SETTINGS="CLANG_ENABLE_OBJC_ARC = NO;
+				OTHER_CFLAGS = \"-fno-objc-arc\";"
+    ;;
+esac
+
 ################################################################################
 # MARK: - Generate project.pbxproj
 ################################################################################
@@ -397,7 +411,7 @@ ${file_refs}
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "${ARCHS}";
-				CLANG_ENABLE_OBJC_ARC = NO;
+				${ARC_SETTINGS}
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -410,7 +424,6 @@ ${file_refs}
 				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};
 				ONLY_ACTIVE_ARCH = YES;
 				${OTHER_LDFLAGS}
-				OTHER_CFLAGS = "-fno-objc-arc";
 				PRODUCT_NAME = ${APP_NAME};
 				SDKROOT = macosx;
 			};
@@ -420,7 +433,7 @@ ${file_refs}
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "${ARCHS}";
-				CLANG_ENABLE_OBJC_ARC = NO;
+				${ARC_SETTINGS}
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -429,7 +442,6 @@ ${file_refs}
 				${LIBRARY_SEARCH_PATHS}
 				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};
 				${OTHER_LDFLAGS}
-				OTHER_CFLAGS = "-fno-objc-arc";
 				PRODUCT_NAME = ${APP_NAME};
 				SDKROOT = macosx;
 			};
