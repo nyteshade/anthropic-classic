@@ -10,6 +10,7 @@
 @class ClaudeAPIManager;
 
 @interface ChatWindowController : NSWindowController <ClaudeAPIManagerDelegate> {
+    NSWindow *mainWindow;  // Explicit reference for Leopard compatibility
     NSTextView *chatTextView;
     NSTextView *messageField;
     NSScrollView *messageScrollView;
@@ -18,10 +19,10 @@
     NSScrollView *scrollView;
     float messageFieldMinHeight;
     float messageFieldMaxHeight;
-    
+
     NEDrawer *conversationDrawer;
     NSTableView *conversationTable;
-    
+
     ClaudeAPIManager *apiManager;
     NSMutableAttributedString *chatHistory;
     NSMutableArray *codeBlockButtons;

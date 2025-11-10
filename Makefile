@@ -23,7 +23,7 @@
 
 APP_NAME = ClaudeChat
 BUNDLE_ID = com.nyteshade.anthropic-classic
-VERSION = 1.2.2
+VERSION = 1.2.3
 BUILD_NUMBER = 1
 
 
@@ -408,9 +408,10 @@ $(RESOURCES_DIR)/ClaudeClassic.icns: ClaudeClassic.icns.zip | $(APP_BUNDLE)
 	@unzip -o ClaudeClassic.icns.zip -d $(RESOURCES_DIR)
 	@touch $(RESOURCES_DIR)/ClaudeClassic.icns
 	@touch $(APP_BUNDLE)
-	@echo "Resetting icon cache (this may take a moment)..."
-	@-/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user 2>/dev/null || true
-	@-killall Finder 2>/dev/null || true
+	@echo "Note: Icon may not update immediately. Try:"
+	@echo "  - Rebuild from clean: make clean && make"
+	@echo "  - Get Info on app and drag icon to another app to refresh cache"
+	@echo "  - Restart Finder: killall Finder"
 
 # Build app
 app: $(MACOS_DIR)/$(APP_NAME) $(CONTENTS_DIR)/Info.plist $(CONTENTS_DIR)/PkgInfo $(RESOURCES_DIR)/ClaudeClassic.icns

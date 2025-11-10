@@ -59,6 +59,7 @@
   SAFE_ARC_RELEASE(apiManager);
   SAFE_ARC_RELEASE(chatHistory);
   SAFE_ARC_RELEASE(messageScrollView);
+  SAFE_ARC_RELEASE(mainWindow);  // Release our explicit window reference
   SAFE_ARC_SUPER_DEALLOC;
 }
 
@@ -269,9 +270,15 @@
   [progressIndicator setControlSize:NSSmallControlSize];
 	[progressIndicator setIndeterminate:YES];
   [contentView addSubview:progressIndicator];
-  
+
+  // IMPORTANT: On Leopard/Tiger, NSWindowController's setWindow: doesn't retain the window
+  // Keep an explicit reference to ensure it stays alive
+  mainWindow = [window retain];
   [self setWindow:window];
-  
+
+  // Prevent window from being deallocated when closed
+  [window setReleasedWhenClosed:NO];
+
   // Create conversation drawer
   [self createConversationDrawer];
   
