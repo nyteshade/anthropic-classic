@@ -108,8 +108,19 @@ generate_uuid() {
   if command -v uuidgen &> /dev/null; then
     uuidgen | tr -d '-' | tr '[:lower:]' '[:upper:]' | cut -c1-24
   else
-    # Fallback for very old systems
-    echo "$(date +%s)$(od -An -N4 -tu4 /dev/random | tr -d ' ')" | md5 | tr '[:lower:]' '[:upper:]' | cut -c1-24
+    # Fallback for very old systems - try md5sum (Linux) or md5 (macOS)
+    local hash_input="$(date +%s%N)$(od -An -N4 -tu4 /dev/random 2>/dev/null | tr -d ' ')"
+    if command -v md5sum &> /dev/null; then
+      echo "$hash_input" | md5sum | cut -d' ' -f1 | tr '[:lower:]' '[:upper:]' | cut -c1-24
+    elif command -v md5 &> /dev/null; then
+      echo "$hash_input" | md5 | tr '[:lower:]' '[:upper:]' | cut -c1-24
+    elif [ -x /sbin/md5 ]; then
+      # Leopard/Tiger has md5 in /sbin
+      echo "$hash_input" | /sbin/md5 | tr '[:lower:]' '[:upper:]' | cut -c1-24
+    else
+      # Last resort: use od to generate pseudo-random hex
+      echo "$hash_input" | od -An -tx1 | tr -d ' \n' | tr '[:lower:]' '[:upper:]' | cut -c1-24
+    fi
   fi
 }
 
@@ -275,7 +286,7 @@ esac
 ################################################################################
 
 cat > "$PBXPROJ" << EOF
-// !$!*UTF8*$!
+// !\$!*UTF8*\$!
 {
 	archiveVersion = 1;
 	classes = {
