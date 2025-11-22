@@ -79,15 +79,24 @@ H_FILES=$(find . -name "*.h" ! -path "./build/*" ! -path "./xcode/*" ! -path "./
 # Platform-specific filtering
 case $PLATFORM in
   tiger|leopard|snow|lion|mountain)
-    # Use Tiger/OpenSSL variants
-    M_FILES=$(echo "$M_FILES" | grep -v "ClaudeAPIManager\.m$" || true)
-    M_FILES=$(echo "$M_FILES" | grep -v "HTTPSClient\.m$" || true)
-    M_FILES=$(echo "$M_FILES" | grep -v "ThemeColors\.m$" || true)
-    M_FILES=$(echo -e "${M_FILES}\nClaudeAPIManager_Tiger.m\nHTTPSClient_OpenSSL.m\nThemeColors_Tiger.m")
+    # Use OpenSSL variant for HTTPS, keep NetworkManager_Tiger if it exists
+    # First, exclude the modern variants
+    M_FILES=$(echo "$M_FILES" | grep -v "^HTTPSClient\.m$" || true)
+    M_FILES=$(echo "$M_FILES" | grep -v "^NetworkManager\.m$" || true)
+    # Also exclude the OpenSSL/Tiger variants from initial list (will add them explicitly)
+    M_FILES=$(echo "$M_FILES" | grep -v "^HTTPSClient_OpenSSL\.m$" || true)
+    M_FILES=$(echo "$M_FILES" | grep -v "^NetworkManager_Tiger\.m$" || true)
+    # Now explicitly add the Tiger/OpenSSL variants
+    if [ -f "HTTPSClient_OpenSSL.m" ]; then
+      M_FILES=$(echo -e "${M_FILES}\nHTTPSClient_OpenSSL.m")
+    fi
+    if [ -f "NetworkManager_Tiger.m" ]; then
+      M_FILES=$(echo -e "${M_FILES}\nNetworkManager_Tiger.m")
+    fi
     NEEDS_OPENSSL="yes"
     ;;
   modern)
-    # Use modern variants
+    # Use modern variants - exclude Tiger/OpenSSL specific files
     M_FILES=$(echo "$M_FILES" | grep -v "_Tiger\.m$" || true)
     M_FILES=$(echo "$M_FILES" | grep -v "_OpenSSL\.m$" || true)
     NEEDS_OPENSSL="no"
@@ -262,6 +271,7 @@ resources_build_refs="${resources_build_refs}
 case $PLATFORM in
   tiger)
     SDK_VERSION="10.4"
+    SDKROOT="macosx10.4"
     COMPILER="com.apple.compilers.gcc.4_2"
     ARCHS="ppc i386"
     XCODE_VERSION="Xcode 2.5"
@@ -269,6 +279,7 @@ case $PLATFORM in
     ;;
   leopard)
     SDK_VERSION="10.5"
+    SDKROOT="macosx10.5"
     COMPILER="com.apple.compilers.gcc.4_2"
     ARCHS="i386 x86_64"
     XCODE_VERSION="Xcode 3.1"
@@ -276,6 +287,7 @@ case $PLATFORM in
     ;;
   snow)
     SDK_VERSION="10.6"
+    SDKROOT="macosx10.6"
     COMPILER="com.apple.compilers.gcc.4_2"
     ARCHS="i386 x86_64"
     XCODE_VERSION="Xcode 3.2"
@@ -283,6 +295,7 @@ case $PLATFORM in
     ;;
   lion)
     SDK_VERSION="10.7"
+    SDKROOT="macosx10.7"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
     XCODE_VERSION="Xcode 3.2"
@@ -290,6 +303,7 @@ case $PLATFORM in
     ;;
   mountain)
     SDK_VERSION="10.8"
+    SDKROOT="macosx10.8"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
     XCODE_VERSION="Xcode 3.2"
@@ -297,6 +311,7 @@ case $PLATFORM in
     ;;
   modern)
     SDK_VERSION="10.13"
+    SDKROOT="macosx"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
     XCODE_VERSION="Xcode 3.2"
@@ -317,6 +332,31 @@ else
   LIBRARY_SEARCH_PATHS=""
   OTHER_LDFLAGS=""
 fi
+
+# Framework settings - only for modern platforms
+case $PLATFORM in
+  tiger|leopard)
+    # Older platforms don't use framework references in the same way
+    FRAMEWORK_FILES=""
+    FRAMEWORK_REFS=""
+    FRAMEWORK_BUILD_FILES=""
+    ;;
+  *)
+    # Modern platforms use framework references
+    FRAMEWORK_FILES=$'\n\t\t\t\t'
+    FRAMEWORK_FILES+="${COCOA_BUILD_UUID} /* Cocoa.framework in Frameworks */,"
+    FRAMEWORK_FILES+=$'\n\t\t\t\t'
+    FRAMEWORK_FILES+="${FOUNDATION_BUILD_UUID} /* Foundation.framework in Frameworks */,"
+
+    FRAMEWORK_REFS="${COCOA_FRAMEWORK_UUID} /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };"
+    FRAMEWORK_REFS+=$'\n\t\t'
+    FRAMEWORK_REFS+="${FOUNDATION_FRAMEWORK_UUID} /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };"
+
+    FRAMEWORK_BUILD_FILES="${COCOA_BUILD_UUID} /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ${COCOA_FRAMEWORK_UUID} /* Cocoa.framework */; };"
+    FRAMEWORK_BUILD_FILES+=$'\n\t\t'
+    FRAMEWORK_BUILD_FILES+="${FOUNDATION_BUILD_UUID} /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ${FOUNDATION_FRAMEWORK_UUID} /* Foundation.framework */; };"
+    ;;
+esac
 
 # ARC settings (only for Snow Leopard and later)
 # Tiger and Leopard (Xcode 2.5/3.1) don't recognize these settings
@@ -347,24 +387,40 @@ cat > "$PBXPROJ" << EOF
 
 /* Begin PBXBuildFile section */
 ${build_file_refs}
+EOF
+
+# Only add framework build files for platforms that support them
+if [ "$PLATFORM" != "tiger" ] && [ "$PLATFORM" != "leopard" ]; then
+  cat >> "$PBXPROJ" << EOF
 		${COCOA_BUILD_UUID} /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ${COCOA_FRAMEWORK_UUID} /* Cocoa.framework */; };
 		${FOUNDATION_BUILD_UUID} /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ${FOUNDATION_FRAMEWORK_UUID} /* Foundation.framework */; };
+EOF
+fi
+
+cat >> "$PBXPROJ" << EOF
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 ${file_refs}
 		${PRODUCT_REF_UUID} /* ${APP_NAME}.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ${APP_NAME}.app; sourceTree = BUILT_PRODUCTS_DIR; };
+EOF
+
+# Only add framework references for platforms that support them
+if [ "$PLATFORM" != "tiger" ] && [ "$PLATFORM" != "leopard" ]; then
+  cat >> "$PBXPROJ" << EOF
 		${COCOA_FRAMEWORK_UUID} /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		${FOUNDATION_FRAMEWORK_UUID} /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+EOF
+fi
+
+cat >> "$PBXPROJ" << EOF
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		${FRAMEWORKS_BUILDPHASE_UUID} /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
-				${COCOA_BUILD_UUID} /* Cocoa.framework in Frameworks */,
-				${FOUNDATION_BUILD_UUID} /* Foundation.framework in Frameworks */,
+			files = (${FRAMEWORK_FILES}
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,7 +547,7 @@ ${file_refs}
 				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};
 				ONLY_ACTIVE_ARCH = YES;${OTHER_LDFLAGS}
 				PRODUCT_NAME = ${APP_NAME};
-				SDKROOT = macosx;
+				SDKROOT = ${SDKROOT};
 			};
 			name = Debug;
 		};
@@ -507,7 +563,7 @@ ${file_refs}
 				INFOPLIST_FILE = ../Info.plist;${LIBRARY_SEARCH_PATHS}
 				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};${OTHER_LDFLAGS}
 				PRODUCT_NAME = ${APP_NAME};
-				SDKROOT = macosx;
+				SDKROOT = ${SDKROOT};
 			};
 			name = Release;
 		};
