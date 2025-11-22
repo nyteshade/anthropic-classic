@@ -138,6 +138,10 @@ FRAMEWORKS_BUILDPHASE_UUID=$(generate_uuid)
 SOURCES_BUILDPHASE_UUID=$(generate_uuid)
 RESOURCES_BUILDPHASE_UUID=$(generate_uuid)
 PRODUCT_REF_UUID=$(generate_uuid)
+COCOA_FRAMEWORK_UUID=$(generate_uuid)
+FOUNDATION_FRAMEWORK_UUID=$(generate_uuid)
+COCOA_BUILD_UUID=$(generate_uuid)
+FOUNDATION_BUILD_UUID=$(generate_uuid)
 
 ################################################################################
 # MARK: - Generate File References
@@ -153,6 +157,7 @@ source_file_refs=""
 header_file_refs=""
 build_file_refs=""
 sources_build_refs=""
+resources_build_refs=""
 
 # Process source files
 while IFS= read -r file; do
@@ -160,8 +165,16 @@ while IFS= read -r file; do
   file_uuid=$(generate_uuid)
   build_uuid=$(generate_uuid)
 
+  # Add ../ prefix and properly quote the path if it contains special characters
+  relative_path="../${file}"
+  if [[ "$file" == *"+"* ]] || [[ "$file" == *" "* ]]; then
+    quoted_path="${Q}${relative_path}${Q}"
+  else
+    quoted_path="${relative_path}"
+  fi
+
   file_refs="${file_refs}
-		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ${file}; sourceTree = ${Q}<group>${Q}; };"
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ${quoted_path}; sourceTree = ${Q}<group>${Q}; };"
 
   build_file_refs="${build_file_refs}
 		${build_uuid} /* ${file} in Sources */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
@@ -178,8 +191,16 @@ while IFS= read -r file; do
   file_uuid=$(generate_uuid)
   build_uuid=$(generate_uuid)
 
+  # Add ../ prefix and properly quote the path if it contains special characters
+  relative_path="../${file}"
+  if [[ "$file" == *"+"* ]] || [[ "$file" == *" "* ]]; then
+    quoted_path="${Q}${relative_path}${Q}"
+  else
+    quoted_path="${relative_path}"
+  fi
+
   file_refs="${file_refs}
-		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ${file}; sourceTree = ${Q}<group>${Q}; };"
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ${quoted_path}; sourceTree = ${Q}<group>${Q}; };"
 
   build_file_refs="${build_file_refs}
 		${build_uuid} /* ${file} in Sources */ = {isa = PBXBuildFile; fileRef = ${file_uuid}; };"
@@ -195,8 +216,16 @@ while IFS= read -r file; do
   [ -z "$file" ] && continue
   file_uuid=$(generate_uuid)
 
+  # Add ../ prefix and properly quote the path if it contains special characters
+  relative_path="../${file}"
+  if [[ "$file" == *"+"* ]] || [[ "$file" == *" "* ]]; then
+    quoted_path="${Q}${relative_path}${Q}"
+  else
+    quoted_path="${relative_path}"
+  fi
+
   file_refs="${file_refs}
-		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ${file}; sourceTree = ${Q}<group>${Q}; };"
+		${file_uuid} /* ${file} */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ${quoted_path}; sourceTree = ${Q}<group>${Q}; };"
 
   header_file_refs="${header_file_refs}
 				${file_uuid} /* ${file} */,"
@@ -204,8 +233,27 @@ done <<< "$H_FILES"
 
 # Info.plist reference
 INFOPLIST_UUID=$(generate_uuid)
+INFOPLIST_BUILD_UUID=$(generate_uuid)
 file_refs="${file_refs}
-		${INFOPLIST_UUID} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = ${Q}<group>${Q}; };"
+		${INFOPLIST_UUID} /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ../Info.plist; sourceTree = ${Q}<group>${Q}; };"
+
+build_file_refs="${build_file_refs}
+		${INFOPLIST_BUILD_UUID} /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ${INFOPLIST_UUID}; };"
+
+resources_build_refs="${resources_build_refs}
+				${INFOPLIST_BUILD_UUID} /* Info.plist in Resources */,"
+
+# Icon file reference
+ICON_UUID=$(generate_uuid)
+ICON_BUILD_UUID=$(generate_uuid)
+file_refs="${file_refs}
+		${ICON_UUID} /* ClaudeClassic.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ../ClaudeClassic.icns; sourceTree = ${Q}<group>${Q}; };"
+
+build_file_refs="${build_file_refs}
+		${ICON_BUILD_UUID} /* ClaudeClassic.icns in Resources */ = {isa = PBXBuildFile; fileRef = ${ICON_UUID}; };"
+
+resources_build_refs="${resources_build_refs}
+				${ICON_BUILD_UUID} /* ClaudeClassic.icns in Resources */,"
 
 ################################################################################
 # MARK: - Set Platform-Specific Build Settings
@@ -248,7 +296,7 @@ case $PLATFORM in
     OBJECT_VERSION="46"
     ;;
   modern)
-    SDK_VERSION="10.9"
+    SDK_VERSION="10.13"
     COMPILER="com.apple.compilers.llvm.clang.1_0"
     ARCHS="x86_64"
     XCODE_VERSION="Xcode 3.2"
@@ -258,9 +306,12 @@ esac
 
 # OpenSSL settings
 if [ "$NEEDS_OPENSSL" = "yes" ]; then
-  HEADER_SEARCH_PATHS="HEADER_SEARCH_PATHS = /opt/local/include;"
-  LIBRARY_SEARCH_PATHS="LIBRARY_SEARCH_PATHS = /opt/local/lib;"
-  OTHER_LDFLAGS='OTHER_LDFLAGS = "-lssl -lcrypto";'
+  HEADER_SEARCH_PATHS="
+				HEADER_SEARCH_PATHS = /opt/local/include;"
+  LIBRARY_SEARCH_PATHS="
+				LIBRARY_SEARCH_PATHS = /opt/local/lib;"
+  OTHER_LDFLAGS='
+				OTHER_LDFLAGS = "-lssl -lcrypto";'
 else
   HEADER_SEARCH_PATHS=""
   LIBRARY_SEARCH_PATHS=""
@@ -296,11 +347,15 @@ cat > "$PBXPROJ" << EOF
 
 /* Begin PBXBuildFile section */
 ${build_file_refs}
+		${COCOA_BUILD_UUID} /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ${COCOA_FRAMEWORK_UUID} /* Cocoa.framework */; };
+		${FOUNDATION_BUILD_UUID} /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ${FOUNDATION_FRAMEWORK_UUID} /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 ${file_refs}
 		${PRODUCT_REF_UUID} /* ${APP_NAME}.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ${APP_NAME}.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		${COCOA_FRAMEWORK_UUID} /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		${FOUNDATION_FRAMEWORK_UUID} /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,6 +363,8 @@ ${file_refs}
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				${COCOA_BUILD_UUID} /* Cocoa.framework in Frameworks */,
+				${FOUNDATION_BUILD_UUID} /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,6 +407,7 @@ ${file_refs}
 			isa = PBXGroup;
 			children = (
 				${INFOPLIST_UUID} /* Info.plist */,
+				${ICON_UUID} /* ClaudeClassic.icns */,
 			);
 			name = Resources;
 			sourceTree = ${Q}<group>${Q};
@@ -372,7 +430,7 @@ ${file_refs}
 			name = ${APP_NAME};
 			productName = ${APP_NAME};
 			productReference = ${PRODUCT_REF_UUID} /* ${APP_NAME}.app */;
-			productType = \"com.apple.product-type.application\";
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -380,7 +438,7 @@ ${file_refs}
 		${PROJECT_UUID} /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = ${BUILDCONFIG_LIST_UUID} /* Build configuration list for PBXProject "${PROJECT_NAME}" */;
-			compatibilityVersion = \"${XCODE_VERSION}\";
+			compatibilityVersion = "${XCODE_VERSION}";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -388,8 +446,8 @@ ${file_refs}
 			);
 			mainGroup = ${MAINGROUP_UUID} /* Main */;
 			productRefGroup = ${PRODUCTS_GROUP_UUID} /* Products */;
-			projectDirPath = \"\";
-			projectRoot = \"\";
+			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				${TARGET_UUID} /* ${APP_NAME} */,
 			);
@@ -400,7 +458,7 @@ ${file_refs}
 		${RESOURCES_BUILDPHASE_UUID} /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
+			files = (${resources_build_refs}
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -420,20 +478,18 @@ ${file_refs}
 		${BUILDCONFIG_DEBUG_UUID} /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "${ARCHS}";
 				${ARC_SETTINGS}
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				${HEADER_SEARCH_PATHS}
-				INFOPLIST_FILE = Info.plist;
-				${LIBRARY_SEARCH_PATHS}
+				GCC_WARN_UNUSED_VARIABLE = YES;${HEADER_SEARCH_PATHS}
+				INFOPLIST_FILE = ../Info.plist;${LIBRARY_SEARCH_PATHS}
 				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};
-				ONLY_ACTIVE_ARCH = YES;
-				${OTHER_LDFLAGS}
+				ONLY_ACTIVE_ARCH = YES;${OTHER_LDFLAGS}
 				PRODUCT_NAME = ${APP_NAME};
 				SDKROOT = macosx;
 			};
@@ -442,16 +498,14 @@ ${file_refs}
 		${BUILDCONFIG_RELEASE_UUID} /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "${ARCHS}";
 				${ARC_SETTINGS}
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				${HEADER_SEARCH_PATHS}
-				INFOPLIST_FILE = Info.plist;
-				${LIBRARY_SEARCH_PATHS}
-				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};
-				${OTHER_LDFLAGS}
+				GCC_WARN_UNUSED_VARIABLE = YES;${HEADER_SEARCH_PATHS}
+				INFOPLIST_FILE = ../Info.plist;${LIBRARY_SEARCH_PATHS}
+				MACOSX_DEPLOYMENT_TARGET = ${SDK_VERSION};${OTHER_LDFLAGS}
 				PRODUCT_NAME = ${APP_NAME};
 				SDKROOT = macosx;
 			};
