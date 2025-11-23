@@ -10,7 +10,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #import "ConversationManager.h"
+#import "AnthropicClassic.h"
 
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Conversation Implementation
@@ -500,3 +502,5 @@ static ConversationManager *sharedInstance = nil;
 }
 
 @end
+
+SUPPRESS_DEPRECATED_WARNINGS_END

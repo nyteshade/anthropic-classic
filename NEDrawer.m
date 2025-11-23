@@ -8,6 +8,9 @@
 
 #import "NEDrawer.h"
 #import "ThemeColors.h"
+#import "AnthropicClassic.h"
+
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
 
 @interface NEDrawer (Private)
 - (void)setupDrawerWindow;
@@ -1218,3 +1221,5 @@
 }
 
 @end
+
+SUPPRESS_DEPRECATED_WARNINGS_END

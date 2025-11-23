@@ -6,9 +6,12 @@
 //  Copyright 2025 Nyteshade Enterprises. All rights reserved.
 //
 
+#import "AnthropicClassic.h"
 #import "NSView+Essentials.h"
 #import "NSObject+Associations.h"
 #import "NEPadding.h"
+
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_4
 #import <objc/objc-runtime.h>
@@ -252,3 +255,5 @@ NSString* NEPaddingToString(NEPadding padding)
 }
 
 @end
+
+SUPPRESS_DEPRECATED_WARNINGS_END

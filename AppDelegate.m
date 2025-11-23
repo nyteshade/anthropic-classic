@@ -3,11 +3,29 @@
 //  ClaudeChat
 //
 
+#import "AnthropicClassic.h"
+
 #import "AppDelegate.h"
 #import "ChatWindowController.h"
 #import "ThemeColors.h"
 #import "NSObject+Associations.h"
-#import "SAFEArc.h"
+
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
+
+#ifndef MAC_OS_X_VERSION_10_12
+  #define MAC_OS_X_VERSION_10_12 101200
+#endif
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_12
+  #define NSEventModifierFlagCommand NSCommandKeyMask
+  #define NSEventModifierFlagOption NSAlternateKeyMask
+  #define NSEventModifierFlagControl NSControlKeyMask
+  #define NSEventModifierFlagShift NSShiftKeyMask
+#endif
+
+@interface NSApplication (PowerPCCompatibility)
+- (void)setAppleMenu:(NSMenu *)menu;
+@end
 
 @implementation AppDelegate
 
@@ -33,7 +51,7 @@
   apiKey = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeAPIKey"]);
   selectedModel = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeSelectedModel"]);
   isDarkMode = [defaults boolForKey:@"ClaudeChatDarkMode"];
-  fontSizeAdjustment = [defaults integerForKey:@"ClaudeChatFontSizeAdjustment"];
+  fontSizeAdjustment = (int)[defaults integerForKey:@"ClaudeChatFontSizeAdjustment"];
 
   // Load font preferences
   monospaceFontName = SAFE_ARC_RETAIN([defaults stringForKey:@"ClaudeChatMonospaceFontName"]);
@@ -113,7 +131,7 @@
   [preferencesWindow setTitle:@"Preferences"];
   [preferencesWindow center];
   [preferencesWindow setReleasedWhenClosed:NO];  // Important: don't release on close
-  [preferencesWindow setDelegate:self];  // Set delegate for window events
+  [preferencesWindow setDelegate:(id<NSWindowDelegate>)self];  // Set delegate for window events
   [preferencesWindow setBackgroundColor:[ThemeColors windowBackgroundColorForDarkMode:isDarkMode]];
   
   NSView *contentView = [preferencesWindow contentView];
@@ -330,10 +348,10 @@
         keyEquivalent:@"q"];
   
   [mainMenu setSubmenu:submenu forItem:menuItem];
-
-  // IMPORTANT: On Leopard/Tiger, must explicitly set the Apple menu
-  // Modern macOS does this automatically, but older versions need this call
-  [NSApp setAppleMenu:submenu];
+  
+  if ([OS isPowerPC]) {
+    [NSApp setAppleMenu:submenu];
+  }
 
   // File menu
   menuItem = [mainMenu addItemWithTitle:@"File" action:nil keyEquivalent:@""];
@@ -620,7 +638,7 @@
     // Add keyboard shortcut for first 3 models
     if (i < 3) {
       [item setKeyEquivalent:[NSString stringWithFormat:@"%d", i + 1]];
-      [item setKeyEquivalentModifierMask:NSCommandKeyMask | NSAlternateKeyMask];
+      [item setKeyEquivalentModifierMask:NSEventModifierFlagCommand | NSEventModifierFlagOption];
     }
     
     // Check if this is the selected model
@@ -907,3 +925,5 @@
 }
 
 @end
+
+SUPPRESS_DEPRECATED_WARNINGS_END

@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     // The delegate must live for the entire application lifetime
     AppDelegate *appDelegate = [[AppDelegate alloc] init];
 
-    [application setDelegate:appDelegate];
+    [application setDelegate:(id<NSApplicationDelegate>)appDelegate];
     [application run];
 
     // Cleanup only happens after app quits

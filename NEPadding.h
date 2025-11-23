@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "TigerCompat.h"
+#import "AnthropicClassic.h"
 
 typedef struct NEPadding {
 #if IS_TIGER_OR_LATER

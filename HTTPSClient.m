@@ -5,7 +5,10 @@
 //  Simplified HTTPS client
 //
 
+#import "AnthropicClassic.h"
 #import "HTTPSClient.h"
+
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
 
 @implementation HTTPSClient
 
@@ -114,3 +117,5 @@
 }
 
 @end
+
+SUPPRESS_DEPRECATED_WARNINGS_END

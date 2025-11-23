@@ -40,7 +40,7 @@
 #define NESizingHelpers_h
 
 #import <Cocoa/Cocoa.h>
-#import "TigerCompat.h"
+#import "AnthropicClassic.h"
 
 #ifdef __cplusplus
 extern "C" {

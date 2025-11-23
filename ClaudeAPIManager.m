@@ -87,7 +87,7 @@
                   [NSNumber numberWithInt:maxTokens], @"max_tokens",
                   nil];
                   
-  NSLog(@"Reqest body set to model %@, with max-tokens of %lu", model, maxTokens);
+  NSLog(@"Reqest body set to model %@, with max-tokens of %d", model, maxTokens);
   
   // For Tiger, we need to manually create JSON
   NSString *jsonString = [self dictionaryToJSON:requestBody];

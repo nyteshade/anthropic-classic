@@ -4,8 +4,10 @@
 //
 
 #import "NESizingHelpers.h"
-#import "TigerCompat.h"
+#import "AnthropicClassic.h"
 #import <float.h> // FLT_MAX
+
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
 
 // Tiger compatibility: NSHeight, NSMinY, NSWidth macros
 #ifndef NSHeight
@@ -317,3 +319,5 @@ void LayoutFormRow(NSView *container,
     [button setFrame:bF];
   }
 }
+
+SUPPRESS_DEPRECATED_WARNINGS_END

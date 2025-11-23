@@ -11,7 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #import <Foundation/Foundation.h>
-#import "TigerCompat.h"
+#import "AnthropicClassic.h"
 
 
 /**

@@ -1,4 +1,7 @@
+#import "AnthropicClassic.h"
 #import "SystemInfoCollector.h"
+
+SUPPRESS_DEPRECATED_WARNINGS_BEGIN
 
 @implementation SystemInfoCollector
 
@@ -135,7 +138,7 @@
         time_t now = time(NULL);
         time_t uptime = now - boottime.tv_sec;
         
-        int days = uptime / 86400;
+        int days = (int)(uptime / (time_t)86400);
         int hours = (uptime % 86400) / 3600;
         int minutes = (uptime % 3600) / 60;
         
@@ -147,3 +150,5 @@
 }
 
 @end
+
+SUPPRESS_DEPRECATED_WARNINGS_END

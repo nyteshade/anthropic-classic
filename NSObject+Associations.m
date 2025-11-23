@@ -12,10 +12,8 @@
 
 static NSMutableDictionary *_associationMap = nil;
 
-+ (void)initialize {
-	if (self == [NSObject class]) {
-		_associationMap = [[NSMutableDictionary alloc] init];
-	}
++ (void)load {
+  _associationMap = [[NSMutableDictionary alloc] init];
 }
 
 - (NSMutableDictionary *)_associationDictionary {
